@@ -1,21 +1,24 @@
 <?php
-define('APP_ROOT', realpath(__DIR__ . '/../'));
-define('ITEMS_PER_PAGE', 25);
+require_once __DIR__ . '/../bootstrap.php';
 
-require APP_ROOT . '/config.php';
-require APP_ROOT . '/session.php';
-require_once APP_ROOT . '/stream_ticks.php';
+confirm_setup();
+
+require LIB_ROOT . '/config.php';
+require LIB_ROOT . '/session.php';
+require LIB_ROOT . '/ticks.php';
+
+$config = Config::load();
 
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$limit = ITEMS_PER_PAGE;
+$limit = $config->itemsPerPage;
 $offset = ($page - 1) * $limit;
 
-$ticks = iterator_to_array(stream_ticks($tickLocation, $limit, $offset));
+$ticks = iterator_to_array(stream_ticks($limit, $offset));
 ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>My ticker</title>
+        <title><?= $config->siteTitle ?></title>
         <style>
             body { font-family: sans-serif; margin: 2em; }
             .tick { margin-bottom: 1em; }
@@ -25,37 +28,38 @@ $ticks = iterator_to_array(stream_ticks($tickLocation, $limit, $offset));
         </style>
     </head>
     <body>
-        <h2>Welcome! Here's what's ticking.</h2>
+        <h2><?= $config->siteDescription ?></h2>
 
 <?php foreach ($ticks as $tick): ?>
         <div class="tick">
-            <spam class="ticktime"><?= $tick['timestamp'] ?></span>
-            <span class="ticktext"><?= $tick['tick'] ?></spam>
+            <span class="ticktime"><?= htmlspecialchars($tick['timestamp']) ?></span>
+            <span class="ticktext"><?= escape_and_linkify_tick($tick['tick']) ?></span>
         </div>
 <?php endforeach; ?>
   
-    <div class="pagination">
+        <div class="pagination">
 
 <?php if ($page > 1): ?>
-        <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
+            <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
 <?php endif; ?>
 
 <?php if (count($ticks) === $limit): ?>
-        <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
+            <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
 <?php endif; ?>
-    </div>
-
+        </div>
+        <div>
 <?php if (!$isLoggedIn): ?>
-    <p><a href="<?= $basePath ?>/login.php">Login</a></p>
+         <p><a href="<?= $config->basePath ?>login.php">Login</a></p>
 <?php else: ?>
-    <form action="save_tick.php" method="post">
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-        <label for="tick">What's ticking?</label>
-        <input name="tick" id="tick" type="text">
-  
-        <button type="submit">Tick</button>
-    </form>
-    <p><a href="<?= $basePath ?>/logout.php">Logout</a> <?= htmlspecialchars($_SESSION['username']) ?> </p>
+            <form action="save_tick.php" method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <label for="tick">What's ticking?</label>
+                <input name="tick" id="tick" type="text">
+
+                <button type="submit">Tick</button>
+            </form>
+            <p><a href="<?= $config->basePath ?>logout.php">Logout</a> <?= htmlspecialchars($_SESSION['username']) ?> </p>
 <?php endif; ?>
+        </div>
 </body>
 </html>

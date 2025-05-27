@@ -1,8 +1,45 @@
 <?php
-// display the requested block of ticks
-// without storing all ticks in an array
-function stream_ticks(string $tickLocation, int $limit, int $offset = 0): Generator {
-    $tick_files = glob($tickLocation . '/*/*/*.txt');
+require_once __DIR__ . '/../bootstrap.php';
+
+function escape_and_linkify_tick(string $tick): string {
+    // escape dangerous characters, but preserve quotes
+    $safe = htmlspecialchars($tick, ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+
+    // convert URLs to links
+    $safe = preg_replace_callback(
+        '~(https?://[^\s<>"\'()]+)~i',
+        fn($matches) => '<a href="' . htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8') . '" target="_blank" rel="noopener noreferrer">' . $matches[1] . '</a>',
+        $safe
+    );
+
+    return $safe;
+}
+
+function save_tick(string $tick): void {
+    // build the tick path and filename from the current time
+    $date = new DateTime();
+
+    $year = $date->format('Y');
+    $month = $date->format('m');
+    $day = $date->format('d');
+    $time = $date->format('H:i:s');
+
+    // build the full path to the tick file
+    $dir = TICKS_DIR . "/$year/$month";
+    $filename = "$dir/$day.txt";
+
+    // create the directory if it doesn't exist
+    if (!is_dir($dir)) {
+        mkdir($dir, 0770, true);
+    }
+
+    // write the tick to the file (the file will be created if it doesn't exist)
+    $content = $time . "|" . $tick . "\n";
+    file_put_contents($filename, $content, FILE_APPEND);
+}
+
+function stream_ticks(int $limit, int $offset = 0): Generator {
+    $tick_files = glob(TICKS_DIR . '/*/*/*.txt');
     usort($tick_files, fn($a, $b) => strcmp($b, $a)); // sort filenames in reverse chronological order
 
     $count = 0;

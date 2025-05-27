@@ -1,11 +1,12 @@
 <?php
-define('APP_ROOT', realpath(__DIR__ . '/../'));
+require_once __DIR__ . '/../bootstrap.php';
 
-require APP_ROOT . '/config.php';
-require APP_ROOT . '/session.php';
+require LIB_ROOT . '/config.php';
+require LIB_ROOT . '/session.php';
 
+$config = Config::load();
 $_SESSION = [];
 session_destroy();
 
-header('Location: ' . $basePath . '/');
+header('Location: ' . $config->basePath);
 exit;

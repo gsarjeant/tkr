@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
 
-require LIB_ROOT . '/config.php';
+confirm_setup();
+
+require_once LIB_ROOT . '/config.php';
 require LIB_ROOT . '/session.php';
 
 $config = Config::load();
@@ -13,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die('Invalid CSRF token');
     }
 
+    // TODO: move into session.php
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 

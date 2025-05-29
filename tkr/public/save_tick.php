@@ -11,20 +11,17 @@ confirm_setup();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {
     // ensure that the session is valid before proceeding
     if (!validateCsrfToken($_POST['csrf_token'])) {
+        // TODO: maybe redirect to login? Maybe with tick preserved?
         die('Invalid CSRF token');
     }
-} else {
-    // just go back to the index if it's not a POST
-    header('Location: index.php');
-    exit;
+
+    // save the tick
+    save_tick($_POST['tick']);
 }
 
 // get the config
 $config = Config::load();
 
-// save the tick
-save_tick($_POST['tick']);
-
-// go back to the index and show the latest tick
+// go back to the index (will show the latest tick if one was sent)
 header('Location: ' . $config->basePath);
 exit;

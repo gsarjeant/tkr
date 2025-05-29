@@ -1,0 +1,54 @@
+@charset "UTF-8";
+
+body { font-family: sans-serif; margin: 2em; }
+
+.tick { margin-bottom: 1em; }
+
+.ticktime { color: gray; font-size: 0.9em; }
+
+.ticktext {color: black; font-size: 1.0em; }
+
+.pagination a { margin: 0 5px; text-decoration: none; }
+
+.emoji-tabs {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.emoji-tab-button {
+    text-decoration: none;
+    font-size: 1.2em;
+    padding: 0.2em 0.5em;
+    background: #eee;
+    border-radius: 0.3em;
+}
+
+.emoji-tab-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
+    gap: 0.3em;
+    margin-bottom: 1em;
+}
+
+.emoji-option {
+    text-align: center;
+    display: block;
+    cursor: pointer;
+}
+
+.emoji-option input {
+    display: none;
+}
+
+.emoji-option span {
+    font-size: 1.4em;
+    display: inline-block;
+    padding: 0.2em;
+    border-radius: 0.3em;
+}
+
+.emoji-option input:checked + span {
+    background-color: #ddeeff;
+    outline: 2px solid #339;
+}

@@ -38,7 +38,8 @@ function confirm_setup(): void {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
         display_name TEXT NOT NULL,
-        password_hash TEXT NOT NULL
+        password_hash TEXT NOT NULL,
+        mood TEXT NULL
     )");
 
     $db->exec("CREATE TABLE IF NOT EXISTS settings (

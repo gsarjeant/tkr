@@ -53,7 +53,7 @@ $ticks = iterator_to_array(stream_ticks($limit, $offset));
                 <button type="submit">Tick</button>
             </form>
             <p>Current mood: <?= get_mood() ?> | <a href="<?= $config->basePath ?>set_mood.php">Set your mood</a></p>
-            <p><a href="<?= $config->basePath ?>logout.php">Logout</a> <?= htmlspecialchars($_SESSION['username']) ?> </p>
+            <p><a href="<?= $config->basePath . '/admin.php' ?>">Admin</a> | <a href="<?= $config->basePath ?>logout.php">Logout</a> <?= htmlspecialchars($_SESSION['username']) ?> </p>
 <?php endif; ?>
         </div>
 </body>

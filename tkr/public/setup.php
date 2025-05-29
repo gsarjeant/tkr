@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Items per page must be a number between 1 and 50.";
     }
 
+    // TODO: Actually handle errors
     if (empty($errors)) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 

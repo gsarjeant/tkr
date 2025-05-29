@@ -28,4 +28,18 @@ class Config {
 
         return $c;
     }
+
+    public function save(): self {
+        $db = get_db();
+
+        $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_path=?, items_per_page=? WHERE id=1");
+        $stmt->execute([$this->siteTitle, $this->siteDescription, $this->basePath, $this->itemsPerPage]);
+
+        return self::load();
+    }
+
+    // I'm making this 
+    public function setPassword(){
+
+    }
 }

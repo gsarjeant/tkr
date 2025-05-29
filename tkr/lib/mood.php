@@ -26,8 +26,9 @@ function save_mood(string $mood): void {
     exit;
 }
 
-function render_emoji_tabs(?string $selected_emoji = null): string {
+function render_emoji_tabs(): string {
     $emoji_groups = get_emojis_with_labels();
+    $selected_emoji = get_mood();
 
     ob_start();
     ?>
@@ -53,12 +54,12 @@ function render_emoji_tabs(?string $selected_emoji = null): string {
     return ob_get_clean();
 }
 
-function render_mood_picker(?string $selected_emoji = null): string {
+function render_mood_picker(): string {
     ob_start();
     ?>
     <form action="set_mood.php" method="post" class="emoji-picker-form">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-        <?= render_emoji_tabs($selected_emoji) ?>
+        <?= render_emoji_tabs() ?>
         <button type="submit">Set the mood</button>
     </form>
     <?php

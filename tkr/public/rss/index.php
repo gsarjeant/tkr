@@ -1,13 +1,15 @@
 <?php
-define('APP_ROOT', realpath(__DIR__ . '/../../'));
-define('ITEMS_PER_PAGE', 25);
+require_once __DIR__ . '/../../bootstrap.php';
 
-require APP_ROOT . '/config.php';
-require_once APP_ROOT . '/stream_ticks.php';
+confirm_setup();
+
+require LIB_ROOT . '/config.php';
+require_once LIB_ROOT . '/ticks.php';
+
+$config = Config::load();
+$ticks = iterator_to_array(stream_ticks($config->itemsPerPage));
 
 header('Content-Type: application/rss+xml; charset=utf-8');
-
-$ticks = iterator_to_array(stream_ticks($tickLocation, ITEMS_PER_PAGE));
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>

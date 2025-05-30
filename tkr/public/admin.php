@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // User profile
     $username        = trim($_POST['username'] ?? '');
     $displayName     = trim($_POST['display_name'] ?? '');
+    $about           = trim($_POST['about'] ?? '');
+    $website         = trim($_POST['website'] ?? '');
+
     // Site settings
     $siteTitle       = trim($_POST['site_title']) ?? '';
     $siteDescription = trim($_POST['site_description']) ?? '';
@@ -40,6 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$displayName) {
         $errors[] = "Display name is required.";
     }
+    // Make sure the website looks like a URL and starts with a protocol
+    if ($website) {
+        if (!filter_var($website, FILTER_VALIDATE_URL)) {
+            $errors[] = "Please enter a valid URL (including http:// or https://).";
+        } elseif (!preg_match('/^https?:\/\//i', $website)) {
+            $errors[] = "URL must start with http:// or https://.";
+        }
+    }
+
 
     // Validate site settings
     if (!$siteTitle) {
@@ -71,6 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update user profile
         $user->username = $username;
         $user->displayName = $displayName;
+        $user->about = $about;
+        $user->website = $website;
 
         // Save user profile and reload user from database
         $user = $user->save();
@@ -101,6 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <legend>User settings</legend>
                     <label class="admin-option">Username: <input type="text" name="username" value="<?= $user->username ?>" required></label><br>
                     <label class="admin-option">Display name: <input type="text" name="display_name" value="<?= $user->displayName ?>" required></label><br>
+                    <label class="admin-option">About: <input type="text" name="about" value="<?= $user->about ?>"></label><br>
+                    <label class="admin-option">Website: <input type="text" name="website" value="<?= $user->website ?>"></label><br>
                 </fieldset>
                 <fieldset id="site_settings" class="admin-settings-group">
                     <legend>Site settings</legend>

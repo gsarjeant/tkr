@@ -1,20 +1,6 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
 
-function escape_and_linkify_tick(string $tick): string {
-    // escape dangerous characters, but preserve quotes
-    $safe = htmlspecialchars($tick, ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
-
-    // convert URLs to links
-    $safe = preg_replace_callback(
-        '~(https?://[^\s<>"\'()]+)~i',
-        fn($matches) => '<a href="' . htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8') . '" target="_blank" rel="noopener noreferrer">' . $matches[1] . '</a>',
-        $safe
-    );
-
-    return $safe;
-}
-
 function save_tick(string $tick): void {
     // build the tick path and filename from the current time
     $date = new DateTime();

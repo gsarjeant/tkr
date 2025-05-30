@@ -39,6 +39,8 @@ function confirm_setup(): void {
         username TEXT NOT NULL,
         display_name TEXT NOT NULL,
         password_hash TEXT NOT NULL,
+        about TEXT NULL,
+        website TEXT NULL,
         mood TEXT NULL
     )");
 

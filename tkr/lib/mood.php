@@ -1,34 +1,28 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
 require_once LIB_ROOT . '/config.php';
+require_once LIB_ROOT . '/user.php';
 
 require LIB_ROOT . '/emoji.php';
 
-function get_mood(): ?string {
-    $config = Config::load();
-    $db = get_db();
-
-    $stmt = $db->prepare("SELECT mood FROM user WHERE username=?");
-    $stmt->execute([$_SESSION['username']]);
-    $row = $stmt->fetch();
-
-    return $row['mood'];
-}
-
 function save_mood(string $mood): void {
     $config = Config::load();
-    $db = get_db();
+    $user = User::load();
+    //$db = get_db();
 
-    $stmt = $db->prepare("UPDATE user SET mood=? WHERE username=?");
-    $stmt->execute([$mood, $_SESSION['username']]);
+    //$stmt = $db->prepare("UPDATE user SET mood=? WHERE username=?");
+    //$stmt->execute([$mood, $_SESSION['username']]);
 
+    $user->mood = $mood;
+    $user = $user->save();
     header("Location: $config->basePath");
     exit;
 }
 
 function render_emoji_tabs(): string {
+    $user = User::load();
     $emoji_groups = get_emojis_with_labels();
-    $selected_emoji = get_mood();
+    $selected_emoji = $user->mood;
 
     ob_start();
     ?>

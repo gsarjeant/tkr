@@ -4,6 +4,7 @@ require_once __DIR__ . '/../bootstrap.php';
 require LIB_ROOT . '/config.php';
 require LIB_ROOT . '/session.php';
 require LIB_ROOT . '/ticks.php';
+require LIB_ROOT . '/util.php';
 
 confirm_setup();
 

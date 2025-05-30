@@ -2,6 +2,28 @@
 
 body { font-family: sans-serif; margin: 2em; }
 
+.flex-container {
+    display: flex;
+}
+
+/* Responsive layout - makes a one column layout instead of a two-column layout */
+@media (max-width: 800px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+.profile {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 200px;
+    order: 1;
+}
+
+.ticks {
+    order: 2;
+}
+
 .tick { margin-bottom: 1em; }
 
 .ticktime { color: gray; font-size: 0.9em; }

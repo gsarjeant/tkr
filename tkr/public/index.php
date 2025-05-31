@@ -28,47 +28,59 @@ $ticks = iterator_to_array(stream_ticks($limit, $offset));
         <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
     </head>
     <body>
-        <h2><?= $config->siteDescription ?></h2>
-
-        <div class="flex-container">
-                <div class="profile">
+        <div class="container">
+            <section id="sidebar">
+                <h2>Hi, I'm <?= $user->displayName ?></h2>
+                <p><?= $user->about ?></p>
+                <p>Website: <?= escape_and_linkify($user->website) ?></p>
+                <div class="profile-row">
+                    <div class="mood-bar">
+                        <span>Current mood: <?= $user->mood ?></span>
 <?php if ($isLoggedIn): ?>
-                        <form class="tickform" action="save_tick.php" method="post">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                                <label for="tick">What's ticking?</label>
-                                <input name="tick" id="tick" type="text">
-                                <button type="submit">Tick</button>
-                        </form>
+                        <a href="<?= $config->basePath ?>set_mood.php">Change</a>
 <?php endif; ?>
-                        <p>Hi, I'm <?= $user->displayName ?></p>
-                        <p><?= $user->about ?></p>
-                        <p>Website: <?= escape_and_linkify($user->website) ?></p>
-                        <p>Current mood: <?= $user->mood ?></p> 
+                    </div>
+                </div>
 <?php if ($isLoggedIn): ?>
-                        <a href="<?= $config->basePath ?>set_mood.php">Set your mood</a></p>
-                        <p><a href="<?= $config->basePath . '/admin.php' ?>">Admin</a></p>
-                        <p><a href="<?= $config->basePath ?>logout.php">Logout</a> <?= htmlspecialchars($user->username) ?> </p>
+                <hr/>
+                <div class="profile-row">
+                    <form class="tick-form" action="save_tick.php" method="post">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <textarea name="tick" placeholder="What's ticking?" rows="3"></textarea>
+                        <button type="submit">Tick</button>
+                    </form>
+                </div>
+<?php endif; ?>
+<?php if ($isLoggedIn): ?>
+                <div class="admin-bar">
+                    <a href="<?= $config->basePath . '/admin.php' ?>">Admin</a>
+                    <div class="admin-right">
+                        <a href="<?= $config->basePath ?>logout.php">Logout</a>
+                        <span><?= htmlspecialchars($user->username) ?></span>
+</div>
+                </div>
 <?php else: ?>
-                        <p><a href="<?= $config->basePath ?>login.php">Login</a></p>
+                <p><a href="<?= $config->basePath ?>login.php">Login</a></p>
 <?php endif; ?>
-                </div>
-                <div class="ticks">
+            </section>
+            <section id="ticks">
+                <h2><?= $config->siteDescription ?></h2>
 <?php foreach ($ticks as $tick): ?>
-                        <div class="tick">
-                            <span class="ticktime"><?= htmlspecialchars($tick['timestamp']) ?></span>
-                            <span class="ticktext"><?= escape_and_linkify($tick['tick']) ?></span>
-                        </div>
+                <article class="tick">
+                    <div class="tick-time"><?= htmlspecialchars($tick['timestamp']) ?></div>
+                    <span class="tick-text"><?= escape_and_linkify($tick['tick']) ?></span>
+                </article>
 <?php endforeach; ?>
-                </div>
-        <div class="pagination">
-
+                <div class="pagination">
 <?php if ($page > 1): ?>
-            <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
+                    <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
 <?php endif; ?>
 
 <?php if (count($ticks) === $limit): ?>
-            <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
+                    <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
 <?php endif; ?>
+                </div>
+            </section>
         </div>
-</body>
+    </body>
 </html>

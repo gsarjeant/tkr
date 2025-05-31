@@ -33,8 +33,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
     
     <item>
-        <title><?php echo htmlspecialchars(date(DATE_RFC7231, strtotime($tick['timestamp']))); ?></title>
-        <link><?php echo htmlspecialchars("$basePath/tick.php?path=$tickPath"); ?></link>
+        <title><?php echo htmlspecialchars($tick['tick']); ?></title>
+        <link><?php echo htmlspecialchars("$config->basePath/tick.php?path=$tickPath"); ?></link>
         <description><?php echo htmlspecialchars($tick['tick']); ?></description>
         <pubDate><?php echo date(DATE_RSS, strtotime($tick['timestamp'])); ?></pubDate>
         <guid><?php echo htmlspecialchars($tickPath); ?></guid>

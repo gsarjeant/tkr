@@ -3,12 +3,12 @@ require_once __DIR__ . '/../bootstrap.php';
 
 function save_tick(string $tick): void {
     // build the tick path and filename from the current time
-    $date = new DateTime();
+    $now = new DateTime('now', new DateTimeZone('UTC'));
 
-    $year = $date->format('Y');
-    $month = $date->format('m');
-    $day = $date->format('d');
-    $time = $date->format('H:i:s');
+    $year = $now->format('Y');
+    $month = $now->format('m');
+    $day = $now->format('d');
+    $time = $now->format('H:i:s');
 
     // build the full path to the tick file
     $dir = TICKS_DIR . "/$year/$month";
@@ -39,10 +39,16 @@ function stream_ticks(int $limit, int $offset = 0): Generator {
             file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
         );
 
+        // split the path to the current file into the date components
         $pathParts = explode('/', str_replace('\\', '/', $file));
-        $date = $pathParts[count($pathParts) - 3] . '-' .
-                $pathParts[count($pathParts) - 2] . '-' .
-                pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
+
+        // assign the different components to the appropriate part of the date 
+        $year = $pathParts[count($pathParts) - 3];
+        $month = $pathParts[count($pathParts) - 2];
+        $day = pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
+        // $date = $pathParts[count($pathParts) - 3] . '-' .
+        //        $pathParts[count($pathParts) - 2] . '-' .
+        //        pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
 
         foreach ($lines as $line) {
             // just keep skipping ticks until we get to the starting point
@@ -57,8 +63,11 @@ function stream_ticks(int $limit, int $offset = 0): Generator {
             $time = $tickParts[0];
             $tick = $tickParts[1];
 
+            // Build the timestamp from the date and time
+            // Ticks are always stored in UTC
+            $timestampUTC = "$year-$month-$day $time";
             yield [
-                'timestamp' => $date . ' ' . $time,
+                'timestamp' => $timestampUTC,
                 'tick' => $tick,
             ];
 

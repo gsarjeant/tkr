@@ -3,11 +3,11 @@ require_once __DIR__ . '/../bootstrap.php';
 
 confirm_setup();
 
-require_once LIB_ROOT . '/config.php';
-require_once LIB_ROOT . '/user.php';
-require LIB_ROOT . '/session.php';
-require LIB_ROOT . '/ticks.php';
-require LIB_ROOT . '/util.php';
+require_once CLASSES_DIR . '/Config.php';
+require_once CLASSES_DIR . '/User.php';
+require LIB_DIR . '/session.php';
+require LIB_DIR . '/ticks.php';
+require LIB_DIR . '/util.php';
 
 $config = Config::load();
 // I can get away with this before login because there's only one user.
@@ -28,9 +28,20 @@ $ticks = iterator_to_array(stream_ticks($limit, $offset));
         <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
     </head>
     <body>
-        <div class="container">
-            <section id="sidebar">
-                <h2>Hi, I'm <?= $user->displayName ?></h2>
+        <div class="home-navbar">
+            <a href="<?= $config->basePath ?>rss">rss</a>
+<?php if (!$isLoggedIn): ?>
+            <a href="<?= $config->basePath ?>login.php">login</a>
+<?php else: ?>
+            <a href="<?= $config->basePath ?>admin.php">admin</a>
+            <a href="<?= $config->basePath ?>logout.php">logout</a>
+<?php endif; ?>
+        </div>
+        <div class="home-container">
+            <section id="sidebar" class="home-sidebar">
+                <div class="home-header">
+                    <h2>Hi, I'm <?= $user->displayName ?></h2>
+                </div>
                 <p><?= $user->about ?></p>
                 <p>Website: <?= escape_and_linkify($user->website) ?></p>
                 <div class="profile-row">
@@ -51,31 +62,23 @@ $ticks = iterator_to_array(stream_ticks($limit, $offset));
                     </form>
                 </div>
 <?php endif; ?>
-<?php if ($isLoggedIn): ?>
-                <div class="admin-bar">
-                    <a href="<?= $config->basePath . '/admin.php' ?>">Admin</a>
-                    <div class="admin-right">
-                        <a href="<?= $config->basePath ?>logout.php">Logout</a>
-                        <span><?= htmlspecialchars($user->username) ?></span>
-</div>
-                </div>
-<?php else: ?>
-                <p><a href="<?= $config->basePath ?>login.php">Login</a></p>
-<?php endif; ?>
             </section>
-            <section id="ticks">
-                <h2><?= $config->siteDescription ?></h2>
+            <section id="ticks" class="home-ticks">
+                <div class="home-ticks-header">
+                    <h2><?= $config->siteDescription ?></h2>
+                </div>
+                <div class="home-ticks-list">
 <?php foreach ($ticks as $tick): ?>
-                <article class="tick">
-                    <div class="tick-time"><?= htmlspecialchars($tick['timestamp']) ?></div>
-                    <span class="tick-text"><?= escape_and_linkify($tick['tick']) ?></span>
-                </article>
+                    <article class="tick">
+                        <div class="tick-time"><?= htmlspecialchars(relative_time($tick['timestamp'])) ?></div>
+                        <span class="tick-text"><?= escape_and_linkify($tick['tick']) ?></span>
+                    </article>
 <?php endforeach; ?>
-                <div class="pagination">
+                </div>
+                <div class="home-ticks-pagination">
 <?php if ($page > 1): ?>
                     <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
 <?php endif; ?>
-
 <?php if (count($ticks) === $limit): ?>
                     <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
 <?php endif; ?>

@@ -1,7 +1,8 @@
 <?php
 
 define('APP_ROOT', dirname(__FILE__));
-define('LIB_ROOT', APP_ROOT . '/lib');
+define('CLASSES_DIR', APP_ROOT . '/classes');
+define('LIB_DIR', APP_ROOT . '/lib');
 define('TICKS_DIR', APP_ROOT . '/storage/ticks');
 define('DATA_DIR', APP_ROOT . '/storage/db');
 define('DB_FILE', DATA_DIR . '/tkr.sqlite');

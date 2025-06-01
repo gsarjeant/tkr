@@ -3,9 +3,9 @@ require_once __DIR__ . '/../bootstrap.php';
 
 confirm_setup();
 
-require_once LIB_ROOT . '/config.php';
-require LIB_ROOT . '/session.php';
-require LIB_ROOT . '/mood.php';
+require_once CLASSES_DIR . '/Config.php';
+require LIB_DIR . '/session.php';
+require LIB_DIR . '/mood.php';
 
 
 // get the config

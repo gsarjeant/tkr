@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
 
-require LIB_ROOT . '/config.php';
-require LIB_ROOT . '/session.php';
-require LIB_ROOT . '/ticks.php';
-require LIB_ROOT . '/util.php';
-
 confirm_setup();
+
+require_once CLASSES_DIR . '/Config.php';
+require LIB_DIR . '/session.php';
+require LIB_DIR . '/ticks.php';
+require LIB_DIR . '/util.php';
+
 
 // ticks must be sent via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {

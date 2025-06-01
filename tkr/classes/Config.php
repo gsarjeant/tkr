@@ -11,6 +11,7 @@ class Config {
     public string $siteDescription = '';
     public string $basePath = '/';
     public int $itemsPerPage = 25;
+    public string $timezone = 'relative';
 
     // load config from sqlite database
     public static function load(): self {

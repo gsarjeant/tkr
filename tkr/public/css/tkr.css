@@ -8,13 +8,17 @@ body {
     color: black;
 }
 
+a {
+    font-weight: bold;
+}
+
 /*
     The two common display options for responsive layouts are flex and grid.
         flex (aka Flexbox) aligns items either horizontally or vertically.
         grid can align items in two dimensions.
         grid also allows more precise positioning of elements, so I'm using that.
 */
-.container {
+.home-container {
     display: grid;
 }
 
@@ -25,7 +29,7 @@ body {
         Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
 */
 @media (min-width: 600px) {
-    .container {
+    .home-container {
         grid-template-columns: 1fr 2fr;
         grid-gap: 2em;
     }
@@ -142,4 +146,16 @@ body {
 .emoji-option input:checked + span {
     background-color: #ddeeff;
     outline: 2px solid #339;
+}
+
+#timezones {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 1em;
+}
+
+.timezone-option {
+    display: block;
+    margin-bottom: 0.5em;
 }

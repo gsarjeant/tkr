@@ -3,8 +3,8 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 confirm_setup();
 
-require LIB_ROOT . '/config.php';
-require_once LIB_ROOT . '/ticks.php';
+require_once CLASSES_DIR . '/Config.php';
+require_once LIB_DIR . '/ticks.php';
 
 $config = Config::load();
 $ticks = iterator_to_array(stream_ticks($config->itemsPerPage));

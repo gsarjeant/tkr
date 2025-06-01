@@ -8,7 +8,7 @@ Currently very much a work in progress, but it's baically functional.
 
 Deploy the `/tkr` directory to a web server that supports php. It will work either as the root of a (sub)domain (e.g. tky.mydomain.com) or if served from a subdirectory (e.g. mydomain.com/tkr).
 
-If you serve it from a subdirectory, set the value of `$basePath` in `/app/config.php` to the subdirectory name, excluding the trailing slash (e.g. `/tkr`)
+If you serve it from a subdirectory, set the value of `$basePath` in `/app/Config.php` to the subdirectory name, excluding the trailing slash (e.g. `/tkr`)
 
 It provides an rss feed at `/rss` relative to where it's being served (e.g. `/tkr/rss` if served from `/tkr/`). Each rss entry links to an individual post (which I call "ticks").
 

@@ -3,14 +3,14 @@ require_once __DIR__ . '/../bootstrap.php';
 
 confirm_setup();
 
-require_once LIB_ROOT . '/config.php';
-require LIB_ROOT . '/session.php';
+require_once CLASSES_DIR . '/Config.php';
+require LIB_DIR . '/session.php';
 
 if (!$isLoggedIn){
     header('Location: ' . $config->basePath . 'login.php');
 }
 
-require LIB_ROOT . '/user.php';
+require CLASSES_DIR . '/User.php';
 
 $config = Config::load();
 $user = User::load();

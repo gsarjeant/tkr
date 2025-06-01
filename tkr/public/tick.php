@@ -1,5 +1,5 @@
 <?php
-require '/app/config.php';
+require '/app/Config.php';
 
 $path = $_GET['path'] ?? '';
 $parts = explode('/', $path);

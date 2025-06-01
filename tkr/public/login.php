@@ -3,8 +3,8 @@ require_once __DIR__ . '/../bootstrap.php';
 
 confirm_setup();
 
-require_once LIB_ROOT . '/config.php';
-require LIB_ROOT . '/session.php';
+require_once CLASSES_DIR . '/Config.php';
+require LIB_DIR . '/session.php';
 
 $config = Config::load();
 
@@ -40,7 +40,12 @@ $csrf_token = generateCsrfToken();
 
 <!DOCTYPE html>
 <html>
-    <head><title>Login</title></head>
+    <head>
+        <title><?= $config->siteTitle ?></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
+    </head>
     <body>
     <h2>Login</h2>
 <?php if ($error): ?>

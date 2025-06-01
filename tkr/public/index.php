@@ -30,6 +30,7 @@ $ticks = iterator_to_array(stream_ticks($limit, $offset));
     <body>
         <div class="home-navbar">
             <a href="<?= $config->basePath ?>rss">rss</a>
+            <a href="<?= $config->basePath ?>atom">atom</a>
 <?php if (!$isLoggedIn): ?>
             <a href="<?= $config->basePath ?>login.php">login</a>
 <?php else: ?>

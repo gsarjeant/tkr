@@ -9,6 +9,7 @@ class Config {
     // properties and default values
     public string $siteTitle = 'My tkr';
     public string $siteDescription = '';
+    public string $baseUrl = 'http://localhost'; //TODO - make this work
     public string $basePath = '/';
     public int $itemsPerPage = 25;
     public string $timezone = 'relative';

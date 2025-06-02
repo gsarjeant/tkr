@@ -3,8 +3,7 @@
 
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
-define('CLASSES_DIR', APP_ROOT . '/src/classes');
-define('LIB_DIR', APP_ROOT . '/src/lib');
+define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
 
@@ -12,15 +11,25 @@ define('TICKS_DIR', STORAGE_DIR . '/ticks');
 define('DATA_DIR', STORAGE_DIR . '/db');
 define('DB_FILE', DATA_DIR . '/tkr.sqlite');
 
-$include_dirs = [
-    LIB_DIR,
-    CLASSES_DIR,
-];
+// Defining this in the index instead of lib/util.php
+// to avoid chicken-and-egg issues with including it
+function recursive_glob(string $pattern, string $directory): array {
+    $files = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($directory)
+    );
 
-foreach ($include_dirs as $include_dir){
-    foreach (glob($include_dir . '/*.php') as $file) {
-        require_once $file;
+    foreach ($iterator as $file) {
+        if ($file->isFile() && fnmatch($pattern, $file->getFilename())) {
+            $files[] = $file->getPathname();
+        }
     }
+
+    return $files;
+}
+
+foreach (recursive_glob('*.php', SRC_DIR) as $file) {
+    require_once $file;
 }
 
 confirm_setup();

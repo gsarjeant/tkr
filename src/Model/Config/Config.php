@@ -1,10 +1,4 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
-
-#confirm_setup();
-
-// Made this a class so it could be more obvious where config settings are coming from.
-// Felt too much like magic constants in other files before.
 class Config {
     // properties and default values
     public string $siteTitle = 'My tkr';
@@ -38,10 +32,5 @@ class Config {
         $stmt->execute([$this->siteTitle, $this->siteDescription, $this->basePath, $this->itemsPerPage]);
 
         return self::load();
-    }
-
-    // I'm making this 
-    public function setPassword(){
-
     }
 }

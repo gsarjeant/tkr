@@ -1,5 +1,4 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
 
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
@@ -33,10 +32,7 @@ foreach (recursive_glob('*.php', SRC_DIR) as $file) {
 }
 
 confirm_setup();
-
-$isLoggedIn = isset($_SESSION['user_id']);
 $config = Config::load();
-$user = User::load();
 
 // Get request data
 $method = $_SERVER['REQUEST_METHOD'];
@@ -80,21 +76,9 @@ function route($pattern, $callback, $methods = ['GET']) {
 
 // Set content type
 header('Content-Type: text/html; charset=utf-8');
-echo "Path: " . $path;
 
 // routes
-route('', function() use ($isLoggedIn, $config, $user) {
-    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-    $limit = $config->itemsPerPage;
-    $offset = ($page - 1) * $limit;
-    $ticks = iterator_to_array(stream_ticks($limit, $offset));
-
-    $vars = [
-        'isLoggedIn' => $isLoggedIn,
-        'config'     => $config,
-        'user'       => $user,
-        'ticks'      => $ticks,
-    ];
-
-    echo render_template(TEMPLATES_DIR . "/home.php", $vars);
+route('', function(){
+    $hc = new HomeController();
+    echo $hc->render();
 });

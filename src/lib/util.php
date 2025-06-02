@@ -38,6 +38,7 @@ function relative_time(string $tickTime): string {
     }
     return $diff->s . ' second' . ($diff->s != 1 ? 's' : '') . ' ago';
 }
+
 function verify_data_dir(string $dir, bool $allow_create = false): void {
     if (!is_dir($dir)) {
         if ($allow_create) {
@@ -117,9 +118,9 @@ function get_db(): PDO {
     return $db;
 }
 
+// TODO - Maybe this is the sort of thing that would be good
+//        in a Controller base class.
 function render_template(string $templateFile, array $vars = []): string {
-    #$templatePath = TEMPLATES_DIR . '/' . ltrim($templateFile, '/');
-    
     if (!file_exists($templateFile)) {
         throw new RuntimeException("Template not found: $templatePath");
     }

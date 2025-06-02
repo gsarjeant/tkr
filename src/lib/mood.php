@@ -1,17 +1,8 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
-#require_once CLASSES_DIR . '/Config.php';
-#require_once CLASSES_DIR . '/User.php';
-
-#require LIB_DIR . '/emoji.php';
 
 function save_mood(string $mood): void {
     $config = Config::load();
     $user = User::load();
-    //$db = get_db();
-
-    //$stmt = $db->prepare("UPDATE user SET mood=? WHERE username=?");
-    //$stmt->execute([$mood, $_SESSION['username']]);
 
     $user->mood = $mood;
     $user = $user->save();

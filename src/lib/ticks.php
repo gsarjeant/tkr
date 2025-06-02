@@ -1,5 +1,4 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
 
 function save_tick(string $tick): void {
     // build the tick path and filename from the current time
@@ -24,6 +23,8 @@ function save_tick(string $tick): void {
     file_put_contents($filename, $content, FILE_APPEND);
 }
 
+// TODO - move this into a view along with
+//        the code that builds the tick list.
 function stream_ticks(int $limit, int $offset = 0): Generator {
     $tick_files = glob(TICKS_DIR . '/*/*/*.txt');
     usort($tick_files, fn($a, $b) => strcmp($b, $a)); // sort filenames in reverse chronological order
@@ -46,9 +47,6 @@ function stream_ticks(int $limit, int $offset = 0): Generator {
         $year = $pathParts[count($pathParts) - 3];
         $month = $pathParts[count($pathParts) - 2];
         $day = pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
-        // $date = $pathParts[count($pathParts) - 3] . '-' .
-        //        $pathParts[count($pathParts) - 2] . '-' .
-        //        pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
 
         foreach ($lines as $line) {
             // just keep skipping ticks until we get to the starting point

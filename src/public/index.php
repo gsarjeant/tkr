@@ -1,7 +1,36 @@
 <?php
+#require_once __DIR__ . '/../bootstrap.php';
+
+define('APP_ROOT', dirname(dirname(__FILE__)));
+
+define('CLASSES_DIR', APP_ROOT . '/classes');
+define('LIB_DIR', APP_ROOT . '/lib');
+define('STORAGE_DIR', APP_ROOT . '/storage');
+define('TEMPLATES_DIR', APP_ROOT . '/templates');
+
+define('TICKS_DIR', STORAGE_DIR . '/ticks');
+define('DATA_DIR', STORAGE_DIR . '/db');
+define('DB_FILE', DATA_DIR . '/tkr.sqlite');
+
+$include_dirs = [
+    LIB_DIR,
+    CLASSES_DIR,
+];
+
+foreach ($include_dirs as $include_dir){
+    foreach (glob($include_dir . '/*.php') as $file) {
+        require_once $file;
+    }
+}
+
+confirm_setup();
+
+$isLoggedIn = isset($_SESSION['user_id']);
+$config = Config::load();
+$user = User::load();
 
 // Define your base path (subdirectory)
-$basePath = '/tkr';
+#$basePath = '/tkr';
 
 // Get HTTP data
 $method = $_SERVER['REQUEST_METHOD'];
@@ -11,8 +40,15 @@ $request = $_SERVER['REQUEST_URI'];
 // and strip the trailing slash from the resulting route
 $path = parse_url($request, PHP_URL_PATH);
 
-if (strpos($path, $basePath) === 0) {
-    $path = substr($path, strlen($basePath));
+// return a 404 if s request for a .php file gets this far.
+if (preg_match('/\.php$/', $path)) {
+    http_response_code(404);
+    echo '<h1>404 Not Found</h1>';
+    exit;
+}
+
+if (strpos($path, $config->basePath) === 0) {
+    $path = substr($path, strlen($config->basePath));
 }
 
 $path = trim($path, '/');
@@ -42,7 +78,21 @@ header('Content-Type: text/html; charset=utf-8');
 echo "Path: " . $path;
 
 // Define your routes
-route('', function() {
-    echo '<h1>Home Page</h1>';
-    echo '<p>Welcome to the home page!</p>';
+route('', function() use ($isLoggedIn, $config, $user) {
+    #include TEMPLATES_DIR . "/home.php";
+    #echo render_home_page($isLoggedIn, $config, $user);
+    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $limit = $config->itemsPerPage;
+    $offset = ($page - 1) * $limit;
+    $ticks = iterator_to_array(stream_ticks($limit, $offset));
+
+    $vars = [
+        'isLoggedIn' => $isLoggedIn,
+        'config'     => $config,
+        'user'       => $user,
+        'ticks'      => $ticks,
+    ];
+
+    echo render_template(TEMPLATES_DIR . "/home.php", $vars);
 });
+//isset($_SESSION['user_id'])

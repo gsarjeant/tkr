@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
 function save_tick(string $tick): void {
     // build the tick path and filename from the current time

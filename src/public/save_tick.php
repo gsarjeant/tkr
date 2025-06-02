@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
-require_once CLASSES_DIR . '/Config.php';
-require LIB_DIR . '/session.php';
-require LIB_DIR . '/ticks.php';
-require LIB_DIR . '/util.php';
+#require_once CLASSES_DIR . '/Config.php';
+#require LIB_DIR . '/session.php';
+#require LIB_DIR . '/ticks.php';
+#require LIB_DIR . '/util.php';
 
 
 // ticks must be sent via POST

@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
-require_once CLASSES_DIR . '/Config.php';
-require LIB_DIR . '/session.php';
+#require_once CLASSES_DIR . '/Config.php';
+#require LIB_DIR . '/session.php';
 
 if (!$isLoggedIn){
     header('Location: ' . $config->basePath . 'login.php');

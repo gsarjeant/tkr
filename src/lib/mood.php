@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
-require_once CLASSES_DIR . '/Config.php';
-require_once CLASSES_DIR . '/User.php';
+#require_once __DIR__ . '/../bootstrap.php';
+#require_once CLASSES_DIR . '/Config.php';
+#require_once CLASSES_DIR . '/User.php';
 
-require LIB_DIR . '/emoji.php';
+#require LIB_DIR . '/emoji.php';
 
 function save_mood(string $mood): void {
     $config = Config::load();

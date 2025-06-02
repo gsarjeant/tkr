@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
 // If we got past confirm_setup(), then setup isn't complete.
 $db = get_db();

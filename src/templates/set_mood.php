@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
-require_once CLASSES_DIR . '/Config.php';
-require LIB_DIR . '/session.php';
-require LIB_DIR . '/mood.php';
+#require_once CLASSES_DIR . '/Config.php';
+#require LIB_DIR . '/session.php';
+#require LIB_DIR . '/mood.php';
 
 
 // get the config

@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../bootstrap.php';
+#require_once __DIR__ . '/../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
 // Made this a class so it could be more obvious where config settings are coming from.
 // Felt too much like magic constants in other files before.

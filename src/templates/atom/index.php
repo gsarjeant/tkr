@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../../bootstrap.php';
+#require_once __DIR__ . '/../../bootstrap.php';
 
-confirm_setup();
+#confirm_setup();
 
-require_once CLASSES_DIR . '/Config.php';
-require_once LIB_DIR . '/ticks.php';
+#require_once CLASSES_DIR . '/Config.php';
+#require_once LIB_DIR . '/ticks.php';
 
 $config = Config::load();
 $ticks = iterator_to_array(stream_ticks($config->itemsPerPage));

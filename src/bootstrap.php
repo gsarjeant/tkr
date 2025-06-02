@@ -1,11 +1,11 @@
 <?php
 
-define('APP_ROOT', dirname(__FILE__));
-define('CLASSES_DIR', APP_ROOT . '/classes');
-define('LIB_DIR', APP_ROOT . '/lib');
-define('TICKS_DIR', APP_ROOT . '/storage/ticks');
-define('DATA_DIR', APP_ROOT . '/storage/db');
-define('DB_FILE', DATA_DIR . '/tkr.sqlite');
+#define('APP_ROOT', dirname(__FILE__));
+#define('CLASSES_DIR', APP_ROOT . '/classes');
+#define('LIB_DIR', APP_ROOT . '/lib');
+#define('TICKS_DIR', APP_ROOT . '/storage/ticks');
+#define('DATA_DIR', APP_ROOT . '/storage/db');
+#define('DB_FILE', DATA_DIR . '/tkr.sqlite');
 
 function verify_data_dir(string $dir, bool $allow_create = false): void {
     if (!is_dir($dir)) {

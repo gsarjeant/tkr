@@ -1,31 +1,15 @@
-<?php
-require_once __DIR__ . '/../bootstrap.php';
+<?php /** @var bool $isLoggedIn */ ?>
+<?php /** @var Config $config */ ?>
+<?php /** @var User $user */ ?>
+<?php /** @var array $ticks */ ?>
 
-confirm_setup();
-
-require_once CLASSES_DIR . '/Config.php';
-require_once CLASSES_DIR . '/User.php';
-require LIB_DIR . '/session.php';
-require LIB_DIR . '/ticks.php';
-require LIB_DIR . '/util.php';
-
-$config = Config::load();
-// I can get away with this before login because there's only one user.
-$user = User::load();
-
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$limit = $config->itemsPerPage;
-$offset = ($page - 1) * $limit;
-
-$ticks = iterator_to_array(stream_ticks($limit, $offset));
-?>
 <!DOCTYPE html>
 <html>
     <head>
         <title><?= $config->siteTitle ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
+        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>/css/tkr.css?v=<?= time() ?>">
     </head>
     <body>
         <div class="home-navbar">

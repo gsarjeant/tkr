@@ -3,8 +3,8 @@
 
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
-define('CLASSES_DIR', APP_ROOT . '/classes');
-define('LIB_DIR', APP_ROOT . '/lib');
+define('CLASSES_DIR', APP_ROOT . '/src/classes');
+define('LIB_DIR', APP_ROOT . '/src/lib');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
 
@@ -29,15 +29,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
 $config = Config::load();
 $user = User::load();
 
-// Define your base path (subdirectory)
-#$basePath = '/tkr';
-
-// Get HTTP data
+// Get request data
 $method = $_SERVER['REQUEST_METHOD'];
 $request = $_SERVER['REQUEST_URI'];
-
-// Remove the base path from the URL
-// and strip the trailing slash from the resulting route
 $path = parse_url($request, PHP_URL_PATH);
 
 // return a 404 if s request for a .php file gets this far.
@@ -47,6 +41,8 @@ if (preg_match('/\.php$/', $path)) {
     exit;
 }
 
+// Remove the base path from the URL
+// and strip the trailing slash from the resulting route
 if (strpos($path, $config->basePath) === 0) {
     $path = substr($path, strlen($config->basePath));
 }
@@ -77,10 +73,8 @@ function route($pattern, $callback, $methods = ['GET']) {
 header('Content-Type: text/html; charset=utf-8');
 echo "Path: " . $path;
 
-// Define your routes
+// routes
 route('', function() use ($isLoggedIn, $config, $user) {
-    #include TEMPLATES_DIR . "/home.php";
-    #echo render_home_page($isLoggedIn, $config, $user);
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $limit = $config->itemsPerPage;
     $offset = ($page - 1) * $limit;
@@ -95,4 +89,3 @@ route('', function() use ($isLoggedIn, $config, $user) {
 
     echo render_template(TEMPLATES_DIR . "/home.php", $vars);
 });
-//isset($_SESSION['user_id'])

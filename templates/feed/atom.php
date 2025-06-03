@@ -1,34 +1,24 @@
+<?php /** @var Config $config */ ?>
+<?php /** @var array $ticks */ ?>
 <?php
-#require_once __DIR__ . '/../../bootstrap.php';
-
-#confirm_setup();
-
-#require_once CLASSES_DIR . '/Config.php';
-#require_once LIB_DIR . '/ticks.php';
-
-$config = Config::load();
-$ticks = iterator_to_array(stream_ticks($config->itemsPerPage));
 $siteTitle = htmlspecialchars($config->siteTitle);
 $siteUrl = htmlspecialchars($config->baseUrl);
 $basePath = $siteUrl . htmlspecialchars($config->basePath);
 $updated = date(DATE_ATOM, strtotime($ticks[0]['timestamp'] ?? 'now'));
 
 header('Content-Type: application/atom+xml; charset=utf-8');
-
-echo <<<XML
-<?xml version="1.0" encoding="utf-8"?>
+echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>{$siteTitle}</title>
-  <link href="{$siteUrl}atom" rel="self"/>
-  <link href="{$siteUrl}"/>
-  <updated>{$updated}</updated>
-  <id>{$siteUrl}</id>
+  <title><?= $siteTitle ?></title>
+  <link ref="<?= $siteUrl ?>feed/atom" rel="self"/>
+  <link href="<?= $siteUrl ?>"/>
+  <updated><?= $updated ?></updated>
+  <id><?= $siteUrl ?></id>
   <author>
-    <name>{$siteTitle}</name>
+        <name><?= $siteTitle ?></name>
   </author>
-XML;
-
-foreach ($ticks as $tick) {
+<?php foreach ($ticks as $tick):
     [$date, $time] = explode(' ', $tick['timestamp']);
     $dateParts = explode('-', $date);
     $timeParts = explode(':', $time);
@@ -39,19 +29,14 @@ foreach ($ticks as $tick) {
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
     $tickUrl = htmlspecialchars($basePath . "tick.php?path=" . $tickPath);
     $tickTime = date(DATE_ATOM, strtotime($tick['timestamp']));
-    $tickText = htmlspecialchars($tick['tick']);
-
-
-    echo <<<ENTRY
+        $tickText = htmlspecialchars($tick['tick']);
+?>
   <entry>
-    <title>{$tickText}</title>
-    <link href="{$tickUrl}"/>
-    <id>{$tickUrl}</id>
-    <updated>{$tickTime}</updated>
-    <content type="html">{$tickText}</content>
+    <title><?= $tickText ?></title>
+    <link href="<?= $tickUrl ?>"/>
+    <id><?= $tickUrl ?></id>
+    <updated><?= $tickTime ?></updated>
+    <content type="html"><?= $tickText ?></content>
   </entry>
-
-ENTRY;
-}
-
-echo "</feed>";
+<?php endforeach; ?>
+</feed>

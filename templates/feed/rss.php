@@ -1,16 +1,10 @@
+<?php /** @var Config $config */ ?>
+<?php /** @var array $ticks */ ?>
 <?php
-#require_once __DIR__ . '/../../bootstrap.php';
-
-#confirm_setup();
-
-#require_once CLASSES_DIR . '/Config.php';
-#require_once LIB_DIR . '/ticks.php';
-
-$config = Config::load();
-$ticks = iterator_to_array(stream_ticks($config->itemsPerPage));
-
+// Need to have a little php here because the starting xml tag
+// will mess up the PHP parser.
+// TODO - I think short php tags can be disabled to prevent that.
 header('Content-Type: application/rss+xml; charset=utf-8');
-
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <rss version="2.0">
@@ -20,8 +14,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <description>My tkr</description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>
-
 <?php foreach ($ticks as $tick):
+    // TODO: Make this a util function.
     [$date, $time] = explode(' ', $tick['timestamp']);
     $dateParts = explode('-', $date);
     $timeParts = explode(':', $time);
@@ -31,7 +25,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
 ?>
-    
     <item>
         <title><?php echo htmlspecialchars($tick['tick']); ?></title>
         <link><?php echo htmlspecialchars($config->basePath . "tick.php?path=$tickPath"); ?></link>
@@ -39,7 +32,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         <pubDate><?php echo date(DATE_RSS, strtotime($tick['timestamp'])); ?></pubDate>
         <guid><?php echo htmlspecialchars($tickPath); ?></guid>
     </item>
-    <?php endforeach; ?>
-
+<?php endforeach; ?>
 </channel>
 </rss>

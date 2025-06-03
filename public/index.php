@@ -121,7 +121,8 @@ $routes = [
     ['logout', 'AuthController@handleLogout', ['GET', 'POST']],
     ['mood', 'MoodController'],
     ['mood', 'MoodController@handleMood', ['POST']],
-    
+    ['feed/rss', 'FeedController@rss'],
+    ['feed/atom', 'FeedController@atom'],
 ];
 
 foreach ($routes as $routeConfig) {

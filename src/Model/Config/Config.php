@@ -10,7 +10,7 @@ class Config {
 
     // load config from sqlite database
     public static function load(): self {
-        $db = get_db();
+        $db = Util::get_db();
         $stmt = $db->query("SELECT site_title, site_description, base_path, items_per_page FROM settings WHERE id=1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $c = new self();
@@ -26,7 +26,7 @@ class Config {
     }
 
     public function save(): self {
-        $db = get_db();
+        $db = Util::get_db();
 
         $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_path=?, items_per_page=? WHERE id=1");
         $stmt->execute([$this->siteTitle, $this->siteDescription, $this->basePath, $this->itemsPerPage]);

@@ -13,8 +13,8 @@
     </head>
     <body>
         <div class="home-navbar">
-            <a href="<?= $config->basePath ?>rss">rss</a>
-            <a href="<?= $config->basePath ?>atom">atom</a>
+            <a href="<?= $config->basePath ?>feed/rss">rss</a>
+            <a href="<?= $config->basePath ?>feed/atom">atom</a>
 <?php if (!$isLoggedIn): ?>
             <a href="<?= $config->basePath ?>login">login</a>
 <?php else: ?>
@@ -28,7 +28,7 @@
                     <h2>Hi, I'm <?= $user->displayName ?></h2>
                 </div>
                 <p><?= $user->about ?></p>
-                <p>Website: <?= escape_and_linkify($user->website) ?></p>
+                <p>Website: <?= Util::escape_and_linkify($user->website) ?></p>
                 <div class="profile-row">
                     <div class="mood-bar">
                         <span>Current mood: <?= $user->mood ?></span>

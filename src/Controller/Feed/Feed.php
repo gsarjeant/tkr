@@ -1,5 +1,5 @@
 <?php
-class FeedController {
+class FeedController extends Controller {
     private Config $config;
     private array $ticks;
     private array $vars;
@@ -14,10 +14,10 @@ class FeedController {
     }
 
     public function rss(){
-        echo render_template(TEMPLATES_DIR . "/feed/rss.php", $this->vars);
+        $this->render("feed/rss.php", $this->vars);
     }
 
     public function atom(){
-        echo render_template(TEMPLATES_DIR . "/feed/atom.php", $this->vars);
+        $this->render("feed/atom.php", $this->vars);
     }
 }

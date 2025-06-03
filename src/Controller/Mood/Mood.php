@@ -1,5 +1,5 @@
 <?php
-    class MoodController {
+    class MoodController extends Controller {
         public function index(){
             $config = Config::load();
             $user = User::load();
@@ -12,13 +12,13 @@
                 'moodPicker' => $moodPicker,
             ];
             
-            echo render_template(TEMPLATES_DIR . "/mood.php", $vars);
+            $this->render("mood.php", $vars);
         }
 
         public function handleMood(){
             if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['mood'])) {
                 // ensure that the session is valid before proceeding
-                if (!validateCsrfToken($_POST['csrf_token'])) {
+                if (!Session::validateCsrfToken($_POST['csrf_token'])) {
                     die('Invalid CSRF token');
                 }
 

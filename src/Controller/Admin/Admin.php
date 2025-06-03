@@ -1,5 +1,5 @@
 <?php
-class AdminController {
+class AdminController extends Controller {
     // GET handler
     // render the admin page
     public function index(){
@@ -12,7 +12,7 @@ class AdminController {
         ];
 
 
-        echo render_template(TEMPLATES_DIR . "/admin.php", $vars);
+        $this->render("admin.php", $vars);
     }
 
     // POST handler

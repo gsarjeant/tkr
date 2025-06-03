@@ -11,8 +11,8 @@ class HomeView {
             <div class="home-ticks-list">
             <?php foreach ($ticks as $tick): ?>
                 <article class="tick">
-                    <div class="tick-time"><?= htmlspecialchars(relative_time($tick['timestamp'])) ?></div>
-                    <span class="tick-text"><?= escape_and_linkify($tick['tick']) ?></span>
+                    <div class="tick-time"><?= htmlspecialchars(Util::relative_time($tick['timestamp'])) ?></div>
+                    <span class="tick-text"><?= Util::escape_and_linkify($tick['tick']) ?></span>
                 </article>
             <?php endforeach; ?>
             </div>

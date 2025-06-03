@@ -9,7 +9,7 @@ class User {
 
     // load user settings from sqlite database
     public static function load(): self {
-        $db = get_db();
+        $db = Util::get_db();
 
         // There's only ever one user. I'm just leaning into that.
         $stmt = $db->query("SELECT username, display_name, about, website, mood FROM user WHERE id=1");
@@ -28,7 +28,7 @@ class User {
     }
 
    public function save(): self {
-      $db = get_db();
+      $db = Util::get_db();
 
       $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
       $stmt->execute([$this->username, $this->displayName, $this->about, $this->website, $this->mood]);
@@ -39,7 +39,7 @@ class User {
    // Making this a separate function to avoid
    // loading the password into memory
    public function set_password(string $password): void {
-        $db = get_db();
+        $db = Util::get_db();
         
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $db->prepare("UPDATE user SET password_hash=? WHERE id=1");

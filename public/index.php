@@ -1,26 +1,4 @@
 <?php
-// Sesion handling
-// Start a session and create a csrf token if necessary
-// TODO - move these to AuthController?
-function start_session(){
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-}
-
-function generate_csrf_token(bool $regenerate = false){
-    if (!isset($_SESSION['csrf_token']) || $regenerate) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-}
-
-function validateCsrfToken($token) {
-    return hash_equals($_SESSION['csrf_token'], $token);
-}
-
-start_session();
-generate_csrf_token();
-
 // TODO - I *think* what I want to do is define just this, then load up all the classes.
 // Then I can define all this other boilerplate in Config or Util or whatever.
 // I'll have one chicken-and-egg problem with the source directory, but that's not a big deal.
@@ -52,11 +30,16 @@ function recursive_glob(string $pattern, string $directory): array {
     return $files;
 }
 
+// load base classes first
+require_once SRC_DIR . '/Controller/Controller.php';
+// load everything else
 foreach (recursive_glob('*.php', SRC_DIR) as $file) {
     require_once $file;
 }
 
-confirm_setup();
+Util::confirm_setup();
+Session::start();
+Session::generateCsrfToken();
 $config = Config::load();
 
 // Get request data

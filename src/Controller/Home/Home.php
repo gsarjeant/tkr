@@ -1,5 +1,7 @@
 <?php
-class HomeController{
+//require_once __DIR__ . '/../Controller.php';
+
+class HomeController extends Controller {
     // GET handler
     // renders the homepage view.
     public function index(){
@@ -22,7 +24,7 @@ class HomeController{
             'tickList'      => $tickList,
         ];
 
-        echo render_template(TEMPLATES_DIR . "/home.php", $vars);
+        $this->render("home.php", $vars);
     }
 
     // POST handler
@@ -30,7 +32,7 @@ class HomeController{
     public function handleTick(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {
             // ensure that the session is valid before proceeding
-            if (!validateCsrfToken($_POST['csrf_token'])) {
+            if (!Session::validateCsrfToken($_POST['csrf_token'])) {
                 // TODO: maybe redirect to login? Maybe with tick preserved?
                 die('Invalid CSRF token');
             }

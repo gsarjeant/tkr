@@ -1,8 +1,8 @@
 <?php
-class AuthController {
+class AuthController extends Controller {
     function showLogin(?string $error = null){
         $config = Config::load();
-        $csrf_token = $_SESSION['csrf_token'];
+        $csrf_token = Session::getCsrfToken();
 
         $vars = [
             'config' => $config,
@@ -10,7 +10,7 @@ class AuthController {
             'error' => $error,
         ];
 
-        echo render_template(TEMPLATES_DIR . '/login.php', $vars);
+        $this->render('login.php', $vars);
     }
 
     function handleLogin(){
@@ -19,24 +19,25 @@ class AuthController {
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!validateCsrfToken($_POST['csrf_token'])) {
+            if (!Session::validateCsrfToken($_POST['csrf_token'])) {
                 die('Invalid CSRF token');
             }
         
-            // TODO: move into session.php
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
-        
-            $db = get_db();
+ 
+            // TODO: move into user model
+            $db = Util::get_db();
             $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch();
         
             if ($user && password_verify($password, $user['password_hash'])) {
                 session_regenerate_id(true);
+                // TODO: move into session.php
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['csrf_token'] = generate_csrf_token(true);
+                Session::generateCsrfToken(true);
                 header('Location: ' . $config->basePath);
                 exit;
             } else {
@@ -46,9 +47,7 @@ class AuthController {
     }
 
     function handleLogout(){
-        $_SESSION = [];
-        session_destroy();
-
+        Session::end();
         $config = Config::load();
         header('Location: ' . $config->basePath);
         exit;

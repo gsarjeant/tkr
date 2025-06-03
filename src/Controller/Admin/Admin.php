@@ -17,7 +17,7 @@ class AdminController extends Controller {
 
     // POST handler
     // save updated settings
-    public function save(){
+    public function handleSave(){
         $isLoggedIn = isset($_SESSION['user_id']);
         if (!$isLoggedIn){
             header('Location: ' . $config->basePath . 'login.php');

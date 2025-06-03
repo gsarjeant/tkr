@@ -10,7 +10,7 @@ class HomeController{
 
         $limit = $config->itemsPerPage;
         $offset = ($page - 1) * $limit;
-        $ticks = iterator_to_array(stream_ticks($limit, $offset));
+        $ticks = iterator_to_array($this->stream_ticks($limit, $offset));
 
         $view = new HomeView();
         $tickList = $view->renderTicksSection($config->siteDescription, $ticks, $page, $limit);
@@ -36,7 +36,7 @@ class HomeController{
             }
 
             // save the tick
-            save_tick($_POST['tick']);
+            $this->save_tick($_POST['tick']);
         }
 
         // get the config
@@ -47,6 +47,7 @@ class HomeController{
         exit;
     }
 
+    // TODO - move to a Tick model
     private function stream_ticks(int $limit, int $offset = 0): Generator {
         $tick_files = glob(TICKS_DIR . '/*/*/*.txt');
         usort($tick_files, fn($a, $b) => strcmp($b, $a)); // sort filenames in reverse chronological order
@@ -97,4 +98,28 @@ class HomeController{
             }
         }
     }
+
+    // TODO - move to a Tick model
+    private function save_tick(string $tick): void {
+        // build the tick path and filename from the current time
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+
+        $year = $now->format('Y');
+        $month = $now->format('m');
+        $day = $now->format('d');
+        $time = $now->format('H:i:s');
+
+        // build the full path to the tick file
+        $dir = TICKS_DIR . "/$year/$month";
+        $filename = "$dir/$day.txt";
+
+        // create the directory if it doesn't exist
+        if (!is_dir($dir)) {
+            mkdir($dir, 0770, true);
+        }
+
+        // write the tick to the file (the file will be created if it doesn't exist)
+        $content = $time . "|" . $tick . "\n";
+        file_put_contents($filename, $content, FILE_APPEND);
+    }        
 }

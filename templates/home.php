@@ -16,10 +16,10 @@
             <a href="<?= $config->basePath ?>rss">rss</a>
             <a href="<?= $config->basePath ?>atom">atom</a>
 <?php if (!$isLoggedIn): ?>
-            <a href="<?= $config->basePath ?>login.php">login</a>
+            <a href="<?= $config->basePath ?>login">login</a>
 <?php else: ?>
-            <a href="<?= $config->basePath ?>admin.php">admin</a>
-            <a href="<?= $config->basePath ?>logout.php">logout</a>
+            <a href="<?= $config->basePath ?>admin">admin</a>
+            <a href="<?= $config->basePath ?>logout">logout</a>
 <?php endif; ?>
         </div>
         <div class="home-container">
@@ -33,14 +33,14 @@
                     <div class="mood-bar">
                         <span>Current mood: <?= $user->mood ?></span>
 <?php if ($isLoggedIn): ?>
-                        <a href="<?= $config->basePath ?>set_mood.php">Change</a>
+                        <a href="<?= $config->basePath ?>mood">Change</a>
 <?php endif; ?>
                     </div>
                 </div>
 <?php if ($isLoggedIn): ?>
                 <hr/>
                 <div class="profile-row">
-                    <form class="tick-form" action="save_tick.php" method="post">
+                    <form class="tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                         <textarea name="tick" placeholder="What's ticking?" rows="3"></textarea>
                         <button type="submit">Tick</button>

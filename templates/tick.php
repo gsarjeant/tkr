@@ -1,9 +1,4 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
-
-#confirm_setup();
-
-#require LIB_DIR . '/util.php';
 
 $path = $_GET['path'] ?? '';
 $parts = explode('/', $path);

@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
 define('SRC_DIR', APP_ROOT . '/src');
@@ -54,20 +60,28 @@ if (strpos($path, $config->basePath) === 0) {
 
 $path = trim($path, '/');
 
-function route($pattern, $callback, $methods = ['GET']) {
+function route(string $pattern, string $controller, array $methods = ['GET']) {
     global $path, $method;
     
     if (!in_array($method, $methods)) {
         return false;
     }
     
-    // Convert route pattern to regex
     $pattern = preg_replace('/\{([^}]+)\}/', '([^/]+)', $pattern);
     $pattern = '#^' . $pattern . '$#';
     
     if (preg_match($pattern, $path, $matches)) {
-        array_shift($matches); // Remove full match
-        call_user_func_array($callback, $matches);
+        array_shift($matches);
+
+        if (strpos($controller, '@') !== false) {
+            [$className, $methodName] = explode('@', $controller);
+        } else {
+            // Default to 'index' method if no method specified
+            $className = $controller;
+            $methodName = 'index';
+        }
+        $instance = new $className();
+        call_user_func_array([$instance, $methodName], $matches);
         return true;
     }
     
@@ -78,7 +92,22 @@ function route($pattern, $callback, $methods = ['GET']) {
 header('Content-Type: text/html; charset=utf-8');
 
 // routes
-route('', function(){
-    $hc = new HomeController();
-    echo $hc->render();
-});
+$routes = [
+    ['', 'HomeController'],
+    ['', 'HomeController@tick', ['POST']],
+    ['login', 'LoginController'],
+    ['login', 'LoginController@login', ['POST']],
+    ['mood', 'MoodController'],
+    ['mood', 'MoodController@set_mood', ['POST']],
+    
+];
+
+foreach ($routes as $routeConfig) {
+    $pattern = $routeConfig[0];
+    $controller = $routeConfig[1];
+    $methods = $routeConfig[2] ?? ['GET'];
+    
+    if (route($pattern, $controller, $methods)) {
+        break;
+    }
+};

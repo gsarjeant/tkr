@@ -1,10 +1,21 @@
 <?php
-
-session_start();
-
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+// Start a session and create a csrf token if necessary
+// TODO - move these to an AuthController?
+function start_session(){
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 }
+
+function generate_csrf_token(bool $regenerate = false){
+    if (!isset($_SESSION['csrf_token']) || $regenerate) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+}
+
+
+start_session();
+generate_csrf_token();
 
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
@@ -94,11 +105,14 @@ header('Content-Type: text/html; charset=utf-8');
 // routes
 $routes = [
     ['', 'HomeController'],
-    ['', 'HomeController@tick', ['POST']],
-    ['login', 'LoginController'],
-    ['login', 'LoginController@login', ['POST']],
+    ['', 'HomeController@handleTick', ['POST']],
+    ['admin', 'AdminController'],
+    ['admin', 'AdminController@save', ['POST']],
+    ['login', 'AuthController@showLogin'],
+    ['login', 'AuthController@handleLogin', ['POST']],
+    ['logout', 'AuthController@handleLogout', ['GET', 'POST']],
     ['mood', 'MoodController'],
-    ['mood', 'MoodController@set_mood', ['POST']],
+    ['mood', 'MoodController@handleMood', ['POST']],
     
 ];
 

@@ -27,7 +27,7 @@ class HomeController{
 
     // POST handler
     // Saves the tick and reloads the homepage
-    public function tick(){
+    public function handleTick(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {
             // ensure that the session is valid before proceeding
             if (!validateCsrfToken($_POST['csrf_token'])) {

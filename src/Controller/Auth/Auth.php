@@ -1,6 +1,6 @@
 <?php
-class LoginController {
-    function index(?string $error = null){
+class AuthController {
+    function showLogin(?string $error = null){
         $config = Config::load();
         $csrf_token = $_SESSION['csrf_token'];
 
@@ -13,7 +13,7 @@ class LoginController {
         echo render_template(TEMPLATES_DIR . '/login.php', $vars);
     }
 
-    function login(){
+    function handleLogin(){
         $config = Config::load();
 
         $error = '';
@@ -36,13 +36,21 @@ class LoginController {
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['csrf_token'] = generate_csrf_token(true);
                 header('Location: ' . $config->basePath);
                 exit;
             } else {
                 $error = 'Invalid username or password';
             }
         }
+    }
 
-        $csrf_token = generateCsrfToken();
+    function handleLogout(){
+        $_SESSION = [];
+        session_destroy();
+
+        $config = Config::load();
+        header('Location: ' . $config->basePath);
+        exit;
     }
 }

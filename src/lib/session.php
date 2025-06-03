@@ -1,4 +1,5 @@
 <?php
+/*
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,7 +10,7 @@ function generateCsrfToken() {
     }
     return $_SESSION['csrf_token'];
 }
-
+*/
 function validateCsrfToken($token) {
     return hash_equals($_SESSION['csrf_token'], $token);
 }

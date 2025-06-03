@@ -15,7 +15,7 @@
             echo render_template(TEMPLATES_DIR . "/mood.php", $vars);
         }
 
-        public function set_mood(){
+        public function handleMood(){
             if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['mood'])) {
                 // ensure that the session is valid before proceeding
                 if (!validateCsrfToken($_POST['csrf_token'])) {
@@ -33,7 +33,7 @@
             
                 // go back to the index and show the updated mood
                 header('Location: ' . $config->basePath);
-                //exit;
+                exit;
             }
         }
 

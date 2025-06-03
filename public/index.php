@@ -1,6 +1,7 @@
 <?php
+// Sesion handling
 // Start a session and create a csrf token if necessary
-// TODO - move these to an AuthController?
+// TODO - move these to AuthController?
 function start_session(){
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -13,12 +14,19 @@ function generate_csrf_token(bool $regenerate = false){
     }
 }
 
+function validateCsrfToken($token) {
+    return hash_equals($_SESSION['csrf_token'], $token);
+}
 
 start_session();
 generate_csrf_token();
 
+// TODO - I *think* what I want to do is define just this, then load up all the classes.
+// Then I can define all this other boilerplate in Config or Util or whatever.
+// I'll have one chicken-and-egg problem with the source directory, but that's not a big deal.
 define('APP_ROOT', dirname(dirname(__FILE__)));
 
+// TODO - move all this to a config class?
 define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');

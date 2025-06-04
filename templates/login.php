@@ -1,5 +1,5 @@
 <?php /** @var Config $config */ ?>
-<?php /** @var string $csrfToken */ ?>
+<?php /** @var string $csrf_token */ ?>
 <?php /** @var string $error */ ?>
 <!DOCTYPE html>
 <html>

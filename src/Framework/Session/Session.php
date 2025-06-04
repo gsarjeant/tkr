@@ -24,6 +24,10 @@ class Session {
         return $_SESSION['csrf_token'];
     }
 
+    public static function isLoggedIn(): bool {
+        return isset($_SESSION['user_id']);
+    }
+
     public static function end(): void {
         $_SESSION = [];
         session_destroy();

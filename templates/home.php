@@ -2,26 +2,13 @@
 <?php /** @var Config $config */ ?>
 <?php /** @var User $user */ ?>
 <?php /** @var string $tickList */ ?>
-
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?= $config->siteTitle ?></title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
+<?php include TEMPLATES_DIR . '/partials/head.php'?>
     </head>
     <body>
-        <div class="home-navbar">
-            <a href="<?= $config->basePath ?>feed/rss">rss</a>
-            <a href="<?= $config->basePath ?>feed/atom">atom</a>
-<?php if (!$isLoggedIn): ?>
-            <a href="<?= $config->basePath ?>login">login</a>
-<?php else: ?>
-            <a href="<?= $config->basePath ?>admin">admin</a>
-            <a href="<?= $config->basePath ?>logout">logout</a>
-<?php endif; ?>
-        </div>
+<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
         <div class="home-container">
             <section id="sidebar" class="home-sidebar">
                 <div class="home-header">
@@ -32,12 +19,12 @@
                 <div class="profile-row">
                     <div class="mood-bar">
                         <span>Current mood: <?= $user->mood ?></span>
-<?php if ($isLoggedIn): ?>
+<?php if (Session::isLoggedIn()): ?>
                         <a href="<?= $config->basePath ?>mood">Change</a>
 <?php endif; ?>
                     </div>
                 </div>
-<?php if ($isLoggedIn): ?>
+<?php if (Session::isLoggedIn()): ?>
                 <hr/>
                 <div class="profile-row">
                     <form class="tick-form" method="post">

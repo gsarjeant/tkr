@@ -27,9 +27,9 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
     [$hour, $minute, $second] = $timeParts;
 
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
-    $tickUrl = htmlspecialchars($basePath . "tick.php?path=" . $tickPath);
+    $tickUrl = htmlspecialchars($basePath . "tick/$tickPath");
     $tickTime = date(DATE_ATOM, strtotime($tick['timestamp']));
-        $tickText = htmlspecialchars($tick['tick']);
+    $tickText = htmlspecialchars($tick['tick']);
 ?>
   <entry>
     <title><?= $tickText ?></title>

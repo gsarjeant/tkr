@@ -1,17 +1,14 @@
 <?php /** @var Config $config */ ?>
 <?php /** @var User $user */ ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <title><?= $config->siteTitle ?></title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css">
+<?php include TEMPLATES_DIR . '/partials/head.php'?>
     </head>
     <body>
+<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
+<html lang="en">
         <h1>Admin</h1>
-        <div><a href="<?= $config->basePath ?>">Back to home</a></div>
         <div>
             <form method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">

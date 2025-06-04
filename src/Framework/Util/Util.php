@@ -104,6 +104,17 @@ class Util {
         };
     }
 
+    public static function tick_time_to_tick_path($tickTime){
+        [$date, $time] = explode(' ', $tickTime);
+        $dateParts = explode('-', $date);
+        $timeParts = explode(':', $time);
+
+        [$year, $month, $day] = $dateParts;
+        [$hour, $minute, $second] = $timeParts;
+
+        return "$year/$month/$day/$hour/$minute/$second";        
+    }
+
     // TODO: Move to model base class?
     public static function get_db(): PDO {
         Util::verify_data_dir(DATA_DIR, true);

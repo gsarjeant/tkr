@@ -1,32 +1,15 @@
-<?php
-
-$path = $_GET['path'] ?? '';
-$parts = explode('/', $path);
-
-if (count($parts) !== 6) {
-    http_response_code(400);
-    echo "Invalid tick path.";
-    exit;
-}
-
-[$y, $m, $d, $H, $i, $s] = $parts;
-$timestamp = "$H:$i:$s";
-$file = TICKS_DIR . "/$y/$m/$d.txt";
-
-if (!file_exists($file)) {
-    http_response_code(404);
-    echo "Tick not found.";
-    exit;
-}
-
-$lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-foreach ($lines as $line) {
-    if (str_starts_with($line, $timestamp)) {
-        echo "<h1>Tick from $timestamp on $y-$m-$d</h1>";
-        echo "<p>" . escape_and_linkify(explode('|', $line)[1]) . "</p>";
-        exit;
-    }
-}
-
-http_response_code(404);
-echo "Tick not found.";
+<?php /** @var Config $config */ ?>
+<?php /** @var Date $tickTime */ ?>
+<?php /** @var string $tick */ ?>
+<!DOCTYPE html>
+<html>
+    <head>
+<?php include TEMPLATES_DIR . '/partials/head.php'?>
+    </head>
+    <body>
+<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
+<!DOCTYPE html>
+        <h1>Tick from <?= $tickTime->format('Y-m-d H:i:s'); ?></h1>
+        <p><?= $tick ?></p>
+    </body>
+</html>

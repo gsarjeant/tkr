@@ -1,4 +1,16 @@
 <?php
+// Store and validate request data
+$method = $_SERVER['REQUEST_METHOD'];
+$request = $_SERVER['REQUEST_URI'];
+$path = parse_url($request, PHP_URL_PATH);
+
+// return a 404 if a request for a .php file gets this far.
+if (preg_match('/\.php$/', $path)) {
+    http_response_code(404);
+    echo '<h1>404 Not Found</h1>';
+    exit;
+}
+
 // Define all the important paths
 define('APP_ROOT', dirname(dirname(__FILE__)));
 define('SRC_DIR', APP_ROOT . '/src');
@@ -33,18 +45,6 @@ Util::confirm_setup();
 Session::start();
 Session::generateCsrfToken();
 $config = Config::load();
-
-// Get request data
-$method = $_SERVER['REQUEST_METHOD'];
-$request = $_SERVER['REQUEST_URI'];
-$path = parse_url($request, PHP_URL_PATH);
-
-// return a 404 if a request for a .php file gets this far.
-if (preg_match('/\.php$/', $path)) {
-    http_response_code(404);
-    echo '<h1>404 Not Found</h1>';
-    exit;
-}
 
 // Remove the base path from the URL
 // and strip the trailing slash from the resulting route
@@ -100,6 +100,7 @@ $routeHandlers = [
     ['mood', 'MoodController@handleMood', ['POST']],
     ['feed/rss', 'FeedController@rss'],
     ['feed/atom', 'FeedController@atom'],
+    ['tick/{y}/{m}/{d}/{h}/{i}/{s}', 'TickController'],
 ];
 
 // Set content type

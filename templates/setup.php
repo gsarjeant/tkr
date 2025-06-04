@@ -1,10 +1,5 @@
 <?php
-#require_once __DIR__ . '/../bootstrap.php';
-
-#confirm_setup();
-
-// If we got past confirm_setup(), then setup isn't complete.
-$db = get_db();
+$db = Utli::get_db();
 
 // Handle submitted form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

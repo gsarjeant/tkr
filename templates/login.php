@@ -1,16 +1,13 @@
 <?php /** @var Config $config */ ?>
 <?php /** @var string $csrfToken */ ?>
 <?php /** @var string $error */ ?>
-
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?= $config->siteTitle ?></title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
+<?php include TEMPLATES_DIR . '/partials/head.php'?>
     </head>
     <body>
+<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
     <h2>Login</h2>
 <?php if ($error): ?>
     <p style="color:red"><?=  htmlspecialchars($error) ?></p>

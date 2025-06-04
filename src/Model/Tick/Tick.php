@@ -1,6 +1,7 @@
 <?php
 class Tick {
-
+    // Everything in this class just reads from and writes to the filesystem
+    // It doesn't maintain state, so everything's just a static function
     public static function streamTicks(int $limit, int $offset = 0): Generator {
         $tick_files = glob(TICKS_DIR . '/*/*/*.txt');
         usort($tick_files, fn($a, $b) => strcmp($b, $a)); // sort filenames in reverse chronological order
@@ -73,5 +74,30 @@ class Tick {
         // write the tick to the file (the file will be created if it doesn't exist)
         $content = $time . "|" . $tick . "\n";
         file_put_contents($filename, $content, FILE_APPEND);
-    }        
+    }
+    
+    public static function get(string $y, string $m, string $d, string $H, string $i, string $s): array{
+        $tickTime = new DateTime("$y-$m-$d $H:$i:$s");
+        $timestamp = "$H:$i:$s";
+        $file = TICKS_DIR . "/$y/$m/$d.txt";
+            
+        if (!file_exists($file)) {
+            http_response_code(404);
+            echo "Tick not found: $file.";
+            exit;
+        }
+        
+        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (str_starts_with($line, $timestamp)) {
+                $tick = Util::escape_and_linkify(explode('|', $line)[1]);
+
+                return [
+                    'tickTime' => $tickTime,
+                    'tick' => $tick,
+                    'config' => Config::load(),
+                ];
+            }
+        }
+    }
 }

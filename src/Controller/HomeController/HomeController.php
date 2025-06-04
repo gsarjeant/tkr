@@ -6,7 +6,6 @@ class HomeController extends Controller {
     // renders the homepage view.
     public function index(){
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $isLoggedIn = isset($_SESSION['user_id']);
         $config = Config::load();
         $user = User::load();
 
@@ -18,10 +17,9 @@ class HomeController extends Controller {
         $tickList = $view->renderTicksSection($config->siteDescription, $ticks, $page, $limit);
 
         $vars = [
-            'isLoggedIn' => $isLoggedIn,
             'config'     => $config,
             'user'       => $user,
-            'tickList'      => $tickList,
+            'tickList'   => $tickList,
         ];
 
         $this->render("home.php", $vars);

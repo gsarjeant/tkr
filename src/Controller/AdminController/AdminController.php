@@ -11,7 +11,6 @@ class AdminController extends Controller {
             'config' => $config,
         ];
 
-
         $this->render("admin.php", $vars);
     }
 

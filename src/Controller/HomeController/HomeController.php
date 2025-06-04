@@ -1,6 +1,4 @@
 <?php
-//require_once __DIR__ . '/../Controller.php';
-
 class HomeController extends Controller {
     // GET handler
     // renders the homepage view.

@@ -1,11 +1,11 @@
 <?php
 class User {
     // properties
-    public string $username;
-    public string $displayName;
-    public string $about;
-    public string $website;
-    public string $mood;
+    public string $username = '';
+    public string $displayName = '';
+    public string $about = '';
+    public string $website = '';
+    public string $mood = '';
 
     // load user settings from sqlite database
     public static function load(): self {
@@ -21,7 +21,7 @@ class User {
             $u->displayName = $row['display_name'];
             $u->about = $row['about'] ?? '';
             $u->website = $row['website'] ?? '';
-            $u->mood = $row['mood'];
+            $u->mood = $row['mood'] ?? '';
         }
 
         return $u;
@@ -30,7 +30,12 @@ class User {
    public function save(): self {
       $db = Util::get_db();
 
-      $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
+      if (!Config::isFirstSetup()){
+        $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
+      } else {
+        $stmt = $db->prepare("INSERT INTO user (id, username, display_name, about, website, mood) VALUES (1, ?, ?, ?, ?, ?)");
+      }
+
       $stmt->execute([$this->username, $this->displayName, $this->about, $this->website, $this->mood]);
 
       return self::load();

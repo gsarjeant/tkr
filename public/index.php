@@ -11,10 +11,10 @@ if (preg_match('/\.php$/', $path)) {
     exit;
 }
 
-// Define all the important paths
 define('APP_ROOT', dirname(dirname(__FILE__)));
-define('SRC_DIR', APP_ROOT . '/src');
 
+// Define all the important paths
+define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
 define('TICKS_DIR', STORAGE_DIR . '/ticks');
@@ -42,9 +42,9 @@ loadClasses();
 
 // Everything's loaded. Now we can start ticking.
 Util::confirm_setup();
+$config = Config::load();
 Session::start();
 Session::generateCsrfToken();
-$config = Config::load();
 
 // Remove the base path from the URL
 // and strip the trailing slash from the resulting route
@@ -92,7 +92,7 @@ $routeHandlers = [
     ['', 'HomeController'],
     ['', 'HomeController@handleTick', ['POST']],
     ['admin', 'AdminController'],
-    ['admin', 'AdminController@save', ['POST']],
+    ['admin', 'AdminController@handleSave', ['POST']],
     ['login', 'AuthController@showLogin'],
     ['login', 'AuthController@handleLogin', ['POST']],
     ['logout', 'AuthController@handleLogout', ['GET', 'POST']],

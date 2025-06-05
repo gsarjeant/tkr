@@ -68,10 +68,10 @@ class Util {
 
         // Ensure required tables exist
         $db->exec("CREATE TABLE IF NOT EXISTS user (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             username TEXT NOT NULL,
             display_name TEXT NOT NULL,
-            password_hash TEXT NOT NULL,
+            password_hash TEXT NULL,
             about TEXT NULL,
             website TEXT NULL,
             mood TEXT NULL
@@ -81,6 +81,7 @@ class Util {
             id INTEGER PRIMARY KEY,
             site_title TEXT NOT NULL,
             site_description TEXT NULL,
+            base_url TEXT NOT NULL,
             base_path TEXT NOT NULL,
             items_per_page INTEGER NOT NULL
         )");
@@ -88,20 +89,24 @@ class Util {
         // See if there's any data in the tables
         $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
         $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
+        $config = Config::load();
 
-        // If either table has no records and we aren't on setup.php, redirect to setup.php
+        // If either table has no records and we aren't on /admin
         if ($user_count === 0 || $settings_count === 0){
-            if (basename($_SERVER['PHP_SELF']) !== 'setup.php'){
-                header('Location: setup.php');
-                exit;
-            }
-        } else {
-            // If setup is complete and we are on setup.php, redirect to index.php.
-            if (basename($_SERVER['PHP_SELF']) === 'setup.php'){
-                header('Location: index.php');
+            if (basename($_SERVER['PHP_SELF']) !== 'admin'){
+                header('Location: ' . $config->basePath . 'admin');
                 exit;
             }
         };
+        /*
+         else {
+            // If setup is complete and we are on setup.php, redirect to index.php.
+            if (basename($_SERVER['PHP_SELF']) === 'admin'){
+                header('Location: ' . $config->basePath);
+                exit;
+            }
+        };
+        */
     }
 
     public static function tick_time_to_tick_path($tickTime){
@@ -115,7 +120,6 @@ class Util {
         return "$year/$month/$day/$hour/$minute/$second";        
     }
 
-    // TODO: Move to model base class?
     public static function get_db(): PDO {
         Util::verify_data_dir(DATA_DIR, true);
 

@@ -6,7 +6,7 @@ services:
       - "80:80"
     volumes:
       - ./public:/var/www/html/tkr/public
-      - ./configs/nginx/folder.conf:/etc/nginx/conf.d/default.conf
+      - ./http_config/nginx/folder.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
     restart: unless-stopped
@@ -15,6 +15,7 @@ services:
     image: php:8.2-fpm-alpine
     container_name: php-fpm
     volumes:
+      - ./config:/var/www/html/tkr/config
       - ./public:/var/www/html/tkr/public
       - ./src:/var/www/html/tkr/src
       - ./storage:/var/www/html/tkr/storage

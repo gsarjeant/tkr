@@ -23,6 +23,7 @@
                     <legend>Site settings</legend>
                     <label class="admin-option">Title: <input type="text" name="site_title" value="<?= $config->siteTitle ?>" required></label><br>
                     <label class="admin-option">Description: <input type="text" name="site_description" value="<?= $config->siteDescription ?>"></label><br>
+                    <label class="admin-option">Base URL: <input type="text" name="base_url" value="<?= $config->baseUrl ?>" required></label><br>
                     <label class="admin-option">Base path: <input type="text" name="base_path" value="<?= $config->basePath ?>" required></label><br>
                     <label class="admin-option">Items per page (max 50): <input type="number" name="items_per_page" value="<?= $config->itemsPerPage ?>" min="1" max="50" required></label><br>
                 </fieldset>

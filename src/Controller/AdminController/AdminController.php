@@ -4,7 +4,7 @@ class AdminController extends Controller {
     // render the admin page
     public function index(){
         $config = Config::load();
-        $user = USER::load();
+        $user = User::load();
 
         $vars = [
             'user' => $user,
@@ -17,13 +17,15 @@ class AdminController extends Controller {
     // POST handler
     // save updated settings
     public function handleSave(){
-        //$isLoggedIn = isset($_SESSION['user_id']);
-        if (!Session::isLoggedIn()){
-            header('Location: ' . $config->basePath . 'login.php');
-            exit;
+        $config = Config::load();
+
+        if (!Config::isFirstSetup()) {
+            if (!Session::isLoggedIn()){
+                header('Location: ' . $config->basePath . '/login');
+                exit;
+            }
         }
 
-        $config = Config::load();
         $user = User::load();
 
         // handle form submission
@@ -39,11 +41,11 @@ class AdminController extends Controller {
             // Site settings
             $siteTitle       = trim($_POST['site_title']) ?? '';
             $siteDescription = trim($_POST['site_description']) ?? '';
+            $baseUrl        = trim($_POST['base_url'] ?? '');
             $basePath        = trim($_POST['base_path'] ?? '/');
             $itemsPerPage    = (int) ($_POST['items_per_page'] ?? 25);
+
             // Password
-            // TODO - Make sure I really shouldn't trim these
-            //        (I'm assuming there may be people who end their password with a space character)
             $password                = $_POST['password'] ?? '';
             $confirmPassword         = $_POST['confirm_password'] ?? '';
         
@@ -54,6 +56,9 @@ class AdminController extends Controller {
             if (!$displayName) {
                 $errors[] = "Display name is required.";
             }
+            if (!$baseUrl) {
+                $errors[] = "Base URL is required.";
+            }
             // Make sure the website looks like a URL and starts with a protocol
             if ($website) {
                 if (!filter_var($website, FILTER_VALIDATE_URL)) {
@@ -62,7 +67,6 @@ class AdminController extends Controller {
                     $errors[] = "URL must start with http:// or https://.";
                 }
             }
-        
         
             // Validate site settings
             if (!$siteTitle) {
@@ -85,6 +89,7 @@ class AdminController extends Controller {
                 // Update site settings
                 $config->siteTitle = $siteTitle;
                 $config->siteDescription = $siteDescription;
+                $config->baseUrl = $baseUrl;
                 $config->basePath = $basePath;
                 $config->itemsPerPage = $itemsPerPage;
             
@@ -104,7 +109,14 @@ class AdminController extends Controller {
                 if($password){
                     $user->set_password($password);
                 }
+            } else {
+                echo implode(",", $errors);
+                exit;
             }
+        }
+
+        if (Config::isFirstSetup()){
+            Config::completeSetup();
         }
 
         header('Location: ' . $config->basePath . '/admin');

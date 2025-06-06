@@ -12,7 +12,7 @@
         <div class="home-container">
             <section id="sidebar" class="home-sidebar">
                 <div class="home-header">
-                    <h2>Hi, I'm <?= $user->displayName ?></h2>
+                    <h2 class="site-description"><?= $config->siteDescription ?></h2>
                 </div>
                 <p><?= $user->about ?></p>
                 <p>Website: <?= Util::escape_and_linkify($user->website) ?></p>
@@ -30,7 +30,7 @@
                     <form class="tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                         <textarea name="tick" placeholder="What's ticking?" rows="3"></textarea>
-                        <button type="submit">Tick</button>
+                        <button type="submit" class="submit-btn">Tick</button>
                     </form>
                 </div>
 <?php endif; ?>

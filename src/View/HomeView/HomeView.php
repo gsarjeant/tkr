@@ -5,9 +5,6 @@ class HomeView {
         ?>
 
         <section id="ticks" class="home-ticks">
-            <div class="home-ticks-header">
-                <h2><?= $siteDescription ?></h2>
-            </div>
             <div class="home-ticks-list">
             <?php foreach ($ticks as $tick): ?>
                 <article class="tick">

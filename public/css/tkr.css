@@ -12,6 +12,122 @@ a {
     font-weight: bold;
 }
 
+legend {
+    background-color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+fieldset {
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #fefefe;
+}
+
+/* Grid layout for emoji fieldsets */
+fieldset.emoji-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
+    gap: 0.3em;
+}
+
+input[type="text"], 
+input[type="number"], 
+input[type="password"], 
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, 
+input[type="number"]:focus, 
+input[type="password"]:focus, 
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+input[type="file"]:hover {
+    border-color: #4299e1;
+    background-color: #ebf8ff;
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Submit buttons */
+/* Stop deleting this block */
+input[type="submit"],
+button[type="submit"] {
+    padding: 10px 20px;
+    border: 1px solid #4299e1;
+    border-radius: 6px;
+    background-color: #f0f9ff;
+    color: #1e40af;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    background-color: #dbeafe;
+    border-color: #3182ce;
+}
+
+input[type="submit"]:focus,
+button[type="submit"]:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+}
+
+input[type="submit"]:active,
+button[type="submit"]:active {
+    background-color: #bfdbfe;
+}
+
+label {
+    font-weight: 600;
+    color: #374151;
+    text-align: left;
+    padding-top: 0;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
 /*
     The two common display options for responsive layouts are flex and grid.
         flex (aka Flexbox) aligns items either horizontally or vertically.
@@ -22,17 +138,14 @@ a {
     display: grid;
 }
 
-/* 
-    Responsive layout - adjusts from 1 to 2 columns based on screen width
-        min-width makes the mobile (stacked) view the default
-        600px covers most mobile devices in portrait mode
-        Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
-*/
-@media (min-width: 600px) {
-    .home-container {
-        grid-template-columns: 1fr 2fr;
-        grid-gap: 2em;
-    }
+.home-sidebar{
+    padding-bottom: 1em;
+}
+
+.site-description {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
 }
 
 .profile-row {
@@ -48,19 +161,6 @@ a {
     gap: 0.5em;
 }
 
-.tick-form textarea {
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
-    padding: 0.5em;
-    font-family: inherit;
-    font-size: 1em;
-}
-
-.tick-form button {
-    align-self: flex-end;
-}
-
 .mood-bar {
     display: flex;
     width: 100%;
@@ -69,25 +169,90 @@ a {
     gap: 0.5em;
 }
 
-.admin-bar {
-    display: flex;
+.upload-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fieldset-items {
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    align-items: start;
+}
+
+.file-input-wrapper {
+    position: relative;
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-    padding-top: 1em;
-    gap: 0.5em;
 }
 
-.admin-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
+.file-info {
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #0369a1;
+    grid-column: 1;
 }
 
-.admin-bar a,
-.admin-bar span {
-    white-space: nowrap;
+.upload-btn {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    margin-top: 12px;
+}
+
+.upload-btn:hover {
+    background-color: #3182ce;
+}
+
+.upload-btn:active {
+    background-color: #2c5282;
+}
+
+.upload-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+.security-info {
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.security-info h3 {
+    color: #92400e;
+    margin: 0 0 6px 0;
+    font-size: 15px;
+}
+
+.security-info ul {
+    color: #92400e;
+    margin: 0;
+    padding-left: 18px;
+}
+
+.security-info li {
+    margin-bottom: 2px;
+}
+
+.required {
+    color: #dc2626;
 }
 
 .tick {
@@ -105,33 +270,6 @@ a {
 
 .pagination a { margin: 0 5px; text-decoration: none; }
 
-.emoji-tabs {
-    display: flex;
-    gap: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.emoji-tab-button {
-    text-decoration: none;
-    font-size: 1.2em;
-    padding: 0.2em 0.5em;
-    background: #eee;
-    border-radius: 0.3em;
-}
-
-.emoji-tab-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
-    gap: 0.3em;
-    margin-bottom: 1em;
-}
-
-.emoji-option {
-    text-align: center;
-    display: block;
-    cursor: pointer;
-}
-
 .emoji-option input {
     display: none;
 }
@@ -148,14 +286,39 @@ a {
     outline: 2px solid #339;
 }
 
-#timezones {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 1em;
-}
+/* 
+    Responsive layout - adjusts from 1 to 2 columns based on screen width
+        - min-width makes the mobile (stacked) view the default
+        - 600px covers most mobile devices in portrait mode
+        - Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
+*/
+@media (min-width: 600px) {
+    .home-container {
+        grid-template-columns: 1fr 2fr;
+        grid-gap: 2em;
+    }
 
-.timezone-option {
-    display: block;
-    margin-bottom: 0.5em;
+    .fieldset-items {
+        margin-bottom: 16px;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+           
+    label {
+        text-align: right;
+        padding-top: 10px; /* Match input padding */
+        margin-bottom: 0;
+    }
+            
+    .file-info {
+        grid-column: 2; /* Align with input column */
+    }
+            
+    .form-row .fieldset-items {
+        grid-template-columns: 200px 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
 }

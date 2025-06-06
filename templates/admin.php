@@ -12,27 +12,68 @@
         <div>
             <form method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                <fieldset id="user_settings" class="admin-settings-group">
+                <fieldset>
                     <legend>User settings</legend>
-                    <label class="admin-option">Username: <input type="text" name="username" value="<?= $user->username ?>" required></label><br>
-                    <label class="admin-option">Display name: <input type="text" name="display_name" value="<?= $user->displayName ?>" required></label><br>
-                    <label class="admin-option">About: <input type="text" name="about" value="<?= $user->about ?>"></label><br>
-                    <label class="admin-option">Website: <input type="text" name="website" value="<?= $user->website ?>"></label><br>
+                    <div class="fieldset-items">
+                        <label>Username <span class=required></span></label>
+                        <input type="text"
+                            name="username"
+                            value="<?= $user->username ?>"
+                            required>
+                        <label>Display name <span class=required></span></label>
+                            <input type="text" 
+                                name="display_name"
+                                value="<?= $user->displayName ?>"
+                                required>
+                        <label>About </label>
+                        <input type="text"
+                            name="about"
+                            value="<?= $user->about ?>">
+                        <label>Website </label>
+                        <input type="text"
+                            name="website"
+                            value="<?= $user->website ?>">
+                    </div>
                 </fieldset>
-                <fieldset id="site_settings" class="admin-settings-group">
+                <fieldset>
                     <legend>Site settings</legend>
-                    <label class="admin-option">Title: <input type="text" name="site_title" value="<?= $config->siteTitle ?>" required></label><br>
-                    <label class="admin-option">Description: <input type="text" name="site_description" value="<?= $config->siteDescription ?>"></label><br>
-                    <label class="admin-option">Base URL: <input type="text" name="base_url" value="<?= $config->baseUrl ?>" required></label><br>
-                    <label class="admin-option">Base path: <input type="text" name="base_path" value="<?= $config->basePath ?>" required></label><br>
-                    <label class="admin-option">Items per page (max 50): <input type="number" name="items_per_page" value="<?= $config->itemsPerPage ?>" min="1" max="50" required></label><br>
+                    <div class="fieldset-items">
+                        <label>Title <span class=required></span></label>
+                        <input type="text"
+                            name="site_title"
+                            value="<?= $config->siteTitle ?>" 
+                            required>
+                        <label>Description <span class=required></span></label>
+                        <input type="text"
+                            name="site_description"
+                            value="<?= $config->siteDescription ?>">
+                        <label>Base URL </label>
+                        <input type="text"
+                            name="base_url"
+                            value="<?= $config->baseUrl ?>"
+                            required>
+                        <label>Base path <span class=required></span></label> 
+                        <input type="text"
+                            name="base_path"
+                            value="<?= $config->basePath ?>"
+                            required>
+                        <label>Items per page (max 50) <span class=required></span></label>
+                        <input type="number"
+                            name="items_per_page"
+                            value="<?= $config->itemsPerPage ?>" min="1" max="50"
+                            required>
+                    </div>
                 </fieldset>
-                <fieldset id="change_password" class="admin-settings-group">
+                <fieldset>
                     <legend>Change password</legend>
-                    <label class="admin-option">New password: <input type="password" name="password"></label><br>
-                    <label class="admin-option">Confirm new password: <input type="password" name="confirm_password"></label><br>
+                    <div class="fieldset-items">
+                        <label>New password: </label>
+                        <input type="password" name="password">
+                        <label>Confirm new password: </label>
+                        <input type="password" name="confirm_password">
+                    </div>
                 </fieldset>
-                <button type="submit">Save Settings</button>
+                <button type="submit" class="submit-btn">Save Settings</button>
             </form>
         </div>
     </body>

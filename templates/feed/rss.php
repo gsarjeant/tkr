@@ -26,7 +26,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
     <item>
         <title><?php echo htmlspecialchars($tick['tick']); ?></title>
-        <link><?php echo htmlspecialchars($config->basePath . "tick/$tickPath"); ?></link>
+        <link><?php echo htmlspecialchars($config->baseUrl . $config->basePath . "tick/$tickPath"); ?></link>
         <description><?php echo htmlspecialchars($tick['tick']); ?></description>
         <pubDate><?php echo date(DATE_RSS, strtotime($tick['timestamp'])); ?></pubDate>
         <guid><?php echo htmlspecialchars($tickPath); ?></guid>

@@ -1,11 +1,52 @@
 @charset "UTF-8";
+
+:root {
+    /* Primary colors */
+    --color-primary: #4299e1;
+    --color-primary-dark: #3182ce;
+    --color-primary-darker: #2563eb;
+    --color-primary-light: #bae6fd;
+    --color-primary-lighter: #ebf8ff;
+    --color-primary-lightest: #f0f9ff;
+    
+    /* Text colors */
+    --color-text-primary: #374151;
+    --color-text-secondary: #1e40af;
+    --color-text-tertiary: #0369a1;
+    --color-text-muted: gray;
+    --color-text-black: black;
+    --color-text-dark: #333;
+    
+    /* Background colors */
+    --color-bg-body: whitesmoke;
+    --color-bg-white: white;
+    --color-bg-light: #fefefe;
+    --color-bg-file: #f8fafc;
+    
+    /* Border colors */
+    --color-border-light: #e5e7eb;
+    --color-border-medium: #d1d5db;
+    --color-border-file: #cbd5e0;
+    
+    /* State colors */
+    --color-required: #dc2626;
+    --color-hover-light: #dbeafe;
+    --color-hover-medium: #bfdbfe;
+    --color-emoji-bg: #ddeeff;
+    --color-emoji-border: #339;
+    
+    /* Shadow colors */
+    --shadow-primary: rgba(66, 153, 225, 0.1);
+    --shadow-primary-strong: rgba(66, 153, 225, 0.3);
+}
+
 body {
     max-width: 940px;
     margin: 0 auto;
     padding: 1em;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: whitesmoke;
-    color: black;
+    background-color: var(--color-bg-body);
+    color: var(--color-text-black);
 }
 
 a {
@@ -13,20 +54,20 @@ a {
 }
 
 legend {
-    background-color: white;
+    background-color: var(--color-bg-white);
     padding: 6px 12px;
     border-radius: 4px;
     font-weight: 600;
-    color: #374151;
-    border: 1px solid #d1d5db;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-medium);
 }
 
 fieldset {
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--color-border-light);
     border-radius: 6px;
     padding: 16px;
     margin-bottom: 16px;
-    background-color: #fefefe;
+    background-color: var(--color-bg-light);
 }
 
 /* Grid layout for emoji fieldsets */
@@ -43,7 +84,7 @@ textarea,
 select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border-medium);
     border-radius: 6px;
     font-family: inherit;
     font-size: 1em;
@@ -58,16 +99,16 @@ input[type="password"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
 input[type="file"] {
     width: 100%;
     padding: 10px;
-    border: 2px dashed #cbd5e0;
+    border: 2px dashed var(--color-border-file);
     border-radius: 6px;
-    background-color: #f8fafc;
+    background-color: var(--color-bg-file);
     cursor: pointer;
     font-size: 14px;
     transition: all 0.3s ease;
@@ -75,14 +116,14 @@ input[type="file"] {
 }
 
 input[type="file"]:hover {
-    border-color: #4299e1;
-    background-color: #ebf8ff;
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-lighter);
 }
 
 input[type="file"]:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--shadow-primary);
 }
 
 /* Submit buttons */
@@ -90,10 +131,10 @@ input[type="file"]:focus {
 input[type="submit"],
 button[type="submit"] {
     padding: 10px 20px;
-    border: 1px solid #4299e1;
+    border: 1px solid var(--color-primary);
     border-radius: 6px;
-    background-color: #f0f9ff;
-    color: #1e40af;
+    background-color: var(--color-primary-lightest);
+    color: var(--color-text-secondary);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -103,25 +144,25 @@ button[type="submit"] {
 
 input[type="submit"]:hover,
 button[type="submit"]:hover {
-    background-color: #dbeafe;
-    border-color: #3182ce;
+    background-color: var(--color-hover-light);
+    border-color: var(--color-primary-dark);
 }
 
 input[type="submit"]:focus,
 button[type="submit"]:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+    border-color: var(--color-primary-darker);
+    box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
 input[type="submit"]:active,
 button[type="submit"]:active {
-    background-color: #bfdbfe;
+    background-color: var(--color-hover-medium);
 }
 
 label {
     font-weight: 600;
-    color: #374151;
+    color: var(--color-text-primary);
     text-align: left;
     padding-top: 0;
     margin-bottom: 3px;
@@ -144,7 +185,7 @@ label {
 
 .site-description {
     font-size: 1.2rem;
-    color: #333;
+    color: var(--color-text-dark);
     margin-bottom: 0.5rem;
 }
 
@@ -183,20 +224,20 @@ label {
 }
 
 .file-info {
-    background-color: #f0f9ff;
-    border: 1px solid #bae6fd;
+    background-color: var(--color-primary-lightest);
+    border: 1px solid var(--color-primary-light);
     border-radius: 4px;
     padding: 8px;
     margin-top: 8px;
     font-size: 13px;
-    color: #0369a1;
+    color: var(--color-text-tertiary);
     grid-column: 1;
 }
 
 .upload-btn {
-    background-color: #f0f9ff;
-    color: #1e40af;
-    border: 1px solid #4299e1;
+    background-color: var(--color-primary-lightest);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-primary);
     padding: 10px 20px;
     border-radius: 6px;
     font-size: 15px;
@@ -209,45 +250,21 @@ label {
 }
 
 .upload-btn:hover {
-    background-color: #dbeafe;
-    border-color: #3182ce;
+    background-color: var(--color-hover-light);
+    border-color: var(--color-primary-dark);
 }
 
 .upload-btn:active {
-    background-color: #bfdbfe;
+    background-color: var(--color-hover-medium);
 }
 
 .upload-btn:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
-}
-
-.security-info {
-    background-color: #fef3c7;
-    border: 1px solid #f59e0b;
-    border-radius: 4px;
-    padding: 12px;
-    margin-bottom: 16px;
-}
-
-.security-info h3 {
-    color: #92400e;
-    margin: 0 0 6px 0;
-    font-size: 15px;
-}
-
-.security-info ul {
-    color: #92400e;
-    margin: 0;
-    padding-left: 18px;
-}
-
-.security-info li {
-    margin-bottom: 2px;
+    box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
 .required {
-    color: #dc2626;
+    color: var(--color-required);
 }
 
 .tick {
@@ -255,15 +272,19 @@ label {
 }
 
 .tick-time {
-    color: gray; font-size: 0.8em;
+    color: var(--color-text-muted); 
+    font-size: 0.8em;
 }
 
 .tick-text {
-    color: black;
+    color: var(--color-text-black);
     font-size: 1.0em;
 }
 
-.pagination a { margin: 0 5px; text-decoration: none; }
+.pagination a { 
+    margin: 0 5px; 
+    text-decoration: none; 
+}
 
 .emoji-option input {
     display: none;
@@ -277,8 +298,8 @@ label {
 }
 
 .emoji-option input:checked + span {
-    background-color: #ddeeff;
-    outline: 2px solid #339;
+    background-color: var(--color-emoji-bg);
+    outline: 2px solid var(--color-emoji-border);
 }
 
 /* 

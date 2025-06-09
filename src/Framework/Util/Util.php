@@ -89,7 +89,7 @@ class Util {
         // See if there's any data in the tables
         $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
         $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
-        $config = Config::load();
+        $config = ConfigModel::load();
 
         // If either table has no records and we aren't on /admin
         if ($user_count === 0 || $settings_count === 0){

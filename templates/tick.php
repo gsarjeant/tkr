@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
 <?php /** @var Date $tickTime */ ?>
 <?php /** @var string $tick */ ?>
 <!DOCTYPE html>

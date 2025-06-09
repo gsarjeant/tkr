@@ -25,7 +25,7 @@ class Session {
     }
 
     public static function isLoggedIn(): bool {
-        //echo "User ID set: ". isset($_SESSION['user_id']). "<br/>";
+        //echo "UserModel ID set: ". isset($_SESSION['user_id']). "<br/>";
         //exit;
         return isset($_SESSION['user_id']);
     }

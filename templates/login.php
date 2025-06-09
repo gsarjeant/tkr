@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
 <?php /** @var string $csrf_token */ ?>
 <?php /** @var string $error */ ?>
 <!DOCTYPE html>

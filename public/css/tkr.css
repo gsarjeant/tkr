@@ -169,13 +169,6 @@ label {
     gap: 0.5em;
 }
 
-.upload-container {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 .fieldset-items {
     margin-bottom: 14px;
     display: grid;
@@ -293,6 +286,12 @@ label {
         - Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
 */
 @media (min-width: 600px) {
+    label {
+        text-align: right;
+        padding-top: 10px; /* Match input padding */
+        margin-bottom: 0;
+    }
+            
     .home-container {
         grid-template-columns: 1fr 2fr;
         grid-gap: 2em;
@@ -306,12 +305,6 @@ label {
         align-items: start;
     }
            
-    label {
-        text-align: right;
-        padding-top: 10px; /* Match input padding */
-        margin-bottom: 0;
-    }
-            
     .file-info {
         grid-column: 2; /* Align with input column */
     }

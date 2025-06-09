@@ -42,7 +42,7 @@ loadClasses();
 
 // Everything's loaded. Now we can start ticking.
 Util::confirm_setup();
-$config = Config::load();
+$config = ConfigModel::load();
 Session::start();
 Session::generateCsrfToken();
 

@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
 <?php /** @var array $ticks */ ?>
 <?php
 $siteTitle = htmlspecialchars($config->siteTitle);

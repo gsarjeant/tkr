@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
         <div class="navbar">
             <a href="<?= $config->basePath ?>">home</a>
             <a href="<?= $config->basePath ?>feed/rss">rss</a>

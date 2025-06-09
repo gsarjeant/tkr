@@ -1,12 +1,12 @@
 <?php
 class FeedController extends Controller {
-    private Config $config;
+    private ConfigModel $config;
     private array $ticks;
     private array $vars;
 
     public function __construct(){
-        $this->config = Config::load();
-        $this->ticks = iterator_to_array(Tick::streamTicks($this->config->itemsPerPage));
+        $this->config = ConfigModel::load();
+        $this->ticks = iterator_to_array(TickModel::streamTicks($this->config->itemsPerPage));
         $this->vars = [
             'config' => $this->config,
             'ticks' => $this->ticks,

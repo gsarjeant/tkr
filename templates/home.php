@@ -1,6 +1,6 @@
 <?php /** @var bool $isLoggedIn */ ?>
-<?php /** @var Config $config */ ?>
-<?php /** @var User $user */ ?>
+<?php /** @var ConfigModel $config */ ?>
+<?php /** @var UserModel $user */ ?>
 <?php /** @var string $tickList */ ?>
 <!DOCTYPE html>
 <html>

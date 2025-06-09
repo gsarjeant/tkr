@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <h1>Let’s Set Up Your tkr</h1>
 <form method="post">
-    <h3>User settings</h3>
+    <h3>UserModel settings</h3>
     <label>Username: <input type="text" name="username" required></label><br>
     <label>Display name: <input type="text" name="display_name" required></label><br>
     <label>Password: <input type="password" name="password" required></label><br>

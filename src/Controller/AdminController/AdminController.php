@@ -3,8 +3,8 @@ class AdminController extends Controller {
     // GET handler
     // render the admin page
     public function index(){
-        $config = Config::load();
-        $user = User::load();
+        $config = ConfigModel::load();
+        $user = UserModel::load();
 
         $vars = [
             'user' => $user,
@@ -17,22 +17,22 @@ class AdminController extends Controller {
     // POST handler
     // save updated settings
     public function handleSave(){
-        $config = Config::load();
+        $config = ConfigModel::load();
 
-        if (!Config::isFirstSetup()) {
+        if (!ConfigModel::isFirstSetup()) {
             if (!Session::isLoggedIn()){
                 header('Location: ' . $config->basePath . '/login');
                 exit;
             }
         }
 
-        $user = User::load();
+        $user = UserModel::load();
 
         // handle form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = [];
         
-            // User profile
+            // UserModel profile
             $username        = trim($_POST['username'] ?? '');
             $displayName     = trim($_POST['display_name'] ?? '');
             $about           = trim($_POST['about'] ?? '');
@@ -115,11 +115,15 @@ class AdminController extends Controller {
             }
         }
 
-        if (Config::isFirstSetup()){
-            Config::completeSetup();
+        if (ConfigModel::isFirstSetup()){
+            ConfigModel::completeSetup();
         }
 
         header('Location: ' . $config->basePath . '/admin');
         exit;
+    }
+
+    private function getCustomCss(){
+
     }
 }

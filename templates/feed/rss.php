@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
 <?php /** @var array $ticks */ ?>
 <?php
 // Need to have a little php here because the starting xml tag

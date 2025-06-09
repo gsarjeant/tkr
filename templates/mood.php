@@ -1,4 +1,4 @@
-<?php /** @var Config $config */ ?>
+<?php /** @var ConfigModel $config */ ?>
 <?php /** @var string $moodPicker */ ?>
 <!DOCTYPE html>
 <html>

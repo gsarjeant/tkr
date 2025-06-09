@@ -1,5 +1,5 @@
 <?php
-class Tick {
+class TickModel {
     // Everything in this class just reads from and writes to the filesystem
     // It doesn't maintain state, so everything's just a static function
     public static function streamTicks(int $limit, int $offset = 0): Generator {
@@ -95,7 +95,7 @@ class Tick {
                 return [
                     'tickTime' => $tickTime,
                     'tick' => $tick,
-                    'config' => Config::load(),
+                    'config' => ConfigModel::load(),
                 ];
             }
         }

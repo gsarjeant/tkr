@@ -1,5 +1,5 @@
 <?php
-class Config {
+class ConfigModel {
     // properties and default values
     public string $siteTitle = 'My tkr';
     public string $siteDescription = '';
@@ -41,7 +41,7 @@ class Config {
     public function save(): self {
         $db = Util::get_db();
 
-        if (!Config::isFirstSetup()){
+        if (!ConfigModel::isFirstSetup()){
             $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=? WHERE id=1");
         } else {
             $stmt = $db->prepare("INSERT INTO settings (id, site_title, site_description, base_url, base_path, items_per_page) VALUES (1, ?, ?, ?, ?, ?)");

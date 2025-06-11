@@ -119,11 +119,7 @@ class AdminController extends Controller {
             ConfigModel::completeSetup();
         }
 
-        header('Location: ' . $config->basePath . '/admin');
+        header('Location: ' . $config->basePath . 'admin');
         exit;
-    }
-
-    private function getCustomCss(){
-
     }
 }

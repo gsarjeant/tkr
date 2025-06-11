@@ -1,14 +1,18 @@
 <?php
 class Controller {
-    protected function render(string $templateFile, array $vars = []) {
-        $templatePath = TEMPLATES_DIR . "/" . $templateFile;
+    // Renders the requested template inside templates/main/php
+    protected function render(string $childTemplateFile, array $vars = []) {
+        $templatePath = TEMPLATES_DIR . "/main.php";
+        $childTemplatePath = TEMPLATES_DIR . "/partials/" . $childTemplateFile;
 
         if (!file_exists($templatePath)) {
             throw new RuntimeException("Template not found: $templatePath");
         }
 
-        // PHP scoping
-        // extract the variables from $vars into the local scope.
+        if (!file_exists($childTemplatePath)) {
+            throw new RuntimeException("Template not found: $childTemplatePath");
+        }
+
         extract($vars, EXTR_SKIP);
         include $templatePath;
     }  

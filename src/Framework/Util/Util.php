@@ -15,7 +15,7 @@ class Util {
     }
 
     // For relative time display, compare the stored time to the current time
-    // and display it as "X second/minutes/hours/days etc. "ago
+    // and display it as "X seconds/minutes/hours/days etc." ago
     public static function relative_time(string $tickTime): string {
         $datetime = new DateTime($tickTime);
         $now = new DateTime('now', $datetime->getTimezone());
@@ -39,7 +39,7 @@ class Util {
         return $diff->s . ' second' . ($diff->s != 1 ? 's' : '') . ' ago';
     }
 
-    public static function verify_data_dir(string $dir, bool $allow_create = false): void {
+    public static function verify_storage_dir(string $dir, bool $allow_create = false): void {
         if (!is_dir($dir)) {
             if ($allow_create) {
                 if (!mkdir($dir, 0770, true)) {
@@ -66,7 +66,7 @@ class Util {
     public static function confirm_setup(): void {
         $db = Util::get_db();
 
-        // Ensure required tables exist
+        // user table
         $db->exec("CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY,
             username TEXT NOT NULL,
@@ -77,13 +77,22 @@ class Util {
             mood TEXT NULL
         )");
 
+        // settings table
         $db->exec("CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY,
             site_title TEXT NOT NULL,
             site_description TEXT NULL,
             base_url TEXT NOT NULL,
             base_path TEXT NOT NULL,
-            items_per_page INTEGER NOT NULL
+            items_per_page INTEGER NOT NULL,
+            css_id INTEGER NULL
+        )");
+
+        // css table
+        $db->exec("CREATE TABLE IF NOT EXISTS css (
+            id INTEGER PRIMARY KEY,
+            filename TEXT NOT NULL,
+            description TEXT NULL
         )");
 
         // See if there's any data in the tables
@@ -91,22 +100,14 @@ class Util {
         $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
         $config = ConfigModel::load();
 
-        // If either table has no records and we aren't on /admin
+        // If either table has no records and we aren't on /admin,
+        // redirect to /admin to complete setup
         if ($user_count === 0 || $settings_count === 0){
             if (basename($_SERVER['PHP_SELF']) !== 'admin'){
                 header('Location: ' . $config->basePath . 'admin');
                 exit;
             }
         };
-        /*
-         else {
-            // If setup is complete and we are on setup.php, redirect to index.php.
-            if (basename($_SERVER['PHP_SELF']) === 'admin'){
-                header('Location: ' . $config->basePath);
-                exit;
-            }
-        };
-        */
     }
 
     public static function tick_time_to_tick_path($tickTime){
@@ -121,7 +122,7 @@ class Util {
     }
 
     public static function get_db(): PDO {
-        Util::verify_data_dir(DATA_DIR, true);
+        Util::verify_storage_dir(DATA_DIR, true);
 
         try {
             $db = new PDO("sqlite:" . DB_FILE);

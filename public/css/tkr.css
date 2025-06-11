@@ -126,10 +126,7 @@ input[type="file"]:focus {
     box-shadow: 0 0 0 3px var(--shadow-primary);
 }
 
-/* Submit buttons */
-/* Stop deleting this block */
-input[type="submit"],
-button[type="submit"] {
+button {
     padding: 10px 20px;
     border: 1px solid var(--color-primary);
     border-radius: 6px;
@@ -142,27 +139,33 @@ button[type="submit"] {
     box-sizing: border-box;
 }
 
-input[type="submit"]:hover,
-button[type="submit"]:hover {
+button:hover {
     background-color: var(--color-hover-light);
     border-color: var(--color-primary-dark);
 }
 
-input[type="submit"]:focus,
-button[type="submit"]:focus {
+button:focus {
     outline: none;
     border-color: var(--color-primary-darker);
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
-input[type="submit"]:active,
-button[type="submit"]:active {
+button:active {
     background-color: var(--color-hover-medium);
 }
 
 label {
     font-weight: 600;
     color: var(--color-text-primary);
+    text-align: left;
+    padding-top: 0;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+label.description {
+    font-weight: 300;
+    color: var(--color-text-muted);
     text-align: left;
     padding-top: 0;
     margin-bottom: 3px;
@@ -234,33 +237,32 @@ label {
     grid-column: 1;
 }
 
-.upload-btn {
-    background-color: var(--color-primary-lightest);
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-primary);
+.delete-btn {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
     padding: 10px 20px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    width: 100%;
     transition: all 0.2s ease;
-    margin-top: 12px;
     box-sizing: border-box;
 }
 
-.upload-btn:hover {
-    background-color: var(--color-hover-light);
-    border-color: var(--color-primary-dark);
+.delete-btn:hover {
+    background-color: #fee2e2;
+    border-color: #f87171;
 }
 
-.upload-btn:active {
-    background-color: var(--color-hover-medium);
-}
-
-.upload-btn:focus {
+.delete-btn:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--shadow-primary);
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+.delete-btn:active {
+    background-color: #fecaca;
 }
 
 .required {
@@ -312,6 +314,11 @@ label {
     label {
         text-align: right;
         padding-top: 10px; /* Match input padding */
+        margin-bottom: 0;
+    }
+
+    label.description {
+        padding-top: 10px;
         margin-bottom: 0;
     }
             

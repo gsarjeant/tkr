@@ -2,13 +2,6 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var UserModel $user */ ?>
 <?php /** @var string $tickList */ ?>
-<!DOCTYPE html>
-<html>
-    <head>
-<?php include TEMPLATES_DIR . '/partials/head.php'?>
-    </head>
-    <body>
-<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
         <div class="home-container">
             <section id="sidebar" class="home-sidebar">
                 <div class="home-header">
@@ -37,5 +30,3 @@
             </section>
             <?php echo $tickList ?>
         </div>
-    </body>
-</html>

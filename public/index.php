@@ -19,6 +19,7 @@ define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
 define('TICKS_DIR', STORAGE_DIR . '/ticks');
 define('DATA_DIR', STORAGE_DIR . '/db');
+define('CSS_UPLOAD_DIR', STORAGE_DIR . '/upload/css');
 define('DB_FILE', DATA_DIR . '/tkr.sqlite');
 
 // Load all classes from the src/ directory
@@ -61,7 +62,9 @@ function route(string $requestPath, string $requestMethod, array $routeHandlers)
         $controller = $routeHandler[1];
         $methods = $routeHandler[2] ?? ['GET'];
 
-        $routePattern = preg_replace('/\{([^}]+)\}/', '([^/]+)', $routePattern);
+        # Only allow valid route and filename characters
+        # to prevent directory traversal and other attacks
+        $routePattern = preg_replace('/\{([^}]+)\}/', '([a-zA-Z0-9._-]+)', $routePattern);
         $routePattern = '#^' . $routePattern . '$#';
 
         if (preg_match($routePattern, $requestPath, $matches)) {
@@ -88,19 +91,24 @@ function route(string $requestPath, string $requestMethod, array $routeHandlers)
     return false;
 }
 
+// Define the recognized routes.
+// Anything else will 404.
 $routeHandlers = [
     ['', 'HomeController'],
     ['', 'HomeController@handleTick', ['POST']],
     ['admin', 'AdminController'],
     ['admin', 'AdminController@handleSave', ['POST']],
+    ['admin/css', 'CssController'],
+    ['admin/css', 'CssController@handlePost', ['POST']],
+    ['feed/rss', 'FeedController@rss'],
+    ['feed/atom', 'FeedController@atom'],
     ['login', 'AuthController@showLogin'],
     ['login', 'AuthController@handleLogin', ['POST']],
     ['logout', 'AuthController@handleLogout', ['GET', 'POST']],
     ['mood', 'MoodController'],
     ['mood', 'MoodController@handleMood', ['POST']],
-    ['feed/rss', 'FeedController@rss'],
-    ['feed/atom', 'FeedController@atom'],
     ['tick/{y}/{m}/{d}/{h}/{i}/{s}', 'TickController'],
+    ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
 ];
 
 // Set content type

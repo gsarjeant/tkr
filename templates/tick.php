@@ -2,7 +2,7 @@
 <?php /** @var Date $tickTime */ ?>
 <?php /** @var string $tick */ ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
 <?php include TEMPLATES_DIR . '/partials/head.php'?>
     </head>

@@ -7,6 +7,7 @@
             <a href="<?= $config->basePath ?>login">login</a>
 <?php else: ?>
             <a href="<?= $config->basePath ?>admin">admin</a>
+            <a href="<?= $config->basePath ?>admin/css">css</a>
             <a href="<?= $config->basePath ?>logout">logout</a>
 <?php endif; ?>
         </div>

@@ -4,6 +4,17 @@ class FeedController extends Controller {
     private array $ticks;
     private array $vars;
 
+    protected function render(string $templateFile, array $vars = []) {
+        $templatePath = TEMPLATES_DIR . "/" . $templateFile;
+
+        if (!file_exists($templatePath)) {
+            throw new RuntimeException("Template not found: $templatePath");
+        }
+
+        extract($vars, EXTR_SKIP);
+        include $templatePath;
+    }
+
     public function __construct(){
         $this->config = ConfigModel::load();
         $this->ticks = iterator_to_array(TickModel::streamTicks($this->config->itemsPerPage));

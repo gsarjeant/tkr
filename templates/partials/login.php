@@ -1,13 +1,6 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var string $csrf_token */ ?>
 <?php /** @var string $error */ ?>
-<!DOCTYPE html>
-<html>
-    <head>
-<?php include TEMPLATES_DIR . '/partials/head.php'?>
-    </head>
-    <body>
-<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
     <h2>Login</h2>
 <?php if ($error): ?>
     <p style="color:red"><?=  htmlspecialchars($error) ?></p>
@@ -18,5 +11,3 @@
         <label>Password: <input type="password" name="password" required></label><br>
         <button type="submit" class="submit-btn">Login</button>
     </form>
-    </body>
-</html>

@@ -7,6 +7,7 @@ class ConfigModel {
     public string $basePath = '';
     public int $itemsPerPage = 25;
     public string $timezone = 'relative';
+    public ?int $cssId;
 
     public static function isFirstSetup(): bool {
         return !file_exists(STORAGE_DIR . '/init_complete');
@@ -24,7 +25,7 @@ class ConfigModel {
         $c->basePath = ($c->basePath === '') ? $init['base_path'] : $c->basePath;
 
         $db = Util::get_db();
-        $stmt = $db->query("SELECT site_title, site_description, base_url, base_path, items_per_page FROM settings WHERE id=1");
+        $stmt = $db->query("SELECT site_title, site_description, base_url, base_path, items_per_page, css_id FROM settings WHERE id=1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
@@ -33,20 +34,33 @@ class ConfigModel {
             $c->baseUrl = $row['base_url'];
             $c->basePath = $row['base_path'];
             $c->itemsPerPage = (int) $row['items_per_page'];
+            $c->cssId = (int) $row['css_id'];
         }
 
         return $c;
+    }
+
+    public function customCssFilename() {
+        if (empty($this->cssId)) {
+            return null;
+        }
+    
+        // Fetch filename from css table using cssId
+        $cssModel = new CssModel();
+        $cssRecord = $cssModel->getById($this->cssId);
+    
+        return $cssRecord ? $cssRecord['filename'] : null;
     }
 
     public function save(): self {
         $db = Util::get_db();
 
         if (!ConfigModel::isFirstSetup()){
-            $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=? WHERE id=1");
+            $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=?, css_id=? WHERE id=1");
         } else {
-            $stmt = $db->prepare("INSERT INTO settings (id, site_title, site_description, base_url, base_path, items_per_page) VALUES (1, ?, ?, ?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO settings (id, site_title, site_description, base_url, base_path, items_per_page, css_id) VALUES (1, ?, ?, ?, ?, ?, ?)");
         }
-        $stmt->execute([$this->siteTitle, $this->siteDescription, $this->baseUrl, $this->basePath, $this->itemsPerPage]);
+        $stmt->execute([$this->siteTitle, $this->siteDescription, $this->baseUrl, $this->basePath, $this->itemsPerPage, $this->cssId]);
 
         return self::load();
     }

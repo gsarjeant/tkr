@@ -1,13 +1,5 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var UserModel $user */ ?>
-<!DOCTYPE html>
-<html>
-    <head>
-<?php include TEMPLATES_DIR . '/partials/head.php'?>
-    </head>
-    <body>
-<?php include TEMPLATES_DIR . '/partials/navbar.php'?>
-<html lang="en">
         <h1>Admin</h1>
         <div>
             <form method="post">
@@ -63,12 +55,6 @@
                             value="<?= $config->itemsPerPage ?>" min="1" max="50"
                             required>
                     </div>
-                    <div class="fieldset-items">
-                        <label for="setCssFile">Set CSS File</label>
-                        <select id="setCssFile" name="css_file">
-                            <option value="">Default</option>
-                        </select>
-                    </div>
                 </fieldset>
                 <fieldset>
                     <legend>Change password</legend>
@@ -79,31 +65,6 @@
                         <input type="password" name="confirm_password">
                     </div>
                 </fieldset>
-                <fieldset>
-                    <legend>CSS Upload</legend>
-                    <div class="fieldset-items">
-                        <form action="/upload-css" method="post" enctype="multipart/form-data">
-                            <label for="uploadCssFile">Select File to Upload</label>
-                            <input type="file" 
-                                   id="uploadCssFile" 
-                                   name="uploadCssFile" 
-                                   accept=".css">
-                            <div class="file-info">
-                                <strong>File Requirements:</strong><br>
-                                • Must be a valid CSS file (.css extension)<br>
-                                • Maximum size: 2MB<br>
-                                • Will be scanned for malicious content
-                            </div>
-                            <label for="description">Description (optional)</label>
-                            <textarea id="description" 
-                                      name="description" 
-                                      placeholder="Describe this CSS file..."></textarea>
-                            <button type="submit" class="upload-btn">Upload CSS File</button>
-                        </form>
-                    </div>
-                </fieldset>
                 <button type="submit" class="submit-btn">Save Settings</button>
             </form>
         </div>
-    </body>
-</html>

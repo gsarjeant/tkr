@@ -7,7 +7,7 @@ class ConfigModel {
     public string $basePath = '';
     public int $itemsPerPage = 25;
     public string $timezone = 'relative';
-    public ?int $cssId;
+    public ?int $cssId = null;
 
     public static function isFirstSetup(): bool {
         return !file_exists(STORAGE_DIR . '/init_complete');

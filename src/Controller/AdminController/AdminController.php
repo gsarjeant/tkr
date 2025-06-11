@@ -41,7 +41,7 @@ class AdminController extends Controller {
             // Site settings
             $siteTitle       = trim($_POST['site_title']) ?? '';
             $siteDescription = trim($_POST['site_description']) ?? '';
-            $baseUrl        = trim($_POST['base_url'] ?? '');
+            $baseUrl         = trim($_POST['base_url'] ?? '');
             $basePath        = trim($_POST['base_path'] ?? '/');
             $itemsPerPage    = (int) ($_POST['items_per_page'] ?? 25);
 

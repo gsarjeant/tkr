@@ -313,7 +313,7 @@ label.description {
 @media (min-width: 600px) {
     label {
         text-align: right;
-        padding-top: 10px; /* Match input padding */
+        padding-top: 10px;
         margin-bottom: 0;
     }
 
@@ -336,7 +336,7 @@ label.description {
     }
            
     .file-info {
-        grid-column: 2; /* Align with input column */
+        grid-column: 2;
     }
             
     .form-row .fieldset-items {

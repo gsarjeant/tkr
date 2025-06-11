@@ -3,6 +3,7 @@
 *.sqlite
 *.txt
 
+docker_compose.yml
 init_complete
 storage/upload/css
 scratch

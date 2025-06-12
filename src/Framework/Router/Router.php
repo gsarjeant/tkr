@@ -41,9 +41,10 @@ class Router {
                     array_shift($matches);
 
                     if (strpos($controller, '@')) {
+                        // Get the controller and method that handle this route
                         [$controllerName, $methodName] = explode('@', $controller);
                     } else {
-                        // Default to 'index' method if no method specified
+                        // Default to 'index' if no method specified
                         $controllerName = $controller;
                         $methodName = 'index';
                     }

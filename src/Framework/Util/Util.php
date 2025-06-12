@@ -39,77 +39,6 @@ class Util {
         return $diff->s . ' second' . ($diff->s != 1 ? 's' : '') . ' ago';
     }
 
-    public static function verify_storage_dir(string $dir, bool $allow_create = false): void {
-        if (!is_dir($dir)) {
-            if ($allow_create) {
-                if (!mkdir($dir, 0770, true)) {
-                    http_response_code(500);
-                    echo "Failed to create required directory: $dir";
-                    exit;
-                }
-            } else {
-                http_response_code(500);
-                echo "Required directory does not exist: $dir";
-                exit;
-            }
-        }
-
-        if (!is_writable($dir)) {
-            http_response_code(500);
-            echo "Directory is not writable: $dir";
-            exit;
-        }
-    }
-
-    // Verify that setup is complete (i.e. the databse is populated).
-    // Redirect to setup.php if it isn't.
-    public static function confirm_setup(): void {
-        $db = Util::get_db();
-
-        // user table
-        $db->exec("CREATE TABLE IF NOT EXISTS user (
-            id INTEGER PRIMARY KEY,
-            username TEXT NOT NULL,
-            display_name TEXT NOT NULL,
-            password_hash TEXT NULL,
-            about TEXT NULL,
-            website TEXT NULL,
-            mood TEXT NULL
-        )");
-
-        // settings table
-        $db->exec("CREATE TABLE IF NOT EXISTS settings (
-            id INTEGER PRIMARY KEY,
-            site_title TEXT NOT NULL,
-            site_description TEXT NULL,
-            base_url TEXT NOT NULL,
-            base_path TEXT NOT NULL,
-            items_per_page INTEGER NOT NULL,
-            css_id INTEGER NULL
-        )");
-
-        // css table
-        $db->exec("CREATE TABLE IF NOT EXISTS css (
-            id INTEGER PRIMARY KEY,
-            filename TEXT NOT NULL,
-            description TEXT NULL
-        )");
-
-        // See if there's any data in the tables
-        $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
-        $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
-        $config = ConfigModel::load();
-
-        // If either table has no records and we aren't on /admin,
-        // redirect to /admin to complete setup
-        if ($user_count === 0 || $settings_count === 0){
-            if (basename($_SERVER['PHP_SELF']) !== 'admin'){
-                header('Location: ' . $config->basePath . 'admin');
-                exit;
-            }
-        };
-    }
-
     public static function tick_time_to_tick_path($tickTime){
         [$date, $time] = explode(' ', $tickTime);
         $dateParts = explode('-', $date);
@@ -119,19 +48,5 @@ class Util {
         [$hour, $minute, $second] = $timeParts;
 
         return "$year/$month/$day/$hour/$minute/$second";        
-    }
-
-    public static function get_db(): PDO {
-        Util::verify_storage_dir(DATA_DIR, true);
-
-        try {
-            $db = new PDO("sqlite:" . DB_FILE);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
-
-        return $db;
     }
 }

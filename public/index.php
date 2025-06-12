@@ -11,48 +11,32 @@ if (preg_match('/\.php$/', $path)) {
     exit;
 }
 
-define('APP_ROOT', dirname(dirname(__FILE__)));
+// Define base paths and load classes
+include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
+load_classes();
 
-// Define all the important paths
-define('SRC_DIR', APP_ROOT . '/src');
-define('STORAGE_DIR', APP_ROOT . '/storage');
-define('TEMPLATES_DIR', APP_ROOT . '/templates');
-define('TICKS_DIR', STORAGE_DIR . '/ticks');
-define('DATA_DIR', STORAGE_DIR . '/db');
-define('CSS_UPLOAD_DIR', STORAGE_DIR . '/upload/css');
-define('DB_FILE', DATA_DIR . '/tkr.sqlite');
-
-// Load all classes from the src/ directory
-function loadClasses(): void {
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator(SRC_DIR)
-    );
-
-    // load base classes first
-    require_once SRC_DIR . '/Controller/Controller.php';
-
-    // load everything else
-    foreach ($iterator as $file) {
-        if ($file->isFile() && fnmatch('*.php', $file->getFilename())) {
-            require_once $file;
-        }
-    }
+// Make sure the initial setup is complete
+try {
+    confirm_setup();
+} catch (SetupException $e) {
+    // TODO - pass to exception handler (maybe also defined in bootstrap to keep this smaller)
+    echo $e->getMessage();
+    exit;
 }
 
-loadClasses();
-
 // Everything's loaded. Now we can start ticking.
-Util::confirm_setup();
+global $db;
+$db = get_db();
 $config = ConfigModel::load();
 Session::start();
 Session::generateCsrfToken();
 
 // Remove the base path from the URL
-// and strip the trailing slash from the resulting route
 if (strpos($path, $config->basePath) === 0) {
     $path = substr($path, strlen($config->basePath));
 }
 
+// strip the trailing slash from the resulting route
 $path = trim($path, '/');
 
 // Main router function

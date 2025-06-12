@@ -24,7 +24,7 @@ class ConfigModel {
         $c->baseUrl = ($c->baseUrl === '') ? $init['base_url'] : $c->baseUrl;
         $c->basePath = ($c->basePath === '') ? $init['base_path'] : $c->basePath;
 
-        $db = Util::get_db();
+        global $db;
         $stmt = $db->query("SELECT site_title, site_description, base_url, base_path, items_per_page, css_id FROM settings WHERE id=1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -53,7 +53,7 @@ class ConfigModel {
     }
 
     public function save(): self {
-        $db = Util::get_db();
+        global $db;
 
         if (!ConfigModel::isFirstSetup()){
             $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=?, css_id=? WHERE id=1");

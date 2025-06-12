@@ -9,7 +9,7 @@ class UserModel {
 
     // load user settings from sqlite database
     public static function load(): self {
-        $db = Util::get_db();
+        global $db;
 
         // There's only ever one user. I'm just leaning into that.
         $stmt = $db->query("SELECT username, display_name, about, website, mood FROM user WHERE id=1");
@@ -28,7 +28,7 @@ class UserModel {
     }
 
    public function save(): self {
-      $db = Util::get_db();
+      global $db;
 
       if (!ConfigModel::isFirstSetup()){
         $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
@@ -44,7 +44,7 @@ class UserModel {
    // Making this a separate function to avoid
    // loading the password into memory
    public function set_password(string $password): void {
-        $db = Util::get_db();
+        global $db;
         
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $db->prepare("UPDATE user SET password_hash=? WHERE id=1");

@@ -1,7 +1,7 @@
 <?php
 class CssModel {
     public static function load(): Array {
-        $db = Util::get_db();
+        global $db;
         $stmt = $db->prepare("SELECT id, filename, description FROM css ORDER BY filename");
         $stmt->execute();
 
@@ -9,31 +9,31 @@ class CssModel {
     }
 
     public function getById(int $id): Array{
-       $db = Util::get_db();
+       global $db;
        $stmt = $db->prepare("SELECT id, filename, description FROM css WHERE id=?");
        $stmt->execute([$id]);
        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getByFilename(string $filename): Array{
-       $db = Util::get_db();
+       global $db;
        $stmt = $db->prepare("SELECT id, filename, description FROM css WHERE filename=?");
        $stmt->execute([$filename]);
        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function delete(int $id): bool{
-        $db = Util::get_db();
+        global $db;
         $stmt = $db->prepare("DELETE FROM css WHERE id=?");
         return $stmt->execute([$id]);
     }
 
     public function save(string $filename, ?string $description = null): void {
-        $db = Util::get_db();
+        global $db;
 
         $stmt = $db->prepare("SELECT COUNT(id) FROM css WHERE filename = ?");
         $stmt->execute([$filename]);
-        $fileExists = $stmt->fetchColumn();
+        $fileExists = $stmt->fetch();
 
         if ($fileExists) {
             $stmt = $db->prepare("UPDATE css SET description = ? WHERE filename = ?");

@@ -163,9 +163,6 @@ class CssController extends Controller {
             // Scan for malicious content
             $this->scanForMaliciousContent($fileContent, $filename);
 
-            // Create upload directory if it doesn't exist
-            Util::verify_storage_dir(CSS_UPLOAD_DIR, true);
-
             // Generate safe filename
             $safeFilename = $this->generateSafeFileName($filename);
             $uploadPath = CSS_UPLOAD_DIR . '/' . $safeFilename;

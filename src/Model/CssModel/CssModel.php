@@ -33,7 +33,7 @@ class CssModel {
 
         $stmt = $db->prepare("SELECT COUNT(id) FROM css WHERE filename = ?");
         $stmt->execute([$filename]);
-        $fileExists = $stmt->fetch();
+        $fileExists = $stmt->fetchColumn();
 
         if ($fileExists) {
             $stmt = $db->prepare("UPDATE css SET description = ? WHERE filename = ?");

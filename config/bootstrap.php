@@ -55,6 +55,8 @@ function validate_storage_dir(): void{
     }
 }
 
+// validate that the required storage subdirectories exist
+// attempt to create them if they don't
 function validate_storage_subdirs(): void {
     $storageSubdirs = array();
     $storageSubdirs[] = CSS_UPLOAD_DIR;
@@ -81,9 +83,6 @@ function validate_storage_subdirs(): void {
         }
     }
 }
-
-// Verify that the requested directory exists
-// and optionally create it if it doesn't.
 
 function get_db(): PDO {
     try {
@@ -152,6 +151,8 @@ function create_tables(): void {
     }
 }
 
+// make sure all tables exist
+// attempt to create them if they don't
 function validate_tables(): void {
     $appTables = array();
     $appTables[] = "settings";
@@ -173,6 +174,7 @@ function validate_tables(): void {
     }
 }
 
+// make sure tables that need to be seeded have been
 function validate_table_contents(): void {
     $db = get_db();
 

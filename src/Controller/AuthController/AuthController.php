@@ -28,7 +28,6 @@ class AuthController extends Controller {
  
             // TODO: move into user model
             global $db;
-            //$db = Util::get_db();
             $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch();

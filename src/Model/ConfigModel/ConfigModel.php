@@ -9,14 +9,6 @@ class ConfigModel {
     public string $timezone = 'relative';
     public ?int $cssId = null;
 
-    public static function isFirstSetup(): bool {
-        return !file_exists(STORAGE_DIR . '/init_complete');
-    }
-
-    public static function completeSetup(): void {
-        touch(STORAGE_DIR . '/init_complete');
-    }
-
     // load config from sqlite database
     public static function load(): self {
         $init = require APP_ROOT . '/config/init.php';
@@ -54,11 +46,12 @@ class ConfigModel {
 
     public function save(): self {
         global $db;
+        $settingsCount = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
-        if (!ConfigModel::isFirstSetup()){
-            $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=?, css_id=? WHERE id=1");
-        } else {
+        if ($settingsCount === 0){
             $stmt = $db->prepare("INSERT INTO settings (id, site_title, site_description, base_url, base_path, items_per_page, css_id) VALUES (1, ?, ?, ?, ?, ?, ?)");
+        } else {
+            $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=?, css_id=? WHERE id=1");
         }
         $stmt->execute([$this->siteTitle, $this->siteDescription, $this->baseUrl, $this->basePath, $this->itemsPerPage, $this->cssId]);
 

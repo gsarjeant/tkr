@@ -17,6 +17,8 @@ class Router {
         ['logout', 'AuthController@handleLogout', ['GET', 'POST']],
         ['mood', 'MoodController'],
         ['mood', 'MoodController@handleMood', ['POST']],
+        ['setup', 'AdminController@showSetup'],
+        ['setup', 'AdminController@handleSetup', ['POST']],
         ['tick/{y}/{m}/{d}/{h}/{i}/{s}', 'TickController'],
         ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
     ];

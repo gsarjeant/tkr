@@ -14,18 +14,24 @@ class AdminController extends Controller {
         $this->render("admin.php", $vars);
     }
 
-    // POST handler
-    // save updated settings
     public function handleSave(){
-        $config = ConfigModel::load();
-
-        if (!ConfigModel::isFirstSetup()) {
-            if (!Session::isLoggedIn()){
-                header('Location: ' . $config->basePath . '/login');
-                exit;
-            }
+        if (!Session::isLoggedIn()){
+            header('Location: ' . $config->basePath . '/login');
+            exit;
         }
 
+        $this->save();
+    }
+
+    public function handleSetup(){
+        // for setup, we don't care if they're logged in
+        // (because they can't be until setup is complete)
+        $this->save();
+    }
+
+    // save updated settings
+    private function save(){
+        $config = ConfigModel::load();
         $user = UserModel::load();
 
         // handle form submission
@@ -113,10 +119,6 @@ class AdminController extends Controller {
                 echo implode(",", $errors);
                 exit;
             }
-        }
-
-        if (ConfigModel::isFirstSetup()){
-            ConfigModel::completeSetup();
         }
 
         header('Location: ' . $config->basePath . 'admin');

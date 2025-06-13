@@ -29,11 +29,12 @@ class UserModel {
 
    public function save(): self {
       global $db;
+      $userCount = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
 
-      if (!ConfigModel::isFirstSetup()){
-        $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
-      } else {
+      if ($userCount === 0){
         $stmt = $db->prepare("INSERT INTO user (id, username, display_name, about, website, mood) VALUES (1, ?, ?, ?, ?, ?)");
+      } else {
+        $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, about=?, website=?, mood=? WHERE id=1");
       }
 
       $stmt->execute([$this->username, $this->displayName, $this->about, $this->website, $this->mood]);

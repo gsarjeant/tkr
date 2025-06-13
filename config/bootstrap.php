@@ -29,6 +29,33 @@ class SetupException extends Exception {
     }
 }
 
+function handle_setup_exception(SetupException $e){
+    switch ($e->getSetupIssue()){
+        case 'storage_missing':
+        case 'storage_permissions':
+        case 'directory_creation':
+        case 'directory_permissions':
+        case 'database_connection':
+        case 'table_creation':
+            // Unrecoverable errors.
+            // Show error message and exit
+            http_response_code(500);
+            echo "<h1>Configuration Error</h1>";
+            echo "<p>" . htmlspecialchars($setupError['message']) . "</p>";
+            exit;
+        case 'table_contents':
+            // Recoverable error.
+            // Redirect to setup if we aren't already headed there.
+            $config = ConfigModel::load();
+            $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+
+            if (strpos($currentPath, 'setup') === false) {
+                header("Location: {$config->basePath}/setup");
+                exit;
+            }
+    }
+}
+
 // Main validation function
 // Any failures will throw a SetupException
 function confirm_setup(): void {

@@ -23,7 +23,8 @@ try {
     exit;
 }
 
-// Everything's loaded. Now we can start ticking.
+// Everything's loaded and setup is confirmed.
+// Let's start ticking.
 global $db;
 $db = get_db();
 $config = ConfigModel::load();

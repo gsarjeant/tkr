@@ -1,7 +1,7 @@
 <?php
 class AuthController extends Controller {
     function showLogin(?string $error = null){
-        $config = ConfigModel::load();
+        global $config;
         $csrf_token = Session::getCsrfToken();
 
         $vars = [
@@ -14,7 +14,7 @@ class AuthController extends Controller {
     }
 
     function handleLogin(){
-        $config = ConfigModel::load();
+        global $config;
 
         $error = '';
 
@@ -48,7 +48,7 @@ class AuthController extends Controller {
 
     function handleLogout(){
         Session::end();
-        $config = ConfigModel::load();
+        global $config;
         header('Location: ' . $config->basePath);
         exit;
     }

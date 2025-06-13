@@ -1,8 +1,8 @@
 <?php
     class MoodController extends Controller {
         public function index(){
-            $config = ConfigModel::load();
-            $user = UserModel::load();
+            global $config;
+            global $user;
             $view = new MoodView();
 
             $moodPicker = $view->render_mood_picker(self::get_emojis_with_labels(), $user->mood);
@@ -23,8 +23,8 @@
                 }
 
                 // Get the data we need
-                $config = ConfigModel::load();
-                $user = UserModel::load();
+                global $config;
+                global $user;
                 $mood = $_POST['mood'];
 
                 // set the mood

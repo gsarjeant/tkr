@@ -3,8 +3,8 @@ class AdminController extends Controller {
     // GET handler
     // render the admin page
     public function index(){
-        $config = ConfigModel::load();
-        $user = UserModel::load();
+        global $config;
+        global $user;
 
         $vars = [
             'user' => $user,
@@ -31,8 +31,8 @@ class AdminController extends Controller {
 
     // save updated settings
     private function save(){
-        $config = ConfigModel::load();
-        $user = UserModel::load();
+        global $config;
+        global $user;
 
         // handle form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

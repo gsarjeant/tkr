@@ -4,8 +4,8 @@ class HomeController extends Controller {
     // renders the homepage view.
     public function index(){
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $config = ConfigModel::load();
-        $user = UserModel::load();
+        global $config;
+        global $user;
 
         $limit = $config->itemsPerPage;
         $offset = ($page - 1) * $limit;
@@ -40,7 +40,7 @@ class HomeController extends Controller {
         }
 
         // get the config
-        $config = ConfigModel::load();
+        global $config;
 
         // redirect to the index (will show the latest tick if one was sent)
         header('Location: ' . $config->basePath);

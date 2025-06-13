@@ -2,8 +2,8 @@
 
 class CssController extends Controller {
     public function index() {
-        $config = ConfigModel::load();
-        $user = UserModel::load();
+        global $config;
+        global $user;
         $customCss = CssModel::load();
 
         $vars = [
@@ -49,7 +49,7 @@ class CssController extends Controller {
     }
 
     public function handlePost() {
-        $config = ConfigModel::load();
+        global $config;
 
         switch ($_POST['action']) {
         case 'upload':

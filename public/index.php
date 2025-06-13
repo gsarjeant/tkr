@@ -25,9 +25,17 @@ try {
 
 // Everything's loaded and setup is confirmed.
 // Let's start ticking.
+
+// Defining these as globals isn't great practice,
+// but this is a small, single-user app and this data will rarely change.
 global $db;
+global $config;
+global $user;
+
 $db = get_db();
 $config = ConfigModel::load();
+$user = UserModel::load();
+
 Session::start();
 Session::generateCsrfToken();
 

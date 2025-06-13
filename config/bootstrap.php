@@ -46,7 +46,7 @@ function handle_setup_exception(SetupException $e){
         case 'table_contents':
             // Recoverable error.
             // Redirect to setup if we aren't already headed there.
-            $config = ConfigModel::load();
+            global $config;
             $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
             if (strpos($currentPath, 'setup') === false) {

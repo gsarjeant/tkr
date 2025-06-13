@@ -3,16 +3,19 @@
 <?php
 $siteTitle = htmlspecialchars($config->siteTitle);
 $siteUrl = htmlspecialchars($config->baseUrl);
-$basePath = $siteUrl . htmlspecialchars($config->basePath);
+$basePath = htmlspecialchars($config->basePath);
 $updated = date(DATE_ATOM, strtotime($ticks[0]['timestamp'] ?? 'now'));
 
 header('Content-Type: application/atom+xml; charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title><?= $siteTitle ?></title>
-  <link ref="<?= $siteUrl ?>feed/atom" rel="self"/>
-  <link href="<?= $siteUrl ?>"/>
+  <title><?= "$siteTitle Atom Feed" ?></title>
+  <link rel="self"
+        type="application/atom+xml"
+        title="<?php echo htmlspecialchars($config->siteTitle) ?> Atom Feed"
+        href="<?php echo htmlspecialchars($siteUrl . $basePath) ?>feed/atom" />
+  <link rel="alternate" href="<?= $siteUrl ?>"/>
   <updated><?= $updated ?></updated>
   <id><?= $siteUrl ?></id>
   <author>
@@ -27,7 +30,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
     [$hour, $minute, $second] = $timeParts;
 
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
-    $tickUrl = htmlspecialchars($basePath . "tick/$tickPath");
+    $tickUrl = htmlspecialchars($siteUrl . $basePath . "tick/$tickPath");
     $tickTime = date(DATE_ATOM, strtotime($tick['timestamp']));
     $tickText = htmlspecialchars($tick['tick']);
 ?>

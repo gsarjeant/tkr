@@ -10,7 +10,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 <rss version="2.0">
 <channel>
     <title>My tkr</title>
-    <link rel="alternate" type="application/rss+xml" title="Tick RSS" href="/tkr/rss/">
+    <link rel="self"
+          type="application/rss+xml"
+          title="<?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed"
+          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/" />
+    <link rel="alternate"
+          type="text/html"
+          href=<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?> />
     <description>My tkr</description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>

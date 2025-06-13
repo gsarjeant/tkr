@@ -19,8 +19,7 @@ load_classes();
 try {
     confirm_setup();
 } catch (SetupException $e) {
-    // TODO - pass to exception handler (maybe also defined in bootstrap to keep this smaller)
-    echo $e->getMessage();
+    handle_setup_exception($e);
     exit;
 }
 

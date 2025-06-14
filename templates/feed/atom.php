@@ -13,11 +13,11 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
   <title><?= "$siteTitle Atom Feed" ?></title>
   <link rel="self"
         type="application/atom+xml"
-        title="<?php echo htmlspecialchars($config->siteTitle, ENT_XML1, 'UTF-8') ?> Atom Feed"
-        href="<?php echo htmlspecialchars($siteUrl . $basePath, ENT_XML1, 'UTF-8') ?>feed/atom">
-  <link rel="alternate" href="<?= $siteUrl . $basePath ?>">
+        title="<?php echo htmlspecialchars($config->siteTitle) ?> Atom Feed"
+        href="<?php echo htmlspecialchars($siteUrl . $basePath) ?>feed/atom" />
+  <link rel="alternate" href="<?= $siteUrl ?>"/>
   <updated><?= $updated ?></updated>
-  <id><?= $siteUrl . $basePath . 'feed/atom'?></id>
+  <id><?= $siteUrl ?></id>
   <author>
         <name><?= $siteTitle ?></name>
   </author>
@@ -30,17 +30,16 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
     [$hour, $minute, $second] = $timeParts;
 
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
-    $tickUrl = htmlspecialchars($siteUrl . $basePath . "tick/$tickPath", ENT_XML1, 'UTF-8');
+    $tickUrl = htmlspecialchars($siteUrl . $basePath . "tick/$tickPath");
     $tickTime = date(DATE_ATOM, strtotime($tick['timestamp']));
-    $tickTitle = htmlspecialchars($tick['tick'], ENT_XML1, 'UTF-8');
-    $tickContent = Util::escape_and_linkify($tick['tick'], ENT_XML1, false);
+    $tickText = htmlspecialchars($tick['tick']);
 ?>
   <entry>
-    <title><?= $tickTitle ?></title>
-    <link rel="alternate" type="text/html" href="<?= $tickUrl ?>"/>
+    <title><?= $tickText ?></title>
+    <link href="<?= $tickUrl ?>"/>
     <id><?= $tickUrl ?></id>
     <updated><?= $tickTime ?></updated>
-    <content type="html"><?= $tickContent ?></content>
+    <content type="html"><?= $tickText ?></content>
   </entry>
 <?php endforeach; ?>
 </feed>

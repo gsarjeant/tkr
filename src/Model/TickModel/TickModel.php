@@ -90,7 +90,7 @@ class TickModel {
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
             if (str_starts_with($line, $timestamp)) {
-                $tick = Util::escape_and_linkify(explode('|', $line)[1]);
+                $tick = explode('|', $line)[1];
 
                 return [
                     'tickTime' => $tickTime,

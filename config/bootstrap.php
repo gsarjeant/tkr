@@ -158,14 +158,14 @@ function create_tables(): void {
         // css table
         $db->exec("CREATE TABLE IF NOT EXISTS css (
             id INTEGER PRIMARY KEY,
-            filename TEXT NOT NULL,
+            filename TEXT UNIQUE NOT NULL,
             description TEXT NULL
         )");
 
         // mood table
         $db->exec("CREATE TABLE IF NOT EXISTS mood (
             id INTEGER PRIMARY KEY,
-            emoji TEXT NOT NULL,
+            emoji TEXT UNIQUE NOT NULL,
             description TEXT NOT NULL
         )");
     } catch (PDOException $e) {

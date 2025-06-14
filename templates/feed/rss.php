@@ -16,7 +16,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
           href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/" />
     <link rel="alternate"
           type="text/html"
-          href=<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?> />
+          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?>" />
     <description>My tkr</description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>

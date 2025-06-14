@@ -56,10 +56,10 @@ class CssController extends Controller {
             $this->handleUpload();
             break;
         case 'set_theme':
-            $this->handleSetTheme($config);
+            $this->handleSetTheme();
             break;
         case 'delete':
-            $this->handleDelete($config);
+            $this->handleDelete();
             break;
         }
 
@@ -67,7 +67,9 @@ class CssController extends Controller {
         exit;
     }
 
-    public function handleDelete(ConfigModel $config): void{
+    public function handleDelete(): void{
+        global $config;
+
         // Don't try to delete the default theme.
         if (!$_POST['selectCssFile']){
             http_response_code(400);
@@ -114,7 +116,9 @@ class CssController extends Controller {
         $config = $config->save();
     }
 
-    private function handleSetTheme(ConfigModel $config) {
+    private function handleSetTheme() {
+        global $config;
+
         if ($_POST['selectCssFile']){
             // Set custom theme
             $config->cssId = $_POST['selectCssFile'];

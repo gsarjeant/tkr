@@ -5,7 +5,7 @@
             global $user;
             $view = new MoodView();
 
-            $moodPicker = $view->render_mood_picker(self::get_emojis_with_labels(), $user->mood);
+            $moodPicker = $view->render_mood_picker(self::getEmojisWithLabels(), $user->mood);
 
             $vars = [
                 'config' => $config,
@@ -15,7 +15,76 @@
             $this->render("mood.php", $vars);
         }
 
-        public function handleMood(){
+        // Shows the custom emoji management page
+        public function showCustomEmoji(){
+            global $config;
+            $emojiList = MoodModel::loadAll();
+
+            $vars = [
+                'config' => $config,
+                'emojiList' => $emojiList,
+            ];
+
+            $this->render("emoji.php", $vars);
+        }
+
+        public function handlePost(): void {
+            global $config;
+
+            switch ($_POST['action']) {
+            case 'add':
+                $emoji = trim($_POST['emoji']);
+                $description = trim($_POST['emoji-description']);
+                $this->handleAdd($emoji, $description);
+                break;
+            case 'delete':
+                if (!empty($_POST['delete_emoji_ids'])){
+                    $this->handleDelete();
+                }
+                break;
+            }
+
+            header('Location: ' . $config->basePath . 'admin/emoji');
+            exit;
+        }
+
+        public function handleAdd(string $emoji, ?string $description=null): void {
+            // Validate 1 visible character in the emoji
+            $charCount = mb_strlen($emoji, 'UTF-8');
+            if ($charCount !== 1) {
+                // TODO - handle error
+                return;
+            }
+    
+            // Validate the emoji is actually an emoji
+            $emojiPattern = '/^[\x{1F000}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{1F900}-\x{1F9FF}\x{1FA70}-\x{1FAFF}]$/u';
+    
+            if (!preg_match($emojiPattern, $emoji)) {
+                // TODO - handle error
+                return;
+            }
+    
+            // emojis should have more bytes than characters
+            $byteCount = strlen($emoji);
+            if ($byteCount <= 1) {
+                // TODO - handle error
+                return;
+            }
+   
+            // It looks like an emoji. Let's add it.
+            MoodModel::add($emoji, $description);
+        }
+
+        public function handleDelete(): void {
+            $ids = $_POST['delete_emoji_ids'];
+
+            if (!empty($ids)) {
+                $moodModel = new MoodModel();
+                $moodModel->delete($ids);
+            }
+        }
+
+        public function handleSetMood(){
             if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['mood'])) {
                 // ensure that the session is valid before proceeding
                 if (!Session::validateCsrfToken($_POST['csrf_token'])) {
@@ -37,8 +106,18 @@
             }
         }
 
-        private static function get_emojis_with_labels(): array {
-            return [
+        private static function getEmojisWithLabels(): array {
+            $customEmoji = MoodModel::loadAll();
+
+            if (!empty($customEmoji)){
+                $custom = [];
+
+                foreach ($customEmoji as $item){
+                    $custom[] = [$item['emoji'], $item['description']];
+                }
+            }
+
+            $emoji = [
                 'faces' => [
                     ['😀', 'grinning face'],
                     ['😄', 'grinning face with smiling eyes'],
@@ -239,9 +318,14 @@
                     ['🛴', 'kick scooter'],
                     ['⛵', 'sailboat'],
                 ],
-            
-                //'custom' => get_user_emojis($db),
             ];
+
+            // add custom emoji if there are any
+            if (isset($custom)){
+                $emoji = ['custom' => $custom] + $emoji;
+            }
+
+            return $emoji;
         }
 }
 ?>

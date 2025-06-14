@@ -9,15 +9,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <rss version="2.0">
 <channel>
-    <title><?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed</title>
-    <link rel="self"
-          type="application/rss+xml"
-          title="<?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed"
-          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/">
-    <link rel="alternate"
-          type="text/html"
-          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?>">
-    <description><?php echo htmlspecialchars($config->siteDescription) ?></description>
+    <title><?php echo htmlspecialchars($config->siteTitle, ENT_XML1, 'UTF-8') ?> RSS Feed</title>
+    <link><?php echo htmlspecialchars($config->baseUrl . $config->basePath, ENT_XML1, 'UTF-8')?></link>
+    <description><?php echo htmlspecialchars($config->siteDescription, ENT_XML1, 'UTF-8') ?></description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>
 <?php foreach ($ticks as $tick):
@@ -29,13 +23,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     [$hour, $minute, $second] = $timeParts;
 
     $tickPath = "$year/$month/$day/$hour/$minute/$second";
+    $tickUrl = $config->baseUrl . $config->basePath . $tickPath;
 ?>
     <item>
-        <title><?php echo htmlspecialchars($tick['tick']); ?></title>
-        <link><?php echo htmlspecialchars($config->baseUrl . $config->basePath . "tick/$tickPath"); ?></link>
-        <description><?php echo htmlspecialchars($tick['tick']); ?></description>
+        <title><?php echo htmlspecialchars($tick['tick'], ENT_XML1, 'UTF-8'); ?></title>
+        <link><?php echo htmlspecialchars($config->baseUrl . $config->basePath . "tick/$tickPath", ENT_XML1, 'UTF-8'); ?></link>
+        <description><?php echo Util::escape_and_linkify($tick['tick'], ENT_XML1, false); ?></description>
         <pubDate><?php echo date(DATE_RSS, strtotime($tick['timestamp'])); ?></pubDate>
-        <guid><?php echo htmlspecialchars($tickPath); ?></guid>
+        <guid><?php echo htmlspecialchars($tickUrl, ENT_XML1, 'UTF-8'); ?></guid>
     </item>
 <?php endforeach; ?>
 </channel>

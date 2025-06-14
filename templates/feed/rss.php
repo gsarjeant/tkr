@@ -7,10 +7,11 @@
 header('Content-Type: application/rss+xml; charset=utf-8');
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
     <title><?php echo htmlspecialchars($config->siteTitle, ENT_XML1, 'UTF-8') ?> RSS Feed</title>
     <link><?php echo htmlspecialchars($config->baseUrl . $config->basePath, ENT_XML1, 'UTF-8')?></link>
+    <atom:link href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath, ENT_XML1, 'UTF-8')?>" rel="self" type="application/rss+xml" />
     <description><?php echo htmlspecialchars($config->siteDescription, ENT_XML1, 'UTF-8') ?></description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>

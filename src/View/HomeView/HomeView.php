@@ -4,8 +4,8 @@ class HomeView {
         ob_start();
         ?>
 
-        <section id="ticks" class="home-ticks">
-            <div class="home-ticks-list">
+        <main id="ticks" class="home-main">
+            <div class="tick-feed">
             <?php foreach ($ticks as $tick): ?>
                 <article class="tick">
                     <div class="tick-time"><?= htmlspecialchars(Util::relative_time($tick['timestamp'])) ?></div>
@@ -13,7 +13,7 @@ class HomeView {
                 </article>
             <?php endforeach; ?>
             </div>
-            <div class="home-ticks-pagination">
+            <div class="tick-pagination">
             <?php if ($page > 1): ?>
                 <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
             <?php endif; ?>
@@ -21,7 +21,7 @@ class HomeView {
                 <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
             <?php endif; ?>
             </div>
-        </section>
+        </main>
 
         <?php return ob_get_clean();
     }

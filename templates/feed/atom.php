@@ -14,8 +14,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
   <link rel="self"
         type="application/atom+xml"
         title="<?php echo htmlspecialchars($config->siteTitle) ?> Atom Feed"
-        href="<?php echo htmlspecialchars($siteUrl . $basePath) ?>feed/atom" />
-  <link rel="alternate" href="<?= $siteUrl ?>"/>
+        href="<?php echo htmlspecialchars($siteUrl . $basePath) ?>feed/atom">
+  <link rel="alternate" href="<?= $siteUrl ?>">
   <updated><?= $updated ?></updated>
   <id><?= $siteUrl ?></id>
   <author>

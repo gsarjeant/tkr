@@ -163,7 +163,7 @@ function create_tables(): void {
         )");
 
         // mood table
-        $db->exec("CREATE TABLE IF NOT EXISTS mood (
+        $db->exec("CREATE TABLE IF NOT EXISTS emoji(
             id INTEGER PRIMARY KEY,
             emoji TEXT UNIQUE NOT NULL,
             description TEXT NOT NULL
@@ -185,7 +185,7 @@ function validate_tables(): void {
     $appTables[] = "settings";
     $appTables[] = "user";
     $appTables[] = "css";
-    $appTables[] = "mood";
+    $appTables[] = "emoji";
 
     $db = get_db();
 

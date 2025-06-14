@@ -9,15 +9,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <rss version="2.0">
 <channel>
-    <title>My tkr</title>
+    <title><?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed</title>
     <link rel="self"
           type="application/rss+xml"
           title="<?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed"
-          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/" />
+          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/">
     <link rel="alternate"
           type="text/html"
-          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?>" />
-    <description>My tkr</description>
+          href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath) ?>">
+    <description><?php echo htmlspecialchars($config->siteDescription) ?></description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>
 <?php foreach ($ticks as $tick):

@@ -5,10 +5,15 @@
         <div class="home-container">
             <section id="sidebar" class="home-sidebar">
                 <div class="home-header">
-                    <h2 class="site-description"><?= $config->siteDescription ?></h2>
+                    <h1 class="site-description"><?= $config->siteDescription ?></h1>
                 </div>
-                <p><?= $user->about ?></p>
+<?php if (!empty($user->about)): ?>
+                <p>About: <?= $user->about ?></p>
+<?php endif ?>
+<?php if (!empty($user->website)): ?>
                 <p>Website: <?= Util::escape_and_linkify($user->website) ?></p>
+<?php endif ?>
+<?php if (!empty($user->mood) || Session::isLoggedIn()): ?>
                 <div class="profile-row">
                     <div class="mood-bar">
                         <span>Current mood: <?= $user->mood ?></span>
@@ -17,6 +22,7 @@
 <?php endif; ?>
                     </div>
                 </div>
+<?php endif; ?>
 <?php if (Session::isLoggedIn()): ?>
                 <hr/>
                 <div class="profile-row">

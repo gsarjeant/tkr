@@ -33,7 +33,10 @@ class MoodView {
         <form method="post" class="emoji-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <?= $this->render_emoji_groups($emojiGroups, $currentMood) ?>
-            <button type="submit">Set the mood</button>
+            <div class="button-group">
+                <button type="submit" name="action" value="set">Set the mood</button>
+                <button type="submit" name="action" value="clear" class="clear-button">Clear mood</button>
+            </div>
         </form>
         <?php
 

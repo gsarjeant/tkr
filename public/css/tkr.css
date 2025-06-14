@@ -77,6 +77,10 @@ fieldset.emoji-group {
     gap: 0.3em;
 }
 
+h1.site-description {
+    font-size: 1.3em;
+}
+
 .delete-emoji-fieldset .fieldset-items {
     display: block;
     grid-template-columns: none;
@@ -293,7 +297,7 @@ label.description {
     font-size: 1.0em;
 }
 
-.pagination a { 
+.tick-pagination a { 
     margin: 0 5px; 
     text-decoration: none; 
 }

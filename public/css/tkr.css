@@ -77,6 +77,16 @@ fieldset.emoji-group {
     gap: 0.3em;
 }
 
+.delete-emoji-fieldset .fieldset-items {
+    display: block;
+    grid-template-columns: none;
+}
+
+.delete-emoji-fieldset button {
+    margin-top: 16px;
+    width: auto;
+}
+
 input[type="text"], 
 input[type="number"], 
 input[type="password"], 

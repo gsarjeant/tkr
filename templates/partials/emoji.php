@@ -24,7 +24,7 @@
 <?php if (!empty($emojiList)): ?>
             <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                <fieldset>
+                <fieldset class="delete-emoji-fieldset">
                     <legend>Delete Emoji</legend>
                     <div class="fieldset-items">
                         <?php foreach ($emojiList as $emojiItem): ?>

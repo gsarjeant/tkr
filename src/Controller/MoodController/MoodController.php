@@ -50,12 +50,15 @@
 
         public function handleAdd(string $emoji, ?string $description=null): void {
             // Validate 1 visible character in the emoji
-            $charCount = mb_strlen($emoji, 'UTF-8');
-            if ($charCount !== 1) {
-                // TODO - handle error
-                return;
+            if (extension_loaded('mbstring')) {
+                // TODO - log a warning if mbstring isn't loaded
+                $charCount = mb_strlen($emoji, 'UTF-8');
+                if ($charCount !== 1) {
+                    // TODO - handle error
+                    return;
+                }
             }
-    
+
             // Validate the emoji is actually an emoji
             $emojiPattern = '/^[\x{1F000}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{1F900}-\x{1F9FF}\x{1FA70}-\x{1FAFF}]$/u';
     

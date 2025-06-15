@@ -36,6 +36,8 @@ $db = get_db();
 $config = ConfigModel::load();
 $user = UserModel::load();
 
+// Start a session and generate a CSRF Token
+// if there isn't already an active session
 Session::start();
 Session::generateCsrfToken();
 
@@ -46,6 +48,24 @@ if (strpos($path, $config->basePath) === 0) {
 
 // strip the trailing slash from the resulting route
 $path = trim($path, '/');
+
+// if this is a POST, make sure there's a valid session
+// if not, redirect to /login or die as appropriate
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($path != 'login'){
+        if (!Session::isValid($_POST['csrf_token'])) {
+            // Invalid session - redirect to /login
+            header('Location: ' . $config->basePath . '/login');
+            exit;
+        }
+    } else {
+        if (!Session::isvalidCsrfToken($_POST['csrf_token'])) {
+            // Just die if the token is invalid on login
+            die('Invalid CSRF token');
+            exit;
+        }
+    }
+}
 
 // Set content type
 header('Content-Type: text/html; charset=utf-8');

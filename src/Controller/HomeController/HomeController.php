@@ -27,12 +27,6 @@ class HomeController extends Controller {
     // Saves the tick and reloads the homepage
     public function handleTick(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {
-            // ensure that the session is valid before proceeding
-            if (!Session::validateCsrfToken($_POST['csrf_token'])) {
-                // TODO: maybe redirect to login? Maybe with tick preserved?
-                die('Invalid CSRF token');
-            }
-
             // save the tick
             if (trim($_POST['tick'])){
                 TickModel::save($_POST['tick']);

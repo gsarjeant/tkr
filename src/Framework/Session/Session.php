@@ -16,18 +16,22 @@ class Session {
         }
     }
 
-    public static function validateCsrfToken($token): bool{
-        return hash_equals($_SESSION['csrf_token'], $token);
-    }
-
     public static function getCsrfToken(): string{
         return $_SESSION['csrf_token'];
     }
 
+    public static function isValidCsrfToken($token): bool{
+        return hash_equals($_SESSION['csrf_token'], $token);
+    }
+
     public static function isLoggedIn(): bool {
-        //echo "UserModel ID set: ". isset($_SESSION['user_id']). "<br/>";
-        //exit;
         return isset($_SESSION['user_id']);
+    }
+
+    // A session is valid if the user is logged in and has a valid csrf token
+    // Test this before processing POST requests
+    public static function isValid(string $token): bool {
+        return self::isLoggedIn() && self::isValidCsrfToken($token);
     }
 
     public static function end(): void {

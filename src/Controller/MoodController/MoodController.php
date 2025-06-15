@@ -17,11 +17,6 @@
 
         public function handlePost(){
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // ensure that the session is valid before proceeding
-                if (!Session::validateCsrfToken($_POST['csrf_token'])) {
-                    die('Invalid CSRF token');
-                }
-
                 // Get the data we need
                 global $config;
                 global $user;

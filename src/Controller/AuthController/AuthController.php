@@ -19,10 +19,6 @@ class AuthController extends Controller {
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!Session::validateCsrfToken($_POST['csrf_token'])) {
-                die('Invalid CSRF token');
-            }
-        
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
  

@@ -1,0 +1,20 @@
+services:
+  php-apache:
+    image: php:8.2-apache
+    container_name: php-apache
+    ports:
+      - "80:80"
+    volumes:
+      - ./config:/var/www/tkr/config
+      - ./public:/var/www/tkr/public
+      - ./src:/var/www/tkr/src
+      - ./storage:/var/www/tkr/storage
+      - ./templates:/var/www/tkr/templates
+      - ./examples/apache/vps/subfolder/my-domain.com.conf:/etc/apache2/sites-enabled/my-domain.com.conf
+    command: >
+      bash -c "a2enmod rewrite headers expires &&
+               a2dissite 000-default &&
+               apache2-foreground &&
+               chown -R www-data:www-data /var/www/tkr/storage"
+
+    restart: unless-stopped

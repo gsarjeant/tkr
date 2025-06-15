@@ -1,0 +1,33 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-server
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/var/www/tkr/public
+      - ./examples/nginx/root/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    restart: unless-stopped
+
+  php:
+    image: php:8.2-fpm-alpine
+    container_name: php-fpm
+    volumes:
+      - ./config:/var/www/tkr/config
+      - ./public:/var/www/tkr/public
+      - ./src:/var/www/tkr/src
+      - ./storage:/var/www/tkr/storage
+      - ./templates:/var/www/tkr/templates
+    command: >
+      sh -c "
+      chown -R www-data:www-data /var/www/tkr/storage &&
+      chmod -R 775 /var/www/tkr/storage &&
+      php-fpm
+      "
+    restart: unless-stopped
+
+volumes:
+  src:
+    driver: local

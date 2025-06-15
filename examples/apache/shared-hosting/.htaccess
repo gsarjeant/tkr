@@ -19,14 +19,20 @@ RewriteRule ^(storage|src|templates|uploads|config)(/.*)?$ - [F,L]
 # Security: Block access to hidden files
 RewriteRule ^\..*$ - [F,L]
 
-# Cache static files for 1 hour
+# Cache CSS files for 1 hour
 <FilesMatch "\.css$">
     Header set Cache-Control "public, max-age=3600"
 </FilesMatch>
 
-# Serve the one static file we allow: css/tkr.css (but not css/custom/)
+# Serve the one static file that exists: css/tkr.css
+# (Pass requests to css/custom/ through to the PHP app)
 RewriteCond %{REQUEST_URI} !^/css/custom/
 RewriteRule ^css/tkr\.css$ public/css/tkr.css [L]
+
+# 404 all other static files (images, js, fonts, etc.)
+# so those requests don't hit the PHP app 
+# (this is to reduce load on the PHP app from bots and scanners)
+RewriteRule \.(js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|zip|mp3|mp4|avi|mov)$ - [R=404,L]
 
 # Everything else goes to the front controller
 RewriteCond %{REQUEST_FILENAME} !-f

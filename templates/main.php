@@ -9,7 +9,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
-              href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css?v=<?= time() ?>">
+              href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css">
 <?php if (!empty($config->cssId)): ?>
         <link rel="stylesheet"
               href="<?= htmlspecialchars($config->basePath) ?>css/custom/<?= htmlspecialchars($config->customCssFilename()) ?>">

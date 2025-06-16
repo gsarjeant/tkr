@@ -11,7 +11,7 @@
                 <p>About: <?= $user->about ?></p>
 <?php endif ?>
 <?php if (!empty($user->website)): ?>
-                <p>Website: <?= Util::escape_and_linkify($user->website) ?></p>
+                <p>Website: <?= Util::linkify(Util::escape_html($user->website)) ?></p>
 <?php endif ?>
 <?php if (!empty($user->mood) || Session::isLoggedIn()): ?>
                 <div class="profile-row">
@@ -27,7 +27,7 @@
                 <hr/>
                 <div class="profile-row">
                     <form class="tick-form" method="post">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                         <textarea name="tick" placeholder="What's ticking?" rows="3"></textarea>
                         <button type="submit" class="submit-btn">Tick</button>
                     </form>

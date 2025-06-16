@@ -8,8 +8,8 @@ class HomeView {
             <div class="tick-feed">
             <?php foreach ($ticks as $tick): ?>
                 <article class="tick">
-                    <div class="tick-time"><?= htmlspecialchars(Util::relative_time($tick['timestamp'])) ?></div>
-                    <span class="tick-text"><?= Util::escape_and_linkify($tick['tick']) ?></span>
+                    <div class="tick-time"><?= Util::escape_html(Util::relative_time($tick['timestamp'])) ?></div>
+                    <span class="tick-text"><?= Util::linkify(Util::escape_html($tick['tick'])) ?></span>
                 </article>
             <?php endforeach; ?>
             </div>

@@ -9,6 +9,20 @@ class AdminController extends Controller {
         $vars = [
             'user' => $user,
             'config' => $config,
+            'isSetup' => false,
+        ];
+
+        $this->render("admin.php", $vars);
+    }
+
+    public function showSetup(){
+        global $config;
+        global $user;
+
+        $vars = [
+            'user' => $user,
+            'config' => $config,
+            'isSetup' => true,
         ];
 
         $this->render("admin.php", $vars);

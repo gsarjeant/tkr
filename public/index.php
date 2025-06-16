@@ -15,17 +15,7 @@ if (preg_match('/\.php$/', $path)) {
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 load_classes();
 
-// Make sure the initial setup is complete
-try {
-    confirm_setup();
-} catch (SetupException $e) {
-    handle_setup_exception($e);
-    exit;
-}
-
-// Everything's loaded and setup is confirmed.
-// Let's start ticking.
-
+// Initialize core entities
 // Defining these as globals isn't great practice,
 // but this is a small, single-user app and this data will rarely change.
 global $db;
@@ -36,11 +26,6 @@ $db = get_db();
 $config = ConfigModel::load();
 $user = UserModel::load();
 
-// Start a session and generate a CSRF Token
-// if there isn't already an active session
-Session::start();
-Session::generateCsrfToken();
-
 // Remove the base path from the URL
 if (strpos($path, $config->basePath) === 0) {
     $path = substr($path, strlen($config->basePath));
@@ -49,9 +34,29 @@ if (strpos($path, $config->basePath) === 0) {
 // strip the trailing slash from the resulting route
 $path = trim($path, '/');
 
-// if this is a POST, make sure there's a valid session
+// Make sure the initial setup is complete
+// unless we're already heading to setup
+if (!($path === 'setup')){
+    try {
+        confirm_setup();
+    } catch (SetupException $e) {
+        handle_setup_exception($e);
+        exit;
+    }
+}
+
+// Everything's loaded and setup is confirmed.
+// Let's start ticking.
+
+// Start a session and generate a CSRF Token
+// if there isn't already an active session
+Session::start();
+Session::generateCsrfToken();
+
+// if this is a POST and we aren't in setup,
+// make sure there's a valid session
 // if not, redirect to /login or die as appropriate
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($method === 'POST' && $path != 'setup') {
     if ($path != 'login'){
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
@@ -59,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } else {
-        if (!Session::isvalidCsrfToken($_POST['csrf_token'])) {
+        if (!Session::isValidCsrfToken($_POST['csrf_token'])) {
             // Just die if the token is invalid on login
             die('Invalid CSRF token');
             exit;

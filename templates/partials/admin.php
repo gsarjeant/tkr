@@ -1,8 +1,11 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var UserModel $user */ ?>
-        <h1>Admin</h1>
+<?php /** @var isSetup bool */ ?>
+        <h1><?php if ($isSetup): ?>Setup<?php else: ?>Admin<?php endif; ?></h1>
         <div>
-            <form method="post">
+            <form
+                action="<?php echo $config->basePath . ($isSetup ? 'setup' : 'admin') ?>"  
+                method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>UserModel settings</legend>
@@ -59,10 +62,20 @@
                 <fieldset>
                     <legend>Change password</legend>
                     <div class="fieldset-items">
-                        <label>New password</label>
-                        <input type="password" name="password">
-                        <label>Confirm new password</label>
-                        <input type="password" name="confirm_password">
+                        <label>New password 
+                            <?php if($isSetup): ?><span class=required>*</span><?php endif; ?>
+                        </label>
+                        <input type="password"
+                               name="password"
+                               <?php if($isSetup): ?>required <?php endif; ?>
+                        >
+                        <label>Confirm new password
+                            <?php if($isSetup): ?><span class=required>*</span><?php endif; ?>
+                        </label>
+                        <input type="password"
+                               name="confirm_password"
+                               <?php if($isSetup): ?>required <?php endif; ?>
+                        >
                     </div>
                 </fieldset>
                 <button type="submit" class="submit-btn">Save Settings</button>

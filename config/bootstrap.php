@@ -50,7 +50,7 @@ function handle_setup_exception(SetupException $e){
             $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
             if (strpos($currentPath, 'setup') === false) {
-                header("Location: {$config->basePath}/setup");
+                header('Location: ' . $config->basePath . 'setup');
                 exit;
             }
     }

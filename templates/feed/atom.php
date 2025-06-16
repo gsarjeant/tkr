@@ -19,7 +19,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
   <updated><?php echo $updated ?></updated>
   <id><?php echo $siteUrl ?></id>
   <author>
-        <name><?= $siteTitle ?></name>
+        <name><?= Util::escape_xml($config->siteTitle) ?></name>
   </author>
 <?php foreach ($ticks as $tick):
     // decompose the tick timestamp into the date/time parts

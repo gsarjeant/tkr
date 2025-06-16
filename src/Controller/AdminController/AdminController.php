@@ -100,11 +100,11 @@ class AdminController extends Controller {
             }
         
             // If a password was sent, make sure it matches the confirmation
-            if ($password && !($password = $confirmPassword)){
+            if ($password && !($password === $confirmPassword)){
                 $errors[] = "Passwords do not match";
             }
         
-            // TODO: Actually handle errors
+            // Validation complete
             if (empty($errors)) {
                 // Update site settings
                 $config->siteTitle = $siteTitle;
@@ -114,6 +114,7 @@ class AdminController extends Controller {
                 $config->itemsPerPage = $itemsPerPage;
             
                 // Save site settings and reload config from database
+                // TODO - raise and handle exception on failure
                 $config = $config->save();
             
                 // Update user profile
@@ -123,19 +124,24 @@ class AdminController extends Controller {
                 $user->website = $website;
             
                 // Save user profile and reload user from database
+                // TODO - raise and handle exception on failure
                 $user = $user->save();
             
                 // Update the password if one was sent
+                // TODO - raise and handle exception on failure
                 if($password){
                     $user->set_password($password);
                 }
+
+                Session::setFlashMessage('success', 'Settings updated');
             } else {
-                echo implode(",", $errors);
-                exit;
+                foreach($errors as $error){
+                    Session::setFlashMessage('error', $error);
+                }
             }
         }
 
-        header('Location: ' . $config->basePath . 'admin');
+        header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
 }

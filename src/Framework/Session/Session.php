@@ -34,6 +34,30 @@ class Session {
         return self::isLoggedIn() && self::isValidCsrfToken($token);
     }
 
+    // valid types are:
+    // - success
+    // - error
+    // - info
+    // - warning
+    public static function setFlashMessage(string $type, string $message): void {
+        if (!isset($_SESSION['flash'][$type])){
+            $_SESSION['flash'][$type] = [];
+        }
+        $_SESSION['flash'][$type][] = $message;
+    }
+
+    public static function getFlashMessages(): ?array {
+        if (isset($_SESSION['flash'])) {
+            $messages = $_SESSION['flash'];
+            unset($_SESSION['flash']);
+            return $messages;
+        }
+    }
+
+    public static function hasFlashMessages(): bool {
+        return isset($_SESSION['flash']) && !empty($_SESSION['flash']);
+    }
+
     public static function end(): void {
         $_SESSION = [];
         session_destroy();

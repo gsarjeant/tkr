@@ -13,6 +13,15 @@ class Controller {
             throw new RuntimeException("Template not found: $childTemplatePath");
         }
 
+        // always check for flash messages and add them if they exist
+        if (Session::hasFlashMessages()){
+            $flashMessages = Session::getFlashMessages();
+            $flashView = new FlashView();
+            $flashSection = $flashView->renderFlashSection($flashMessages);
+
+            $vars['flashSection'] = $flashSection;
+        }
+
         extract($vars, EXTR_SKIP);
         include $templatePath;
     }  

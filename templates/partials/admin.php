@@ -8,7 +8,7 @@
                 method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 <fieldset>
-                    <legend>UserModel settings</legend>
+                    <legend>User settings</legend>
                     <div class="fieldset-items">
                         <label>Username <span class=required>*</span></label>
                         <input type="text"
@@ -16,10 +16,10 @@
                             value="<?= $user->username ?>"
                             required>
                         <label>Display name <span class=required>*</span></label>
-                            <input type="text" 
-                                name="display_name"
-                                value="<?= $user->displayName ?>"
-                                required>
+                        <input type="text" 
+                               name="display_name"
+                               value="<?= $user->displayName ?>"
+                               required>
                         <label>About </label>
                         <input type="text"
                             name="about"

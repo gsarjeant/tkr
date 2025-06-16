@@ -63,7 +63,8 @@ class CssController extends Controller {
             break;
         }
 
-        header('Location: ' . $config->basePath . 'admin/css');
+        // redirect after handling to avoid resubmitting form
+        header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
 
@@ -114,6 +115,9 @@ class CssController extends Controller {
         // Set the theme back to default
         $config->cssId = null;
         $config = $config->save();
+
+        // Set flash message
+        Session::setFlashMessage('success', 'Theme ' . $cssFilename . ' deleted.');
     }
 
     private function handleSetTheme() {
@@ -129,6 +133,9 @@ class CssController extends Controller {
 
         // Update the site theme
         $config = $config->save();
+
+        // Set flash message
+        Session::setFlashMessage('success', 'Theme applied.');
     }
 
     private function handleUpload() {
@@ -179,11 +186,14 @@ class CssController extends Controller {
             // Add upload to database
             $cssModel = new CssModel();
             $cssModel->save($safeFilename, $description);
-
-            return true;
+        
+            // Set success flash message
+            Session::setFlashMessage('success', 'Theme uploaded as ' . $safeFilename);
 
         } catch (Exception $e) {
-           return false; 
+            // Set error flash message
+            // Todo - don't do a global catch like this. Subclass Exception.
+            Session::setFlashMessage('error', 'Upload exception: ' . $e->getMessage());
         }
     }
 

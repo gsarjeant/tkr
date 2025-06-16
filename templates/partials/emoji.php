@@ -18,7 +18,9 @@
                                maxlength="40" minlength="1"
                                placeholder="describe the mood"
                         >
+                        <div></div>
                         <button type="submit" name="action" value="add">Add emoji</button>
+                    </div>
                 </fieldset>
             </form>
 <?php if (!empty($emojiList)): ?>

@@ -1,3 +1,12 @@
+# Example Apache VirtualHost
+# for serving tkr as a subdirectory path
+# on shared hosting via .htaccess
+#
+# e.g. http://www.my-domain.com/tkr
+#
+# This should work without modification if you extract the app
+# to /tkr from your web document root
+
 # Enable mod_rewrite
 RewriteEngine On
 
@@ -14,7 +23,7 @@ RewriteCond %{THE_REQUEST} \s/[^?\s]*\.php[\s?] [NC]
 RewriteRule ^.*$ - [R=404,L]
 
 # Security: Block access to sensitive directories
-RewriteRule ^(storage|src|templates|uploads|config)(/.*)?$ - [F,L]
+RewriteRule ^(storage|src|templates|examples|config)(/.*)?$ - [F,L]
 
 # Security: Block access to hidden files
 RewriteRule ^\..*$ - [F,L]

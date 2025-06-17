@@ -41,7 +41,7 @@ function handle_setup_exception(SetupException $e){
             // Show error message and exit
             http_response_code(500);
             echo "<h1>Configuration Error</h1>";
-            echo "<p>" . htmlspecialchars($setupError['message']) . "</p>";
+            echo "<p>" . Util::escape_html($setupError['message']) . "</p>";
             exit;
         case 'table_contents':
             // Recoverable error.

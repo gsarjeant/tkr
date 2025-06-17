@@ -2,12 +2,9 @@
 <?php /** @var string $csrf_token */ ?>
 <?php /** @var string $error */ ?>
     <h2>Login</h2>
-<?php if ($error): ?>
-    <p style="color:red"><?=  htmlspecialchars($error) ?></p>
-<?php endif; ?>
     <form method="post" action="<?= $config->basePath ?>login">
         <div class="fieldset-items">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+            <input type="hidden" name="csrf_token" value="<?= Util::escape_html($csrf_token) ?>">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>

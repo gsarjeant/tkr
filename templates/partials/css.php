@@ -3,7 +3,7 @@
         <h1>CSS Management</h1>
         <div>
             <form action="<?= $config->basePath ?>admin/css" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>Manage</legend>
                     <div class="fieldset-items">
@@ -20,13 +20,13 @@
 
                             <option value=<?= $cssFile['id'] ?> 
                                     <?= isset($selected) ? $selected : ""?>>
-                                    <?=$cssFile['filename']?>
+                                    <?=Util::escape_html($cssFile['filename'])?>
                             </option>
 <?php endforeach; ?>
                         </select>
 <?php if (isset($cssDescription) && $cssDescription): ?>
                         <label>Description</label>
-                        <label class="description"><?= $cssDescription ?></label>
+                        <label class="description"><?= Util::escape_html($cssDescription) ?></label>
 <?php endif; ?>
                         <div></div>
                         <div>
@@ -38,7 +38,7 @@
                 <fieldset>
                     <legend>Upload</legend>
                     <div class="fieldset-items">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                         <label for="uploadCssFile">Select File to Upload</label>
                         <input type="file" 
                                id="uploadCssFile" 

@@ -4,15 +4,14 @@ class HomeView {
         ob_start();
         ?>
 
-        <main id="ticks" class="home-main">
-            <div class="tick-feed">
+            <ul class="tick-feed">
             <?php foreach ($ticks as $tick): ?>
-                <article class="tick">
+                <li class="tick">
                     <div class="tick-time"><?= Util::escape_html(Util::relative_time($tick['timestamp'])) ?></div>
                     <span class="tick-text"><?= Util::linkify(Util::escape_html($tick['tick'])) ?></span>
-                </article>
+                </li>
             <?php endforeach; ?>
-            </div>
+            </ul>
             <div class="tick-pagination">
             <?php if ($page > 1): ?>
                 <a href="?page=<?= $page - 1 ?>">&laquo; Newer</a>
@@ -21,7 +20,6 @@ class HomeView {
                 <a href="?page=<?= $page + 1 ?>">Older &raquo;</a>
             <?php endif; ?>
             </div>
-        </main>
 
         <?php return ob_get_clean();
     }

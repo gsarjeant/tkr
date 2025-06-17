@@ -16,8 +16,6 @@ class AuthController extends Controller {
     function handleLogin(){
         global $config;
 
-        $error = '';
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
@@ -37,7 +35,10 @@ class AuthController extends Controller {
                 header('Location: ' . $config->basePath);
                 exit;
             } else {
-                $error = 'Invalid username or password';
+                // Set a flash message and reload the login page
+                Session::setFlashMessage('error', 'Invalid username or password');
+                header('Location: ' . $_SERVER['PHP_SELF']);
+                exit;
             }
         }
     }

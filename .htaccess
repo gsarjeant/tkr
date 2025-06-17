@@ -1,0 +1,49 @@
+# Example Apache VirtualHost
+# for serving tkr as a subdirectory path
+# on shared hosting via .htaccess
+#
+# e.g. http://www.my-domain.com/tkr
+#
+# This should work without modification if you extract the app
+# to /tkr from your web document root
+
+# Enable mod_rewrite
+RewriteEngine On
+
+# Security headers
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-XSS-Protection "1; mode=block"
+Header always set X-Content-Type-Options "nosniff"
+
+# Directory index
+DirectoryIndex public/index.php
+
+# Security: Block direct access to .php files (except through rewrites)
+RewriteCond %{THE_REQUEST} \s/[^?\s]*\.php[\s?] [NC]
+RewriteRule ^.*$ - [R=404,L]
+
+# Security: Block access to sensitive directories
+RewriteRule ^(storage|src|templates|examples|config)(/.*)?$ - [F,L]
+
+# Security: Block access to hidden files
+RewriteRule ^\..*$ - [F,L]
+
+# Cache CSS files for 1 hour
+<FilesMatch "\.css$">
+    Header set Cache-Control "public, max-age=3600"
+</FilesMatch>
+
+# Serve the one static file that exists: css/tkr.css
+# (Pass requests to css/custom/ through to the PHP app)
+RewriteCond %{REQUEST_URI} !^/css/custom/
+RewriteRule ^css/tkr\.css$ public/css/tkr.css [L]
+
+# 404 all other static files (images, js, fonts, etc.)
+# so those requests don't hit the PHP app 
+# (this is to reduce load on the PHP app from bots and scanners)
+RewriteRule \.(js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|zip|mp3|mp4|avi|mov)$ - [R=404,L]
+
+# Everything else goes to the front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php [L]

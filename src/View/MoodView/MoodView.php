@@ -7,18 +7,18 @@ class MoodView {
         ?>
 
         <?php foreach ($emojiGroups as $group => $emojis): ?>
-            <fieldset id="<?= htmlspecialchars($group) ?>" class="emoji-group">
+            <fieldset id="<?= Util::escape_html($group) ?>" class="emoji-group">
                 <legend><?= ucfirst($group) ?></legend>
             <?php foreach ($emojis as [$emoji, $description]): ?>
                 <label class="emoji-option">
                     <input
                         type="radio"
                         name="mood"
-                        value="<?= htmlspecialchars($emoji) ?>"
-                        aria-label="<?=htmlspecialchars($description ?? 'emoji') ?>"
+                        value="<?= Util::escape_html($emoji) ?>"
+                        aria-label="<?=Util::escape_html($description ?? 'emoji') ?>"
                         <?= $emoji === $selected_emoji ? 'checked' : '' ?>
                     >
-                    <span><?= htmlspecialchars($emoji) ?></span>
+                    <span><?= Util::escape_html($emoji) ?></span>
                 </label>
             <?php endforeach; ?>
             </fieldset>
@@ -31,7 +31,7 @@ class MoodView {
         ob_start();
         ?>
         <form method="post" class="emoji-form">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
             <?= $this->render_emoji_groups($emojiGroups, $currentMood) ?>
             <div class="button-group">
                 <button type="submit" name="action" value="set">Set the mood</button>

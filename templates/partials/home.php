@@ -3,36 +3,50 @@
 <?php /** @var UserModel $user */ ?>
 <?php /** @var string $tickList */ ?>
         <div class="home-container">
-            <section id="sidebar" class="home-sidebar">
-                <div class="home-header">
-                    <h1 class="site-description"><?= $config->siteDescription ?></h1>
-                </div>
+            <aside id="sidebar" class="home-sidebar">
+                <dl class="profile-data">
+                    <dt>Current Status</dt>
+                    <dd class="profile-greeting">
+                        <span class="greeting-content">
+                            <span class="greeting-text">Hi, I'm <?php echo Util::escape_html($user->displayName) ?></span>
+                            <span class="greeting-mood"><?php echo Util::escape_html($user->mood) ?></span>
+                        </span>
+<?php if (Session::isLoggedIn()): ?>
+                        <a href="<?= $config->basePath ?>mood" class="change-mood">Change mood</a>
+<?php endif ?>
+                    </dd>
 <?php if (!empty($user->about)): ?>
-                <p>About: <?= $user->about ?></p>
+                    <dt>About</dt>
+                    <dd class="profile-about">
+                        <?php echo Util::escape_html($user->about) ?>
+                    </dd>
 <?php endif ?>
 <?php if (!empty($user->website)): ?>
-                <p>Website: <?= Util::linkify(Util::escape_html($user->website)) ?></p>
+                    <dt>Website</dt>
+                    <dd class="profile-website">
+                        <?php echo Util::linkify(Util::escape_html($user->website)) ?>
+                    </dd>
 <?php endif ?>
-<?php if (!empty($user->mood) || Session::isLoggedIn()): ?>
-                <div class="profile-row">
-                    <div class="mood-bar">
-                        <span>Current mood: <?= $user->mood ?></span>
+                </dl>
 <?php if (Session::isLoggedIn()): ?>
-                        <a href="<?= $config->basePath ?>mood">Change</a>
-<?php endif; ?>
-                    </div>
-                </div>
-<?php endif; ?>
-<?php if (Session::isLoggedIn()): ?>
-                <hr/>
-                <div class="profile-row">
+                <div class="profile-tick">
                     <form class="tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
-                        <textarea name="tick" placeholder="What's ticking?" rows="3"></textarea>
+                        <textarea name="tick"
+                                  placeholder="What's ticking?"
+                                  minlength="1" 
+                                  maxlength="200"
+                                  rows="3"></textarea>
                         <button type="submit" class="submit-btn">Tick</button>
                     </form>
                 </div>
 <?php endif; ?>
-            </section>
-            <?php echo $tickList ?>
+            </aside>
+            <main id="ticks" class="home-main">
+                <div class="home-header">
+                    <h1 class="site-description"><?= $config->siteDescription ?></h1>
+                </div>
+                <?php echo $tickList ?>
+            </main>
+
         </div>

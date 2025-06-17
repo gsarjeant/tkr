@@ -9,7 +9,7 @@ class FlashView {
             <?php foreach ($flashMessages as $type => $messages): ?>
                 <?php foreach ($messages as $message): ?>
                     <div class="flash-message flash-<?php echo $type; ?>">
-                        <?php echo htmlspecialchars($message); ?>
+                        <?php echo Util::escape_html($message); ?>
                     </div>
                 <?php endforeach; ?>
             <?php endforeach; ?>

@@ -3,7 +3,7 @@
         <h1>Emoji Management</h1>
         <div>
             <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>Add Emoji</legend>
                     <div class="fieldset-items">
@@ -25,19 +25,19 @@
             </form>
 <?php if (!empty($emojiList)): ?>
             <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset class="delete-emoji-fieldset">
                     <legend>Delete Emoji</legend>
                     <div class="fieldset-items">
                         <?php foreach ($emojiList as $emojiItem): ?>
                             <div class="emoji-checkbox-item">
                                 <input type="checkbox" 
-                                       id="delete_emoji_<?= htmlspecialchars($emojiItem['id']) ?>" 
+                                       id="delete_emoji_<?= Util::escape_html($emojiItem['id']) ?>" 
                                        name="delete_emoji_ids[]" 
-                                       value="<?= htmlspecialchars($emojiItem['id']) ?>">
-                                <label for="delete_emoji_<?= htmlspecialchars($emojiItem['id']) ?>">
-                                    <span class="emoji-display"><?= htmlspecialchars($emojiItem['emoji']) ?></span>
-                                    <span class="emoji-description"><?= htmlspecialchars($emojiItem['description']) ?></span>
+                                       value="<?= Util::escape_html($emojiItem['id']) ?>">
+                                <label for="delete_emoji_<?= Util::escape_html($emojiItem['id']) ?>">
+                                    <span class="emoji-display"><?= Util::escape_html($emojiItem['emoji']) ?></span>
+                                    <span class="emoji-description"><?= Util::escape_html($emojiItem['description']) ?></span>
                                 </label>
                             </div>
                         <?php endforeach; ?>

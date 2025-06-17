@@ -10,19 +10,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
-              href="<?= htmlspecialchars($config->basePath) ?>css/tkr.css">
+              href="<?= Util::escape_html($config->basePath) ?>css/tkr.css">
 <?php if (!empty($config->cssId)): ?>
         <link rel="stylesheet"
-              href="<?= htmlspecialchars($config->basePath) ?>css/custom/<?= htmlspecialchars($config->customCssFilename()) ?>">
+              href="<?= Util::escape_html($config->basePath) ?>css/custom/<?= Util::escape_html($config->customCssFilename()) ?>">
 <?php endif; ?>
         <link rel="alternate"
               type="application/rss+xml"
-              title="<?php echo htmlspecialchars($config->siteTitle) ?> RSS Feed"
-              href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/rss/">   
+              title="<?php echo Util::escape_html($config->siteTitle) ?> RSS Feed"
+              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/rss/">   
         <link rel="alternate"
               type="application/atom+xml"
-              title="<?php echo htmlspecialchars($config->siteTitle) ?> Atom Feed"
-              href="<?php echo htmlspecialchars($config->baseUrl . $config->basePath)?>feed/atom/">   
+              title="<?php echo Util::escape_html($config->siteTitle) ?> Atom Feed"
+              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/atom/">   
     </head>
     <body>
 <?php include TEMPLATES_DIR . '/partials/navbar.php'?>

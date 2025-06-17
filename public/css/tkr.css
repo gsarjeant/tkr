@@ -204,12 +204,13 @@ label.description {
 }
 
 .navbar {
-  overflow: hidden;
+  overflow: visible;
   background: var(--color-bg-white); 
+  display: flex;
+  align-items: center;
 }
 
 .navbar a {
-  float: left;
   font-size: 16px;
   color: var(--color-text-secondary); 
   text-align: center;
@@ -229,41 +230,66 @@ label.description {
 }
 
 /* 
-    Dropdown menu styling
-    https://www.w3schools.com/howto/howto_css_dropdown.asp
+   Using details/summary tags to build dropdowm nmenus.
+   They have to be clicked open and closed, but they allow 
+   me to have semantically appropriate pure HTML dropdowms
+   that work on mobile devices.
 */
-
 .dropdown {
-  float: left;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
-.dropdown .dropbtn {
+.dropdown summary.dropbtn {
   font-size: 16px;  
   border: none;
-  border-radius: 0px; /* overrides default button corner style */
+  border-radius: 0px;
   outline: none;
   color: var(--color-text-secondary);
   padding: 14px 16px;
   background-color: inherit;
   font-family: inherit;
+  font-weight: bold;
   margin: 0;
+  cursor: pointer;
+  list-style: none; /* Remove default arrow */
+  display: block;
+}
+
+/* Remove the default details arrow */
+.dropdown summary.dropbtn::-webkit-details-marker {
+    display: none;
+}
+
+.dropdown summary.dropbtn::-moz-list-bullet {
+    list-style-type: none;
 }
 
 /* Add a downward-facing caret after the button label */
-.dropdown .dropbtn::after {
+.dropdown summary.dropbtn::after {
     content: " ▼";
     font-size: 0.8em;
     margin-left: 4px;
 }
 
-.dropdown:hover .dropbtn {
+/* Rotate the caret when opened */
+.dropdown[open] summary.dropbtn::after {
+    content: " ▲";
+}
+
+.dropdown summary.dropbtn:hover {
   background: var(--color-hover-light);
-  color: var(--color-primary-dark)
+  color: var(--color-primary-dark);
+}
+
+.dropdown summary.dropbtn:focus {
+  background: var(--color-hover-light);
+  color: var(--color-primary-dark);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
 .dropdown-content {
-  display: none;
   position: absolute;
   background-color: var(--color-bg-white);
   border: 1px solid var(--color-border-light);
@@ -271,6 +297,8 @@ label.description {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px var(--shadow-primary);
   z-index: 1;
+  top: 100%;
+  left: 0;
 }
 
 .dropdown-content a {
@@ -291,10 +319,6 @@ label.description {
     outline: none;
     background: var(--color-hover-light);
     box-shadow: 0 0 0 2px var(--shadow-primary);
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
 }
 
 /*

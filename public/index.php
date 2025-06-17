@@ -15,28 +15,13 @@ if (preg_match('/\.php$/', $path)) {
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 load_classes();
 
-// Initialize core entities
-// Defining these as globals isn't great practice,
-// but this is a small, single-user app and this data will rarely change.
+// initialize the database
 global $db;
-global $config;
-global $user;
-
 $db = get_db();
-$config = ConfigModel::load();
-$user = UserModel::load();
-
-// Remove the base path from the URL
-if (strpos($path, $config->basePath) === 0) {
-    $path = substr($path, strlen($config->basePath));
-}
-
-// strip the trailing slash from the resulting route
-$path = trim($path, '/');
 
 // Make sure the initial setup is complete
 // unless we're already heading to setup
-if (!($path === 'setup')){
+if (!(preg_match('/setup$/', $path))) {
     try {
         confirm_setup();
     } catch (SetupException $e) {
@@ -48,10 +33,27 @@ if (!($path === 'setup')){
 // Everything's loaded and setup is confirmed.
 // Let's start ticking.
 
+// Initialize core entities
+// Defining these as globals isn't great practice,
+// but this is a small, single-user app and this data will rarely change.
+global $config;
+global $user;
+
+$config = ConfigModel::load();
+$user = UserModel::load();
+
 // Start a session and generate a CSRF Token
 // if there isn't already an active session
 Session::start();
 Session::generateCsrfToken();
+
+// Remove the base path from the URL
+if (strpos($path, $config->basePath) === 0) {
+    $path = substr($path, strlen($config->basePath));
+}
+
+// strip the trailing slash from the resulting route
+$path = trim($path, '/');
 
 // if this is a POST and we aren't in setup,
 // make sure there's a valid session

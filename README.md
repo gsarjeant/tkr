@@ -19,7 +19,7 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 * PHP 8.2+ with the PDO and PDO_SQLITE extensions
     * The PDO and PDO_SQLITE extensions are usually included by default
     * This might work with earlier PHP versions, but I've only tested 8.2
-    
+
 ## Installation
 
 1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.6.0.zip

@@ -20,7 +20,7 @@ class TickModel {
             // split the path to the current file into the date components
             $pathParts = explode('/', str_replace('\\', '/', $file));
 
-            // assign the different components to the appropriate part of the date 
+            // assign the different components to the appropriate part of the date
             $year = $pathParts[count($pathParts) - 3];
             $month = $pathParts[count($pathParts) - 2];
             $day = pathinfo($pathParts[count($pathParts) - 1], PATHINFO_FILENAME);
@@ -75,18 +75,18 @@ class TickModel {
         $content = $time . "|" . $tick . "\n";
         file_put_contents($filename, $content, FILE_APPEND);
     }
-    
+
     public static function get(string $y, string $m, string $d, string $H, string $i, string $s): array{
         $tickTime = new DateTime("$y-$m-$d $H:$i:$s");
         $timestamp = "$H:$i:$s";
         $file = TICKS_DIR . "/$y/$m/$d.txt";
-            
+
         if (!file_exists($file)) {
             http_response_code(404);
             echo "Tick not found: $file.";
             exit;
         }
-        
+
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
             if (str_starts_with($line, $timestamp)) {

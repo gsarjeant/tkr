@@ -34,7 +34,7 @@
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                         <textarea name="tick"
                                   placeholder="What's ticking?"
-                                  minlength="1" 
+                                  minlength="1"
                                   maxlength="200"
                                   rows="3"></textarea>
                         <button type="submit" class="submit-btn">Tick</button>

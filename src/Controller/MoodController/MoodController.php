@@ -11,7 +11,7 @@
                 'config' => $config,
                 'moodPicker' => $moodPicker,
             ];
-            
+
             $this->render("mood.php", $vars);
         }
 
@@ -33,7 +33,7 @@
                 // set or clear the mood
                 $user->mood = $mood;
                 $user = $user->save();
-            
+
                 // go back to the index and show the updated mood
                 header('Location: ' . $config->basePath);
                 exit;

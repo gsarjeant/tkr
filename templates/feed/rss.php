@@ -12,7 +12,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 <channel>
     <title><?php echo Util::escape_xml($config->siteTitle . 'RSS Feed') ?></title>
     <link><?php echo Util::escape_xml($config->baseUrl . $config->basePath)?></link>
-    <atom:link href="<?php echo Util::escape_xml($config->baseUrl . $config->basePath. 'feed/rss')?>" 
+    <atom:link href="<?php echo Util::escape_xml($config->baseUrl . $config->basePath. 'feed/rss')?>"
                rel="self"
                type="application/rss+xml" />
     <description><?php echo Util::escape_xml($config->siteDescription) ?></description>

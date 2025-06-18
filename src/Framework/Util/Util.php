@@ -24,7 +24,7 @@ class Util {
             },
             $text
         );
-    }    
+    }
 
     // For relative time display, compare the stored time to the current time
     // and display it as "X seconds/minutes/hours/days etc." ago
@@ -59,6 +59,6 @@ class Util {
         [$year, $month, $day] = $dateParts;
         [$hour, $minute, $second] = $timeParts;
 
-        return "$year/$month/$day/$hour/$minute/$second";        
+        return "$year/$month/$day/$hour/$minute/$second";
     }
 }

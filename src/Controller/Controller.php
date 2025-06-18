@@ -24,5 +24,5 @@ class Controller {
 
         extract($vars, EXTR_SKIP);
         include $templatePath;
-    }  
+    }
 }

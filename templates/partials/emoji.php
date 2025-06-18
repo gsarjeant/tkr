@@ -31,9 +31,9 @@
                     <div class="fieldset-items">
                         <?php foreach ($emojiList as $emojiItem): ?>
                             <div class="emoji-checkbox-item">
-                                <input type="checkbox" 
-                                       id="delete_emoji_<?= Util::escape_html($emojiItem['id']) ?>" 
-                                       name="delete_emoji_ids[]" 
+                                <input type="checkbox"
+                                       id="delete_emoji_<?= Util::escape_html($emojiItem['id']) ?>"
+                                       name="delete_emoji_ids[]"
                                        value="<?= Util::escape_html($emojiItem['id']) ?>">
                                 <label for="delete_emoji_<?= Util::escape_html($emojiItem['id']) ?>">
                                     <span class="emoji-display"><?= Util::escape_html($emojiItem['emoji']) ?></span>

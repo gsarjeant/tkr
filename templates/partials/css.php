@@ -11,14 +11,14 @@
                         <select id="selectCssFile" name="selectCssFile" value=<?= $config->cssId ?>>
                             <option value="">Default</option>
 <?php foreach ($customCss as $cssFile): ?>
-    <?php 
+    <?php
         if ($cssFile['id'] == $config->cssId){
             $cssDescription = $cssFile['description'];
             $selected = "selected";
         }
     ?>
 
-                            <option value=<?= $cssFile['id'] ?> 
+                            <option value=<?= $cssFile['id'] ?>
                                     <?= isset($selected) ? $selected : ""?>>
                                     <?=Util::escape_html($cssFile['filename'])?>
                             </option>
@@ -40,9 +40,9 @@
                     <div class="fieldset-items">
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                         <label for="uploadCssFile">Select File to Upload</label>
-                        <input type="file" 
-                               id="uploadCssFile" 
-                               name="uploadCssFile" 
+                        <input type="file"
+                               id="uploadCssFile"
+                               name="uploadCssFile"
                                accept=".css">
                         <div class="file-info">
                             <strong>File Requirements:</strong><br>
@@ -51,8 +51,8 @@
                             • Will be scanned for malicious content
                         </div>
                         <label for="description">Description (optional)</label>
-                        <textarea id="description" 
-                                  name="description" 
+                        <textarea id="description"
+                                  name="description"
                                   placeholder="Describe this CSS file..."></textarea>
                         <div></div>
                         <button type="submit" name="action" value="upload">Upload CSS File</button>

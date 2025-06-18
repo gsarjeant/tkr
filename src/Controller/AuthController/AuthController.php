@@ -19,13 +19,13 @@ class AuthController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
- 
+
             // TODO: move into user model
             global $db;
             $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch();
-        
+
             if ($user && password_verify($password, $user['password_hash'])) {
                 session_regenerate_id(true);
                 // TODO: move into session.php

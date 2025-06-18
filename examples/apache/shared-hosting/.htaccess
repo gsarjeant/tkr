@@ -39,7 +39,7 @@ RewriteCond %{REQUEST_URI} !^/css/custom/
 RewriteRule ^css/tkr\.css$ public/css/tkr.css [L]
 
 # 404 all other static files (images, js, fonts, etc.)
-# so those requests don't hit the PHP app 
+# so those requests don't hit the PHP app
 # (this is to reduce load on the PHP app from bots and scanners)
 RewriteRule \.(js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|zip|mp3|mp4|avi|mov)$ - [R=404,L]
 

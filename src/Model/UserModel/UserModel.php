@@ -46,7 +46,7 @@ class UserModel {
    // loading the password into memory
    public function set_password(string $password): void {
         global $db;
-        
+
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $db->prepare("UPDATE user SET password_hash=? WHERE id=1");
         $stmt->execute([$hash]);

@@ -18,12 +18,12 @@ define('DB_FILE', DATA_DIR . '/tkr.sqlite');
 // Define an exception for validation errors
 class SetupException extends Exception {
     private $setupIssue;
-    
+
     public function __construct(string $message, string $setupIssue = '', int $code = 0, Throwable $previous = null) {
         parent::__construct($message, $code, $previous);
         $this->setupIssue = $setupIssue;
     }
-    
+
     public function getSetupIssue(): string {
         return $this->setupIssue;
     }

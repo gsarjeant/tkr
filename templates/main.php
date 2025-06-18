@@ -18,11 +18,11 @@
         <link rel="alternate"
               type="application/rss+xml"
               title="<?php echo Util::escape_html($config->siteTitle) ?> RSS Feed"
-              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/rss/">   
+              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/rss/">
         <link rel="alternate"
               type="application/atom+xml"
               title="<?php echo Util::escape_html($config->siteTitle) ?> Atom Feed"
-              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/atom/">   
+              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/atom/">
     </head>
     <body>
 <?php include TEMPLATES_DIR . '/partials/navbar.php'?>

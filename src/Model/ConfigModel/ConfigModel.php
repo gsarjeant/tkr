@@ -36,11 +36,11 @@ class ConfigModel {
         if (empty($this->cssId)) {
             return null;
         }
-    
+
         // Fetch filename from css table using cssId
         $cssModel = new CssModel();
         $cssRecord = $cssModel->getById($this->cssId);
-    
+
         return $cssRecord ? $cssRecord['filename'] : null;
     }
 

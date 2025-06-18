@@ -51,13 +51,13 @@ class AdminController extends Controller {
         // handle form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = [];
-        
+
             // UserModel profile
             $username        = trim($_POST['username'] ?? '');
             $displayName     = trim($_POST['display_name'] ?? '');
             $about           = trim($_POST['about'] ?? '');
             $website         = trim($_POST['website'] ?? '');
-        
+
             // Site settings
             $siteTitle       = trim($_POST['site_title']) ?? '';
             $siteDescription = trim($_POST['site_description']) ?? '';
@@ -68,7 +68,7 @@ class AdminController extends Controller {
             // Password
             $password                = $_POST['password'] ?? '';
             $confirmPassword         = $_POST['confirm_password'] ?? '';
-        
+
             // Validate user profile
             if (!$username) {
                 $errors[] = "Username is required.";
@@ -87,7 +87,7 @@ class AdminController extends Controller {
                     $errors[] = "URL must start with http:// or https://.";
                 }
             }
-        
+
             // Validate site settings
             if (!$siteTitle) {
                 $errors[] = "Site title is required.";
@@ -98,12 +98,12 @@ class AdminController extends Controller {
             if ($itemsPerPage < 1 || $itemsPerPage > 50) {
                 $errors[] = "Items per page must be a number between 1 and 50.";
             }
-        
+
             // If a password was sent, make sure it matches the confirmation
             if ($password && !($password === $confirmPassword)){
                 $errors[] = "Passwords do not match";
             }
-        
+
             // Validation complete
             if (empty($errors)) {
                 // Update site settings
@@ -112,21 +112,21 @@ class AdminController extends Controller {
                 $config->baseUrl = $baseUrl;
                 $config->basePath = $basePath;
                 $config->itemsPerPage = $itemsPerPage;
-            
+
                 // Save site settings and reload config from database
                 // TODO - raise and handle exception on failure
                 $config = $config->save();
-            
+
                 // Update user profile
                 $user->username = $username;
                 $user->displayName = $displayName;
                 $user->about = $about;
                 $user->website = $website;
-            
+
                 // Save user profile and reload user from database
                 // TODO - raise and handle exception on failure
                 $user = $user->save();
-            
+
                 // Update the password if one was sent
                 // TODO - raise and handle exception on failure
                 if($password){

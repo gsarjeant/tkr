@@ -76,7 +76,7 @@ class CssController extends Controller {
             http_response_code(400);
             exit("Cannot delete default theme");
         }
-        
+
         // Get the data for the selected CSS file
         $cssId = $_POST['selectCssFile'];
         $cssModel = new CssModel();
@@ -87,7 +87,7 @@ class CssController extends Controller {
             http_response_code(400);
             exit("No entry found for css id $cssId");
         }
-        
+
         // get the filename
         $cssFilename = $cssRow["filename"];
 
@@ -151,7 +151,7 @@ class CssController extends Controller {
             // Validate file extension
             $filename = $file['name'];
             $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            
+
             if ($fileExtension !== 'css') {
                 throw new Exception('File must have a .css extension');
             }
@@ -186,7 +186,7 @@ class CssController extends Controller {
             // Add upload to database
             $cssModel = new CssModel();
             $cssModel->save($safeFilename, $description);
-        
+
             // Set success flash message
             Session::setFlashMessage('success', 'Theme uploaded as ' . $safeFilename);
 
@@ -200,11 +200,11 @@ class CssController extends Controller {
     private function validateCssContent($content) {
         // Remove comments
         $content = preg_replace('/\/\*.*?\*\//s', '', $content);
-        
+
         // Basic CSS validation - check for balanced braces
         $openBraces = substr_count($content, '{');
         $closeBraces = substr_count($content, '}');
-        
+
         if ($openBraces !== $closeBraces) {
             throw new Exception('Invalid CSS: Unbalanced braces detected');
         }
@@ -261,7 +261,7 @@ class CssController extends Controller {
         // Remove path information and dangerous characters
         $fileName = basename($originalName);
         $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $fileName);
-        
+
         return $fileName;
     }
 

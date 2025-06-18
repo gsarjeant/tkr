@@ -8,7 +8,7 @@
     --color-primary-light: #bae6fd;
     --color-primary-lighter: #ebf8ff;
     --color-primary-lightest: #f0f9ff;
-    
+
     /* Text colors */
     --color-text-primary: #374151;
     --color-text-secondary: #1e40af;
@@ -16,25 +16,25 @@
     --color-text-muted: gray;
     --color-text-black: black;
     --color-text-dark: #333;
-    
+
     /* Background colors */
     --color-bg-body: whitesmoke;
     --color-bg-white: white;
     --color-bg-light: #fefefe;
     --color-bg-file: #f8fafc;
-    
+
     /* Border colors */
     --color-border-light: #e5e7eb;
     --color-border-medium: #d1d5db;
     --color-border-file: #cbd5e0;
-    
+
     /* State colors */
     --color-required: #dc2626;
     --color-hover-light: #dbeafe;
     --color-hover-medium: #bfdbfe;
     --color-emoji-bg: #ddeeff;
     --color-emoji-border: #339;
-    
+
     /* Shadow colors */
     --shadow-primary: rgba(66, 153, 225, 0.1);
     --shadow-primary-strong: rgba(66, 153, 225, 0.3);
@@ -108,9 +108,9 @@ h1.site-description {
     width: auto;
 }
 
-input[type="text"], 
-input[type="number"], 
-input[type="password"], 
+input[type="text"],
+input[type="number"],
+input[type="password"],
 textarea,
 select {
     width: 100%;
@@ -124,9 +124,9 @@ select {
     box-sizing: border-box;
 }
 
-input[type="text"]:focus, 
-input[type="number"]:focus, 
-input[type="password"]:focus, 
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
@@ -205,14 +205,14 @@ label.description {
 
 .navbar {
   overflow: visible;
-  background: var(--color-bg-white); 
+  background: var(--color-bg-white);
   display: flex;
   align-items: center;
 }
 
 .navbar a {
   font-size: 16px;
-  color: var(--color-text-secondary); 
+  color: var(--color-text-secondary);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -229,9 +229,9 @@ label.description {
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
-/* 
+/*
    Using details/summary tags to build dropdowm nmenus.
-   They have to be clicked open and closed, but they allow 
+   They have to be clicked open and closed, but they allow
    me to have semantically appropriate pure HTML dropdowms
    that work on mobile devices.
 */
@@ -241,7 +241,7 @@ label.description {
 }
 
 .dropdown summary.dropbtn {
-  font-size: 16px;  
+  font-size: 16px;
   border: none;
   border-radius: 0px;
   outline: none;
@@ -424,13 +424,13 @@ label.description {
 
 /* Styling for flash messages */
 .flash-messages {
-    background: var(--color-bg-white); 
+    background: var(--color-bg-white);
     margin-top: 10px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px var(--shadow-primary);
 }
-        
+
 .flash-message {
     padding: 12px 16px;
     margin: 5px 0;
@@ -462,7 +462,7 @@ label.description {
     border-left-color: var(--color-flash-info-border-left);
     color: var(--color-flash-info);
 }
-        
+
 .fieldset-items {
     margin-bottom: 14px;
     display: grid;
@@ -532,7 +532,7 @@ label.description {
 }
 
 .tick-time {
-    color: var(--color-text-muted); 
+    color: var(--color-text-muted);
     font-size: 0.8em;
     margin-bottom: 0.4em;
 }
@@ -543,9 +543,9 @@ label.description {
     display: block;
 }
 
-.tick-pagination a { 
-    margin: 0 5px; 
-    text-decoration: none; 
+.tick-pagination a {
+    margin: 0 5px;
+    text-decoration: none;
 }
 
 .emoji-option input {
@@ -616,7 +616,7 @@ label.description {
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
-/* 
+/*
     Responsive layout - adjusts from 1 to 2 columns based on screen width
         - min-width makes the mobile (stacked) view the default
         - 600px covers most mobile devices in portrait mode
@@ -633,7 +633,7 @@ label.description {
         padding-top: 10px;
         margin-bottom: 0;
     }
-            
+
     .home-container {
         grid-template-columns: 1fr 2fr;
         grid-gap: 2em;
@@ -646,7 +646,7 @@ label.description {
         gap: 16px;
         align-items: start;
     }
-           
+
     .file-info {
         grid-column: 2;
     }
@@ -654,7 +654,7 @@ label.description {
     .navbar {
         flex-wrap: wrap;
     }
-            
+
     .dropdown-menu {
         position: fixed;
         left: 1em;

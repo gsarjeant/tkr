@@ -4,7 +4,7 @@
         <h1><?php if ($isSetup): ?>Setup<?php else: ?>Admin<?php endif; ?></h1>
         <div>
             <form
-                action="<?php echo $config->basePath . ($isSetup ? 'setup' : 'admin') ?>"  
+                action="<?php echo $config->basePath . ($isSetup ? 'setup' : 'admin') ?>"
                 method="post">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
@@ -16,7 +16,7 @@
                             value="<?= Util::escape_html($user->username) ?>"
                             required>
                         <label>Display name <span class=required>*</span></label>
-                        <input type="text" 
+                        <input type="text"
                                name="display_name"
                                value="<?= Util::escape_html($user->displayName) ?>"
                                required>
@@ -36,7 +36,7 @@
                         <label>Title <span class=required>*</span></label>
                         <input type="text"
                             name="site_title"
-                            value="<?= Util::escape_html($config->siteTitle) ?>" 
+                            value="<?= Util::escape_html($config->siteTitle) ?>"
                             required>
                         <label>Description <span class=required>*</span></label>
                         <input type="text"
@@ -47,7 +47,7 @@
                             name="base_url"
                             value="<?= Util::escape_html($config->baseUrl) ?>"
                             required>
-                        <label>Base path <span class=required>*</span></label> 
+                        <label>Base path <span class=required>*</span></label>
                         <input type="text"
                             name="base_path"
                             value="<?= Util::escape_html($config->basePath) ?>"
@@ -62,7 +62,7 @@
                 <fieldset>
                     <legend>Change password</legend>
                     <div class="fieldset-items">
-                        <label>New password 
+                        <label>New password
                             <?php if($isSetup): ?><span class=required>*</span><?php endif; ?>
                         </label>
                         <input type="password"

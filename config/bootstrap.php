@@ -41,16 +41,19 @@ function handle_setup_exception(SetupException $e){
             // Show error message and exit
             http_response_code(500);
             echo "<h1>Configuration Error</h1>";
-            echo "<p>" . Util::escape_html($setupError['message']) . "</p>";
+            echo "<p>" . Util::escape_html($e->getSetupIssue) . '-' . Util::escape_html($e->getMessage()) . "</p>";
             exit;
         case 'table_contents':
             // Recoverable error.
             // Redirect to setup if we aren't already headed there.
-            $config = ConfigModel::load();
+            // NOTE: Just read directly from init.php instead of
+            //       trying to use the config object. This is the initial
+            //       setup. It shouldn't assume anything can be loaded.
+            $init = require APP_ROOT . '/config/init.php';
             $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
             if (strpos($currentPath, 'setup') === false) {
-                header('Location: ' . $config->basePath . 'setup');
+                header('Location: ' . $init['base_path'] . 'setup');
                 exit;
             }
     }
@@ -92,7 +95,7 @@ function validate_storage_subdirs(): void {
 
     foreach($storageSubdirs as $storageSubdir){
         if (!is_dir($storageSubdir)) {
-            if (!mkdir($dir, 0770, true)) {
+            if (!mkdir($storageSubdir, 0770, true)) {
                 throw new SetupException(
                     "Failed to create required directory: $dir",
                     'directory_creation'

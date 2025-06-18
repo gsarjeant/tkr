@@ -15,10 +15,6 @@ if (preg_match('/\.php$/', $path)) {
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 load_classes();
 
-// initialize the database
-global $db;
-$db = get_db();
-
 // Make sure the initial setup is complete
 // unless we're already heading to setup
 if (!(preg_match('/setup$/', $path))) {
@@ -29,6 +25,10 @@ if (!(preg_match('/setup$/', $path))) {
         exit;
     }
 }
+
+// initialize the database
+global $db;
+$db = get_db();
 
 // Everything's loaded and setup is confirmed.
 // Let's start ticking.

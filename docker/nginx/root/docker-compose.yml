@@ -6,7 +6,7 @@ services:
       - "80:80"
     volumes:
       - ./public:/var/www/tkr/public
-      - ./examples/nginx/root/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/root/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
     restart: unless-stopped

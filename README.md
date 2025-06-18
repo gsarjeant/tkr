@@ -2,7 +2,28 @@
 
 A lightweight, HTML-only status feed for self-hosted personal websites. Written in PHP. Heavily inspired by [status.cafe](https://status.cafe).
 
-![tkr homepage](https://subcultureofone.org/images/tkr/tkr-homepage.png)
+## Screenshots
+
+### Mobile
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile.png"
+     alt="tkr logged out view - mobile"
+     width="40%" height="40%">
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile.png"
+     alt="tkr logged in view - mobile"
+     width="40%" height="40%">
+
+### Desktop
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-desktop.png"
+     alt="tkr logged in view - desktop"
+     width="60%" height="60%">
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-desktop.png"
+     alt="tkr logged in view - desktop"
+     width="60%" height="60%">
+
+
 
 ## Features
 
@@ -10,6 +31,8 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 * RSS `/feed/rss` and Atom `/feed/atom` feeds
 * CSS uploads for custom theming
 * Custom emoji to personalize moods (unicode only)
+
+I'm trying to make sure that the HTML is both semantically valid and accessible, but I have a lot to learn about both. If you see something I should fix, please let me know!
 
 ## Prerequisites
 
@@ -27,18 +50,25 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 1. Copy the `tkr` directory to the location you want to serve it from
     * on debian-based systems, `/var/www/tkr` is recommended
 1. Make the `storage` directory writable by the web server account.
-    * For example, on nginx on debian-based distributions:
     ```sh
     chown www-data:www-data /path/to/tkr/storage
+    chmod 0770 /path/to/tkr/storage
     ```
-1. Add the necessary web server configuration
-    * Examples for common deployment scenarios, including documentation, are in the examples directory.
+1. Add the necessary web server configuration.
+    * Examples for common scenarios can be found in the [examples](./examples) directory.
+        * Apache VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/apache/vps/root](./examples/apache/vps/root)
+        * Apache VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/apache/vps/subfolder](./examples/apache/vps/subfolder)
+        * Nginx VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/nginx/root](./examples/nginx/root)
+        * Nginx VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/nginx/subfolder](./examples/nginx/subfolder)
+    * Any values that need to be configured for your environment are labeled with `CONFIG`.
+    * The SSL configurations are basic, but should work. For more robust SSL configurations, see https://ssl-config.mozilla.org
 
-## From git
+
+### From git
 
 If you'd prefer to install from git:
 
-1. Clone this directoryand copy the `/tkr` directory to your web server.
+1. Clone this directory and copy the `/tkr` directory to your web server.
     * Required subdirectories are:
         1. `config`
         1. `public`
@@ -46,7 +76,7 @@ If you'd prefer to install from git:
         1. `storage`
         1. `templates`
     * Exclude the other directories
-2. Follow the main installation from step 2.
+2. Follow the main installation from step 4.
 
 ## Initial configuration
 
@@ -71,7 +101,7 @@ The document root should be `/PATH/TO/tkr/public`. This will ensure that only th
 There is an `.htaccess` file in the `tkr/` root directory. It's designed for the following installation scenario:
 
 * shared hosting
-* `tkr/` is deployed installed to `tkr/` under your web root. (e.g. `public_html/tkr`).
+* `tkr/` is installed to `tkr/` under your web root. (e.g. `public_html/tkr`).
 * `tkr/public` is the document root
 * The other application directories are blocked both by `tkr/.htaccess` and by `.htaccess` files in the directories themselves. These are:
     * `tkr/config`
@@ -80,16 +110,12 @@ There is an `.htaccess` file in the `tkr/` root directory. It's designed for the
     * `tkr/storage`
     * `tkr/templates`
 
-There are example configurations for other common scenarios in the [examples](./examples) directory.
-
-* Apache VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/apache/vps/root](./examples/apache/vps/subdomain)
-* Apache VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/apache/vps/subfolder](./examples/apache/vps/subfolder)
-* Nginx VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/nginx/root](./examples/nginx/subfolder)
-* Nginx VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/nginx/subfolder](./examples/nginx/subfolder)
 
 ### Docker compose
 
-The example directories contain docker-compose.yml files for the different configurations. To run tkr locally on your machine, copy the docker-compose file you're interested in to `tkr/` and run `docker compose up`.
+The [docker](./docker) directory contains docker-compose.yml files and web server configs for some different server configurations. For simplicity, these do not use SSL.
+
+To run tkr locally on your machine, copy the docker-compose file you're interested in to `tkr/` and run `docker compose up`.
 
 ## Storage
 
@@ -109,7 +135,7 @@ For illustration, here's a sample from the file `/tkr/storage/ticks/2025/05/25` 
 
 ### SQLite Database
 
-tkr stores profile information, custom emojis, and uploaded css metadata in a SQLite database located at `tkr/storage/db`.
+tkr stores profile information, custom emojis, and uploaded css metadata in a SQLite database located at `tkr/storage/db/tkr.sqlite`.
 
 You don't have to do any database setup. The database is automatically created and initialized on first run.
 

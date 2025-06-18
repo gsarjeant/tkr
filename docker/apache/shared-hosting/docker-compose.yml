@@ -10,7 +10,7 @@ services:
       - ./src:/var/www/html/tkr/src
       - ./storage:/var/www/html/tkr/storage
       - ./templates:/var/www/html/tkr/templates
-      - ./examples/apache/shared-hosting/.htaccess:/var/www/html/tkr/.htaccess
+      - ./docker/apache/shared-hosting/.htaccess:/var/www/html/tkr/.htaccess
     command: >
       bash -c "a2enmod rewrite headers expires &&
                apache2-foreground &&

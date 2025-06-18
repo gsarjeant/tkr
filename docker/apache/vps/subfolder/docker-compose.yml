@@ -10,9 +10,10 @@ services:
       - ./src:/var/www/tkr/src
       - ./storage:/var/www/tkr/storage
       - ./templates:/var/www/tkr/templates
-      - ./examples/apache/vps/root/tkr.my-domain.com.conf:/etc/apache2/sites-enabled/tkr.my-domain.com.conf
+      - ./docker/apache/vps/subfolder/my-domain.com.conf:/etc/apache2/sites-enabled/my-domain.com.conf
     command: >
       bash -c "a2enmod rewrite headers expires &&
+               a2dissite 000-default &&
                apache2-foreground &&
                chown -R www-data:www-data /var/www/tkr/storage"
 

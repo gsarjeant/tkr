@@ -1,30 +1,105 @@
 # tkr
 
-A bare-bones status feed for self-hosted personal websites.
+A lightweight, HTML-only status feed for self-hosted personal websites. Written in PHP. Heavily inspired by [status.cafe](https://status.cafe).
 
-Currently very much a work in progress, but it's baically functional.
+![tkr homepage](https://subcultureofone.org/images/tkr/tkr-homepage.png)
 
-## How it works
+## Features
 
-Deploy the `/tkr` directory to a web server that supports php. It will work either as the root of a (sub)domain (e.g. tky.mydomain.com) or if served from a subdirectory (e.g. mydomain.com/tkr).
+* HTML and CSS implementation. No Javascript.
+* RSS `/feed/rss` and Atom `/feed/atom` feeds
+* CSS uploads for custom theming
+* Custom emoji to personalize moods (unicode only)
 
-If you serve it from a subdirectory, set the value of `$basePath` in `config/init.php` to the subdirectory name, excluding the trailing slash (e.g. `/tkr`)
+## Prerequisites
 
-It provides an rss feed at `/rss` and an atom feed at `/atom` relative to where it's being served (e.g. `/tkr/rss` if served from `/tkr/`). Each rss entry links to an individual post (which I call "ticks").
+* A web server with PHP support, such as:
+    * Apache with mod_php
+    * nginx and php-fpm
+* PHP 8.2+ with the PDO and PDO_SQLITE extensions
+    * The PDO and PDO_SQLITE extensions are usually included by default
+    * This might work with earlier PHP versions, but I've only tested 8.2
+    
+## Installation
 
-## Serving
+1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.6.0.zip
+1. Copy the .zip file to your server and extract it
+1. Copy the `tkr` directory to the location you want to serve it from
+    * on debian-based systems, `/var/www/tkr` is recommended
+1. Make the `storage` directory writable by the web server account.
+    * For example, on nginx on debian-based distributions:
+    ```sh
+    chown www-data:www-data /path/to/tkr/storage
+    ```
+1. Add the necessary web server configuration
+    * Examples for common deployment scenarios, including documentation, are in the examples directory.
+
+## From git
+
+If you'd prefer to install from git:
+
+1. Clone this directoryand copy the `/tkr` directory to your web server.
+    * Required subdirectories are:
+        1. `config`
+        1. `public`
+        1. `src`
+        1. `storage`
+        1. `templates`
+    * Exclude the other directories
+2. Follow the main installation from step 2.
+
+## Initial configuration
+
+1. Edit `config/init.php` to set the domain and base path correctly for your configuration.
+    * subdirectory installation (e.g. https://my-domain.com/tkr)
+    ```
+    'base_url' => 'https://my-domain.com',
+    'base_path' => '/tkr/',
+    ```
+    * subdomain installation (e.g. https://tkr.my-domain.com)
+    ```
+    'base_url' => 'https://tkr.my-domain.com',
+    'base_path' => '/',
+    ```
+1. Browse to your tkr URL. You'll be presented with the setup screen to complete initial configuration.
+![tkr setup page](https://subcultureofone.org/images/tkr/tkr-setup.png)
+
+## Server configuration notes
 
 The document root should be `/PATH/TO/tkr/public`. This will ensure that only the files that need to be accessible from the internet are served by your web server.
 
+There is an `.htaccess` file in the `tkr/` root directory. It's designed for the following installation scenario:
+
+* shared hosting
+* `tkr/` is deployed installed to `tkr/` under your web root. (e.g. `public_html/tkr`).
+* `tkr/public` is the document root
+* The other application directories are blocked both by `tkr/.htaccess` and by `.htaccess` files in the directories themselves. These are:
+    * `tkr/config`
+    * `tkr/examples` (not technically an application directory, but distributed with the .zip archive)
+    * `tkr/src`
+    * `tkr/storage`
+    * `tkr/templates`
+
+There are example configurations for other common scenarios in the [examples](./examples) directory.
+
+* Apache VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/apache/vps/root](./examples/apache/vps/subdomain)
+* Apache VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/apache/vps/subfolder](./examples/apache/vps/subfolder)
+* Nginx VPS, subdomain (e.g. `https://tkr.your-domain.com`): [examples/nginx/root](./examples/nginx/subfolder)
+* Nginx VPS, subfolder (e.g. `https://your-domain.com/tkr`): [examples/nginx/subfolder](./examples/nginx/subfolder)
+
+### Docker compose
+
+The example directories contain docker-compose.yml files for the different configurations. To run tkr locally on your machine, copy the docker-compose file you're interested in to `tkr/` and run `docker compose up`.
+
 ## Storage
 
-Ticks are stored in files on the filesystem under `/tkr/ticks`. This directory must be writable by the web server user and so SHOULD NOT be served by the web server. If you set your document root to `/tkr/public/`, then you'll be fine.
+Ticks are stored in files on the filesystem under `/tkr/storage/ticks`. This directory must be writable by the web server user and so SHOULD NOT be served by the web server. If you set your document root to `/tkr/public/`, then you'll be fine.
 
-The file structure is `YYYY/MM/DD.txt`. That is, each day's ticks are located in a file whose full path is `/tkr/ticks/YEAR/MONTH/DAY.txt`. This is to prevent any single file from getting too large.
+The file structure is `YYYY/MM/DD.txt`. That is, each day's ticks are located in a file whose full path is `/tkr/storage/ticks/YEAR/MONTH/DAY.txt`. This is to prevent any single file from getting too large.
 
 Each entry takes the form `TIMESTAMP|TICK`, where `TIMESTAMP` is the time that the entry was made and `TICK` is the text of the entry.
 
-For illustration, here's a sample from the file `/tkr/ticks/2025/05/25` on my test system.
+For illustration, here's a sample from the file `/tkr/storage/ticks/2025/05/25` on my test system.
 
 ```sh
 # cat /tkr/ticks/2025/05/25.txt
@@ -32,39 +107,19 @@ For illustration, here's a sample from the file `/tkr/ticks/2025/05/25` on my te
 23:27:45|some more, stuff
 ```
 
-## Initial config
+### SQLite Database
 
-I'll write this up when I improve it.
+tkr stores profile information, custom emojis, and uploaded css metadata in a SQLite database located at `tkr/storage/db`.
 
-## Sample images
-
-Logged out
-
-![tkr homepage - logged out](https://subcultureofone.org/images/tkr-logged-out.png)
-
-Logged in
-
-![tkr homepage - logged in](https://subcultureofone.org/images/tkr-logged-in.png)
-
-RSS
-
-![tkr rss feed](https://subcultureofone.org/images/tkr-rss.png)
-
-Single tick
-
-![tkr single post](https://subcultureofone.org/images/tkr-single.png)
+You don't have to do any database setup. The database is automatically created and initialized on first run.
 
 ## TODO
 
-* An actual setup script
-* Validate CSRF token on tick submission
-* Let people set the time zone for ticks
-* Support basic custom styling
-* Do that config improvement I implied in the previous section
-* See if I can get individual ticks to resolve as urls (e.g. /2025/05/26/00/12) rather than doing the query string thing
-* Clean up the nginx configs
-* Add an .htaccess example
-* Maybe h-feed or JSON feed?
-* Microformat support?
-* A little more profile info?
+* Validate HTML semantics on all pages
+* Validate accessibility on all pages
+* Add logging, including log viewer screen
+* Improve exception handling
+* Support microformats
+* Support h-feed and JSON
+* Allow customization of time zone and time display for ticks
 * Probably a bunch of other stuff I'm not thinking of

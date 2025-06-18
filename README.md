@@ -139,10 +139,19 @@ tkr stores profile information, custom emojis, and uploaded css metadata in a SQ
 
 You don't have to do any database setup. The database is automatically created and initialized on first run.
 
+## Acknowledgements
+
+It's been a lot of fun to get back to building something. I'm grateful to the people and projects that inspired me to do it:
+
+* [armaina](https://armaina.com) - Armaina's a talented artist (check out the site!) who had the original idea for a self-hosted PHP version of status.cafe. That sounded like a fun project so I thought I'd see if I could manage it. This project doesn't exist without Armaina. Thank you!
+* [status.cafe](https://status.cafe) - The technological inspiration. Unless you really want to self-host, you should use status.cafe instead! I took a lot of inspiration from its design and then I made the CSS way heavier and probably lost some of the soul along the way.
+* [32-bit cafe](https://discourse.32bit.cafe/categories) - I started in technology as a hobbyist and idealist. Then I became a professional. The decades since have sucked the joy and the hope out of technology. 32-bit cafe reminded me that they're both still there.
+
 ## TODO
 
 * Validate HTML semantics on all pages
 * Validate accessibility on all pages
+* Simplify the CSS
 * Add logging, including log viewer screen
 * Improve exception handling
 * Support microformats

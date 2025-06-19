@@ -149,6 +149,8 @@ It's been a lot of fun to get back to building something. I'm grateful to the pe
 
 ## TODO
 
+* Add tests
+* Add artifact build pipeline
 * Validate HTML semantics on all pages
 * Validate accessibility on all pages
 * Simplify the CSS

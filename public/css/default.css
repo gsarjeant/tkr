@@ -134,7 +134,7 @@ fieldset.emoji-group {
     text-decoration: none;
 }
 
-.navbar a:first-child {
+.navbar > a:first-child {
     padding-left: 0;
 }
 

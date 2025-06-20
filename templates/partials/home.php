@@ -7,9 +7,9 @@
                 <dl class="profile-data">
                     <dt>Current Status</dt>
                     <dd class="profile-greeting">
-                        <span class="greeting-content">
-                            <span class="greeting-text">Hi, I'm <?php echo Util::escape_html($user->displayName) ?></span>
-                            <span class="greeting-mood"><?php echo Util::escape_html($user->mood) ?></span>
+                        <span class="profile-greeting-content">
+                            <span class="profile-greeting-content-text">Hi, I'm <?php echo Util::escape_html($user->displayName) ?></span>
+                            <span class="profile-greeting-content-mood"><?php echo Util::escape_html($user->mood) ?></span>
                         </span>
 <?php if (Session::isLoggedIn()): ?>
                         <a href="<?= $config->basePath ?>mood" class="change-mood">Change mood</a>
@@ -30,10 +30,9 @@
                 </dl>
 <?php if (Session::isLoggedIn()): ?>
                 <div class="profile-tick">
-                    <form class="tick-form" method="post">
+                    <form class="profile-tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
-                        <textarea name="tick"
-                                  placeholder="What's ticking?"
+                        <textarea placeholder="What's ticking?"
                                   minlength="1"
                                   maxlength="200"
                                   rows="3"></textarea>

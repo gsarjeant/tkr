@@ -1,0 +1,487 @@
+@charset "UTF-8";
+
+:root {
+    /* Colors */
+    --color-bg: white;
+    --color-border: black;
+    --color-delete-btn-bg: linen;
+    --color-delete-btn: crimson;
+    --color-delete-btn-border: lightcoral;
+    --color-flash-error: #721c24;
+    --color-flash-error-bg: mistyrose;
+    --color-flash-error-border-left: crimson;
+    --color-flash-success: darkgreen;
+    --color-flash-success-bg: honeydew;
+    --color-flash-success-border-left: forestgreen;
+    --color-mood-border: darkslateblue;
+    --color-mood-hover: lightsteelblue;
+    --color-mood-selected: lightblue;
+    --color-primary: gainsboro;
+    --color-required: crimson;
+    --color-text: black;
+
+    /* border styling */
+    --border-width: 2px;
+    --border-width-thin: 1px;
+    --border-radius: 4px;
+}
+
+/* default element styling */
+body {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 2em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+a { font-weight: bold; }
+
+legend, fieldset {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+legend { padding: 6px 12px; }
+
+fieldset {
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+/*
+  Make the site description a little smaller,
+  but keep it an h1 for screen readers.
+*/
+h1.site-description { font-size: 1.5em; }
+
+/* Styling for input boxes */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="file"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: var(--border-width-thin) solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1em;
+    resize: none;
+    box-sizing: border-box;
+}
+
+/* A bit of custom styling for the file input */
+input[type="file"] {
+    border-style: dashed;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+label {
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: left;
+    padding-top: 0;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+label.css-description { font-weight: 300; }
+
+/* Grid layout for emoji fieldsets */
+fieldset.emoji-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
+    gap: 0.3em;
+}
+
+.delete-emoji-fieldset .fieldset-items {
+    display: block;
+    grid-template-columns: none;
+}
+
+.delete-emoji-fieldset button {
+    margin-top: 16px;
+    width: auto;
+}
+
+/* Navbar styling */
+.navbar {
+    overflow: visible;
+    display: flex;
+    align-items: center;
+}
+
+.navbar a {
+    color: var(--color-text);
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.navbar a:first-child {
+    padding-left: 0;
+}
+
+/*
+   Using details/summary tags to build dropdowm menus.
+   They have to be clicked open and closed, but they allow
+   me to have semantically appropriate pure HTML dropdowms
+   that work on mobile devices.
+*/
+.dropdown {
+    overflow: visible;
+    position: relative;
+}
+
+.dropdown summary {
+    font-size: 16px;
+    padding: 10px;
+    color: var(--color-text);
+    font-weight: bold;
+    cursor: pointer;
+    list-style: none;
+    display: block;
+}
+
+/* Remove the default details arrow on different browsers*/
+.dropdown summary::-webkit-details-marker,
+.dropdown summary::-moz-list-bullet {
+    display: none;
+    list-style-type: none;
+}
+
+/* Add a downward-facing caret after the button label */
+.dropdown summary::after {
+    content: " ▼";
+    font-size: 0.8em;
+    margin-left: 1px;
+}
+
+/* Rotate the caret when opened */
+.dropdown[open] summary::after { content: " ▲"; }
+
+.dropdown-content {
+    position: absolute;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    min-width: 160px;
+    z-index: 1;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content a {
+    float: none;
+    color: var(--color-text);
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+/* navbar hover and focus styling */
+.navbar a:hover,
+.navbar a:focus,
+.dropdown summary:hover,
+.dropdown summary:focus,
+.dropdown-content a:hover,
+.dropdown-content a:focus {
+    background-color: var(--color-primary);
+}
+
+/*
+    The two common display options for responsive layouts are flex and grid.
+        flex (aka Flexbox) aligns items either horizontally or vertically.
+        grid can align items in two dimensions.
+        grid also allows more precise positioning of elements, so I'm using that
+        even though I only have one dimension.
+*/
+
+.home-container { display: grid; }
+
+.home-sidebar {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.profile-data {
+    display: grid;
+    gap: 1rem;
+    margin: 0 0 1rem 0;
+}
+
+/* Description list: description */
+.profile-data dd { margin: 0; }
+
+/* Description list: term */
+/* Hidden from visual display - screen reader only class */
+/* https://www.sitelint.com/blog/hiding-a-text-but-making-it-accessible-to-a-screen-reader */
+.profile-data dt {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+/*
+    Left-justify the greeting text,
+    right-justify the Change Mood link
+*/
+
+/* greeting text */
+.profile-greeting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* add a small gap between the greeting and the mood emoji */
+.profile-greeting-content {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+}
+
+/* define the profile "greeting" style */
+.profile-greeting-content-text {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+/* Style the Change Mood link */
+.change-mood {
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* define the profile "about" style */
+.profile-about {
+    font-style: italic;
+    font-size: 0.95em;
+}
+
+.profile-tick-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5em;
+}
+
+.site-description {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin-bottom: 1.2rem;
+}
+
+.tick-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0.5em 0 0 0;
+}
+
+/* Styling for flash messages */
+.flash-messages {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.flash-message {
+    padding: 12px 16px;
+    margin: 5px 0;
+    border-radius: 4px;
+    border-left: 4px solid;
+    font-weight: 500;
+}
+
+.flash-success {
+    background-color: var(--color-flash-success-bg);
+    border-left-color: var(--color-flash-success-border-left);
+    color: var(--color-flash-success);
+}
+
+.flash-error {
+    background-color: var(--color-flash-error-bg);
+    border-left-color: var(--color-flash-error-border-left);
+    color: var(--color-flash-error);
+}
+
+.fieldset-items {
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    align-items: start;
+}
+
+.file-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-info {
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--color-text);
+    grid-column: 1;
+}
+
+.delete-btn {
+    background-color: var(--color-delete-btn-bg);
+    border: 1px solid var(--color-delete-btn-border);
+    color: var(--color-delete-btn);
+}
+
+.required { color: var(--color-required); }
+
+.tick {
+    margin-bottom: 1em;
+    padding-left: 0.5em;
+}
+
+.tick-time {
+    color: var(--color-text);
+    font-size: 0.8em;
+    margin-bottom: 0.4em;
+}
+
+.tick-text {
+    color: var(--color-text);
+    font-size: 1.0em;
+    display: block;
+}
+
+.tick-pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+}
+
+/* Mood selection page */
+.mood-option input { display: none; }
+
+.mood-option span {
+    font-size: 1.4em;
+    display: inline-block;
+    padding: 0.2em;
+    border-radius: 0.3em;
+}
+
+.mood-option:hover span { background-color: var(--color-mood-hover); }
+
+.mood-option input:checked + span {
+    background-color: var(--color-mood-selected);
+    outline: 2px solid var(--color-mood-border);
+}
+
+/* emoji management page */
+.delete-emoji-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-bg);
+    margin-bottom: 6px;
+}
+
+.delete-emoji-item input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.delete-emoji-item label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    cursor: pointer;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.delete-emoji-display {
+    font-size: 1.8em;
+    min-width: 2em;
+    text-align: center;
+}
+
+/* Add and delete emoji settings */
+.emoji-description {
+    flex-grow: 1;
+    color: var(--color-text);
+    font-size: 1em;
+}
+
+/*
+    Responsive layout - adjusts from 1 to 2 columns based on screen width
+        - min-width makes the mobile (stacked) view the default
+        - 600px covers most mobile devices in portrait mode
+        - Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
+*/
+@media (min-width: 600px) {
+    label {
+        text-align: right;
+        padding-top: 10px;
+        margin-bottom: 0;
+    }
+
+    label.css-description {
+        text-align: left;
+        padding-top: 10px;
+        margin-bottom: 0;
+    }
+
+    .home-container {
+        grid-template-columns: 1fr 2fr;
+        grid-gap: 2em;
+    }
+
+    .fieldset-items {
+        margin-bottom: 16px;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .file-info { grid-column: 2; }
+
+    .navbar { flex-wrap: wrap; }
+
+    .dropdown-menu {
+        position: fixed;
+        left: 1em;
+        right: 1em;
+        width: auto;
+        min-width: auto;
+    }
+}

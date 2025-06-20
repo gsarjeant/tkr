@@ -10,7 +10,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
-              href="<?= Util::escape_html($config->basePath) ?>css/tkr.css">
+              href="<?= Util::escape_html($config->basePath) ?>css/default.css">
 <?php if (!empty($config->cssId)): ?>
         <link rel="stylesheet"
               href="<?= Util::escape_html($config->basePath) ?>css/custom/<?= Util::escape_html($config->customCssFilename()) ?>">

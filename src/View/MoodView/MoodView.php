@@ -10,7 +10,7 @@ class MoodView {
             <fieldset id="<?= Util::escape_html($group) ?>" class="emoji-group">
                 <legend><?= ucfirst($group) ?></legend>
             <?php foreach ($emojis as [$emoji, $description]): ?>
-                <label class="emoji-option">
+                <label class="mood-option">
                     <input
                         type="radio"
                         name="mood"

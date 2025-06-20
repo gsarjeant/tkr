@@ -26,7 +26,7 @@
                         </select>
 <?php if (isset($cssDescription) && $cssDescription): ?>
                         <label>Description</label>
-                        <label class="description"><?= Util::escape_html($cssDescription) ?></label>
+                        <label class="css-description"><?= Util::escape_html($cssDescription) ?></label>
 <?php endif; ?>
                         <div></div>
                         <div>

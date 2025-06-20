@@ -30,8 +30,8 @@
 
     /* State colors */
     --color-required: #dc2626;
-    --color-hover-light: #dbeafe;
-    --color-hover-medium: #bfdbfe;
+    --color-primary-light: #dbeafe;
+    --color-primary-medium: #bfdbfe;
     --color-emoji-bg: #ddeeff;
     --color-emoji-border: #339;
 
@@ -39,7 +39,7 @@
     --shadow-primary: rgba(66, 153, 225, 0.1);
     --shadow-primary-strong: rgba(66, 153, 225, 0.3);
 
-    /* Flash colors */
+    /* Flash message colors */
     --color-flash-success: #155724;
     --color-flash-success-bg: #d4edda;
     --color-flash-success-border-left: #28a745;
@@ -57,10 +57,12 @@
     --color-flash-info-border-left: #17a2b8;
 }
 
+/* default element styling */
 body {
     max-width: 940px;
     margin: 0 auto;
     padding: 1em;
+    /* standard system fonts that shouldn't require downloading anything */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--color-bg-body);
     color: var(--color-text-black);
@@ -87,25 +89,12 @@ fieldset {
     background-color: var(--color-bg-light);
 }
 
-/* Grid layout for emoji fieldsets */
-fieldset.emoji-group {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
-    gap: 0.3em;
-}
-
+/*
+  Make the site description a little smaller,
+  but keep it an h1 for screen readers.
+*/
 h1.site-description {
     font-size: 1.5em;
-}
-
-.delete-emoji-fieldset .fieldset-items {
-    display: block;
-    grid-template-columns: none;
-}
-
-.delete-emoji-fieldset button {
-    margin-top: 16px;
-    width: auto;
 }
 
 input[type="text"],
@@ -166,12 +155,12 @@ button {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease; /* give the color changes on hover, focus, and active a slight delay to feel a bit more natural */
     box-sizing: border-box;
 }
 
 button:hover {
-    background-color: var(--color-hover-light);
+    background-color: var(--color-primary-light);
     border-color: var(--color-primary-dark);
 }
 
@@ -182,7 +171,7 @@ button:focus {
 }
 
 button:active {
-    background-color: var(--color-hover-medium);
+    background-color: var(--color-primary-medium);
 }
 
 label {
@@ -203,6 +192,23 @@ label.description {
     line-height: 1.2;
 }
 
+/* Grid layout for emoji fieldsets */
+fieldset.emoji-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2em, 1fr));
+    gap: 0.3em;
+}
+
+.delete-emoji-fieldset .fieldset-items {
+    display: block;
+    grid-template-columns: none;
+}
+
+.delete-emoji-fieldset button {
+    margin-top: 16px;
+    width: auto;
+}
+
 .navbar {
   overflow: visible;
   background: var(--color-bg-white);
@@ -219,18 +225,18 @@ label.description {
 }
 
 .navbar a:hover {
-    background: var(--color-hover-light);
+    background: var(--color-primary-light);
     color: var(--color-primary-dark);
 }
 
 .navbar a:focus {
     outline: none;
-    background: var(--color-hover-light);
+    background: var(--color-primary-light);
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
 /*
-   Using details/summary tags to build dropdowm nmenus.
+   Using details/summary tags to build dropdowm menus.
    They have to be clicked open and closed, but they allow
    me to have semantically appropriate pure HTML dropdowms
    that work on mobile devices.
@@ -240,7 +246,7 @@ label.description {
   position: relative;
 }
 
-.dropdown summary.dropbtn {
+.dropdown summary {
   font-size: 16px;
   border: none;
   border-radius: 0px;
@@ -257,33 +263,33 @@ label.description {
 }
 
 /* Remove the default details arrow */
-.dropdown summary.dropbtn::-webkit-details-marker {
+.dropdown summary::-webkit-details-marker {
     display: none;
 }
 
-.dropdown summary.dropbtn::-moz-list-bullet {
+.dropdown summary::-moz-list-bullet {
     list-style-type: none;
 }
 
 /* Add a downward-facing caret after the button label */
-.dropdown summary.dropbtn::after {
+.dropdown summary::after {
     content: " ▼";
     font-size: 0.8em;
     margin-left: 4px;
 }
 
 /* Rotate the caret when opened */
-.dropdown[open] summary.dropbtn::after {
+.dropdown[open] summary::after {
     content: " ▲";
 }
 
-.dropdown summary.dropbtn:hover {
-  background: var(--color-hover-light);
+.dropdown summary:hover {
+  background: var(--color-primary-light);
   color: var(--color-primary-dark);
 }
 
-.dropdown summary.dropbtn:focus {
-  background: var(--color-hover-light);
+.dropdown summary:focus {
+  background: var(--color-primary-light);
   color: var(--color-primary-dark);
   outline: none;
   box-shadow: 0 0 0 2px var(--shadow-primary);
@@ -311,13 +317,13 @@ label.description {
 }
 
 .dropdown-content a:hover {
-    background: var(--color-hover-light);
+    background: var(--color-primary-light);
     color: var(--color-primary-dark);
 }
 
 .dropdown-content a:focus {
     outline: none;
-    background: var(--color-hover-light);
+    background: var(--color-primary-light);
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }
 
@@ -384,14 +390,14 @@ label.description {
 }
 
 /* add a small gap between the greeting and the mood emoji */
-.greeting-content {
+.profile-greeting-content {
     display: flex;
     align-items: baseline;
     gap: 0.4em;
 }
 
 /* define the profile "greeting" style */
-.greeting-text {
+.profile-greeting-content-text {
     font-weight: 600;
     font-size: 1.1em;
     color: var(--color-text-primary);
@@ -415,7 +421,7 @@ label.description {
     color: var(--color-text-muted);
 }
 
-.tick-form {
+.profile-tick-form {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -548,23 +554,23 @@ label.description {
     text-decoration: none;
 }
 
-.emoji-option input {
+.mood-option input {
     display: none;
 }
 
-.emoji-option span {
+.mood-option span {
     font-size: 1.4em;
     display: inline-block;
     padding: 0.2em;
     border-radius: 0.3em;
 }
 
-.emoji-option input:checked + span {
+.mood-option input:checked + span {
     background-color: var(--color-emoji-bg);
     outline: 2px solid var(--color-emoji-border);
 }
 
-.emoji-checkbox-item {
+.delete-emoji-item {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -576,18 +582,18 @@ label.description {
     margin-bottom: 6px;
 }
 
-.emoji-checkbox-item:hover {
-    background-color: var(--color-hover-light);
+.delete-emoji-item:hover {
+    background-color: var(--color-primary-light);
     border-color: var(--color-primary);
 }
 
-.emoji-checkbox-item input[type="checkbox"] {
+.delete-emoji-item input[type="checkbox"] {
     width: auto;
     margin: 0;
     cursor: pointer;
 }
 
-.emoji-checkbox-item label {
+.delete-emoji-item label {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -599,7 +605,7 @@ label.description {
     text-align: left;
 }
 
-.emoji-display {
+.delete-emoji-display {
     font-size: 1.8em;
     min-width: 2em;
     text-align: center;
@@ -611,7 +617,7 @@ label.description {
     font-size: 1em;
 }
 
-.emoji-checkbox-item input[type="checkbox"]:focus {
+.delete-emoji-item input[type="checkbox"]:focus {
     outline: none;
     box-shadow: 0 0 0 2px var(--shadow-primary);
 }

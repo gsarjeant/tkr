@@ -3,7 +3,7 @@
         <div class="navbar">
             <a href="<?= $config->basePath ?>">home</a>
             <details class="dropdown">
-                <summary class="dropbtn">feeds</summary>
+                <summary>feeds</summary>
                 <div class="dropdown-content">
                     <a href="<?= $config->basePath ?>feed/rss">rss</a>
                     <a href="<?= $config->basePath ?>feed/atom">atom</a>
@@ -13,7 +13,7 @@
             <a href="<?= $config->basePath ?>login">login</a>
 <?php else: ?>
             <details class="dropdown">
-                <summary class="dropbtn">admin</summary>
+                <summary>admin</summary>
                 <div class="dropdown-content">
                     <a href="<?= $config->basePath ?>admin">settings</a>
                     <a href="<?= $config->basePath ?>admin/css">css</a>

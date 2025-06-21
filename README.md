@@ -4,6 +4,24 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 
 ## Screenshots
 
+### Mobile
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile-v2.png"
+     alt="tkr logged out view - mobile"
+     width="40%" height="40%">
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile-v2.png"
+     alt="tkr logged in view - mobile"
+     width="40%" height="40%">
+
+### Desktop
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-desktop-v2.png"
+     alt="tkr logged in view - desktop"
+     width="60%" height="60%">
+
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-desktop-v2.png"
+     alt="tkr logged in view - desktop"
+     width="60%" height="60%">
 ## Features
 
 * HTML and CSS implementation. No Javascript.

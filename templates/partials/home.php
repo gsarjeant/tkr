@@ -12,7 +12,7 @@
                             <span class="profile-greeting-content-mood"><?php echo Util::escape_html($user->mood) ?></span>
                         </span>
 <?php if (Session::isLoggedIn()): ?>
-                        <a href="<?= $config->basePath ?>mood" class="change-mood">Change mood</a>
+                        <a tabindex="0" href="<?= $config->basePath ?>mood" class="change-mood">Change mood</a>
 <?php endif ?>
                     </dd>
 <?php if (!empty($user->about)): ?>
@@ -43,9 +43,7 @@
 <?php endif; ?>
             </aside>
             <main id="ticks">
-                <div class="home-header">
-                    <h1 class="site-description"><?= $config->siteDescription ?></h1>
-                </div>
+                <h1 class="site-description"><?= $config->siteDescription ?></h1>
                 <?php echo $tickList ?>
             </main>
         </div>

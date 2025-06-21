@@ -4,7 +4,7 @@ class HomeView {
         ob_start();
         ?>
 
-            <ul class="tick-feed" role="feed" aria-label="Recent updates">
+            <ul class="tick-feed" aria-label="Recent updates">
             <?php foreach ($ticks as $tick): ?>
                 <?php
                     $datetime = new DateTime($tick['timestamp'], new DateTimeZone('UTC'));
@@ -18,10 +18,10 @@ class HomeView {
             </ul>
             <div class="tick-pagination">
             <?php if ($page > 1): ?>
-                <a href="?page=<?php echo $page - 1 ?>">&laquo; Newer</a>
+                <a tabindex="0" href="?page=<?php echo $page - 1 ?>">&laquo; Newer</a>
             <?php endif; ?>
             <?php if (count($ticks) === $limit): ?>
-                <a href="?page=<?php echo $page + 1 ?>">Older &raquo;</a>
+                <a tabindex="0" href="?page=<?php echo $page + 1 ?>">Older &raquo;</a>
             <?php endif; ?>
             </div>
 

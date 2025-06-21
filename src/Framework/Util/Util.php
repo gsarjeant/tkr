@@ -20,7 +20,7 @@ class Util {
                 $escaped_url = rtrim($matches[1], '.,!?;:)]}>');
                 $clean_url = html_entity_decode($escaped_url, ENT_QUOTES, 'UTF-8');
 
-                return '<a href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
+                return '<a tabindex="0" href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
             },
             $text
         );

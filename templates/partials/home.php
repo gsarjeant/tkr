@@ -32,7 +32,8 @@
                 <div class="profile-tick">
                     <form class="profile-tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
-                        <textarea placeholder="What's ticking?"
+                        <textarea name="new_tick"
+                                  placeholder="What's ticking?"
                                   minlength="1"
                                   maxlength="200"
                                   rows="3"></textarea>
@@ -41,11 +42,10 @@
                 </div>
 <?php endif; ?>
             </aside>
-            <main id="ticks" class="home-main">
+            <main id="ticks">
                 <div class="home-header">
                     <h1 class="site-description"><?= $config->siteDescription ?></h1>
                 </div>
                 <?php echo $tickList ?>
             </main>
-
         </div>

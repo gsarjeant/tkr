@@ -26,10 +26,10 @@ class HomeController extends Controller {
     // POST handler
     // Saves the tick and reloads the homepage
     public function handleTick(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['tick'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['new_tick'])) {
             // save the tick
-            if (trim($_POST['tick'])){
-                TickModel::save($_POST['tick']);
+            if (trim($_POST['new_tick'])){
+                TickModel::save($_POST['new_tick']);
             }
         }
 

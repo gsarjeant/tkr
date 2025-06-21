@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 :root {
-    /* Colors */
     --color-bg: white;
     --color-border: black;
     --color-delete-btn-bg: linen;
@@ -20,7 +19,6 @@
     --color-required: crimson;
     --color-text: black;
 
-    /* border styling */
     --border-width: 2px;
     --border-width-thin: 1px;
     --border-radius: 4px;
@@ -36,6 +34,7 @@ body {
     color: var(--color-text);
 }
 
+/*a { font-weight: bold; } */
 a { font-weight: bold; }
 
 legend, fieldset {
@@ -120,13 +119,13 @@ fieldset.emoji-group {
 }
 
 /* Navbar styling */
-.navbar {
+nav {
     overflow: visible;
     display: flex;
     align-items: center;
 }
 
-.navbar a {
+nav a {
     color: var(--color-text);
     padding: 10px;
     font-size: 16px;
@@ -134,7 +133,7 @@ fieldset.emoji-group {
     text-decoration: none;
 }
 
-.navbar > a:first-child {
+nav > a:first-child {
     padding-left: 0;
 }
 
@@ -144,12 +143,12 @@ fieldset.emoji-group {
    me to have semantically appropriate pure HTML dropdowms
    that work on mobile devices.
 */
-.dropdown {
+details {
     overflow: visible;
     position: relative;
 }
 
-.dropdown summary {
+summary {
     font-size: 16px;
     padding: 10px;
     color: var(--color-text);
@@ -160,23 +159,23 @@ fieldset.emoji-group {
 }
 
 /* Remove the default details arrow on different browsers*/
-.dropdown summary::-webkit-details-marker,
-.dropdown summary::-moz-list-bullet {
+summary::-webkit-details-marker,
+summary::-moz-list-bullet {
     display: none;
     list-style-type: none;
 }
 
 /* Add a downward-facing caret after the button label */
-.dropdown summary::after {
+summary::after {
     content: " ▼";
     font-size: 0.8em;
     margin-left: 1px;
 }
 
 /* Rotate the caret when opened */
-.dropdown[open] summary::after { content: " ▲"; }
+details[open] summary::after { content: " ▲"; }
 
-.dropdown-content {
+.dropdown-items{
     position: absolute;
     background-color: var(--color-bg);
     border: 1px solid var(--color-border);
@@ -187,7 +186,7 @@ fieldset.emoji-group {
     left: 0;
 }
 
-.dropdown-content a {
+.dropdown-items a {
     float: none;
     color: var(--color-text);
     padding: 10px;
@@ -196,23 +195,14 @@ fieldset.emoji-group {
     text-align: left;
 }
 
-/* navbar hover and focus styling */
-.navbar a:hover,
-.navbar a:focus,
-.dropdown summary:hover,
-.dropdown summary:focus,
-.dropdown-content a:hover,
-.dropdown-content a:focus {
+nav a:hover,
+nav a:focus,
+summary:hover,
+summary:focus,
+.dropdown-items a:hover,
+.dropdown-items a:focus {
     background-color: var(--color-primary);
 }
-
-/*
-    The two common display options for responsive layouts are flex and grid.
-        flex (aka Flexbox) aligns items either horizontally or vertically.
-        grid can align items in two dimensions.
-        grid also allows more precise positioning of elements, so I'm using that
-        even though I only have one dimension.
-*/
 
 .home-container { display: grid; }
 
@@ -227,10 +217,8 @@ fieldset.emoji-group {
     margin: 0 0 1rem 0;
 }
 
-/* Description list: description */
 .profile-data dd { margin: 0; }
 
-/* Description list: term */
 /* Hidden from visual display - screen reader only class */
 /* https://www.sitelint.com/blog/hiding-a-text-but-making-it-accessible-to-a-screen-reader */
 .profile-data dt {
@@ -245,12 +233,7 @@ fieldset.emoji-group {
     width: 1px;
 }
 
-/*
-    Left-justify the greeting text,
-    right-justify the Change Mood link
-*/
-
-/* greeting text */
+/* container for greeting + mood emoji (wrapped in a <span>), and "change mood" link */
 .profile-greeting {
     display: flex;
     justify-content: space-between;
@@ -265,19 +248,16 @@ fieldset.emoji-group {
     gap: 0.4em;
 }
 
-/* define the profile "greeting" style */
 .profile-greeting-content-text {
     font-weight: 600;
     font-size: 1.1em;
 }
 
-/* Style the Change Mood link */
 .change-mood {
     font-size: 0.9em;
     white-space: nowrap;
 }
 
-/* define the profile "about" style */
 .profile-about {
     font-style: italic;
     font-size: 0.95em;
@@ -302,7 +282,6 @@ fieldset.emoji-group {
     margin: 0.5em 0 0 0;
 }
 
-/* Styling for flash messages */
 .flash-messages {
     margin-top: 10px;
     padding: 10px;
@@ -364,7 +343,7 @@ fieldset.emoji-group {
     padding-left: 0.5em;
 }
 
-.tick-time {
+time {
     color: var(--color-text);
     font-size: 0.8em;
     margin-bottom: 0.4em;

@@ -45,7 +45,7 @@ I'm trying to make sure that the HTML is both semantically valid and accessible,
 
 ## Installation
 
-1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.6.1.zip
+1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.6.2.zip
 1. Copy the .zip file to your server and extract it
 1. Copy the `tkr` directory to the location you want to serve it from
     * on debian-based systems, `/var/www/tkr` is recommended

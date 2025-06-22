@@ -6,10 +6,10 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 
 ### Mobile
 
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile-v2.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile-v3.png"
      alt="tkr logged out view - mobile"
      width="40%" height="40%">
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile-v2.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile-v3.png"
      alt="tkr logged in view - mobile"
      width="40%" height="40%">
 

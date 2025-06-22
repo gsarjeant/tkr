@@ -80,8 +80,8 @@ input[type="file"] {
 
 button {
     padding: 10px 20px;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border: var(--border-width-thin) solid var(--color-border);
+    border-radius: var(--border-radius);
     background-color: var(--color-primary);
     color: var(--color-text);
     font-size: 14px;
@@ -131,6 +131,7 @@ nav a {
     font-size: 16px;
     text-align: center;
     text-decoration: none;
+    border-radius: var(--border-radius);
 }
 
 nav > a:first-child {
@@ -156,6 +157,7 @@ summary {
     cursor: pointer;
     list-style: none;
     display: block;
+    border-radius: var(--border-radius);
 }
 
 /* Remove the default details arrow on different browsers*/
@@ -178,8 +180,8 @@ details[open] summary::after { content: " ▲"; }
 .dropdown-items{
     position: absolute;
     background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border: var(--border-width-thin) solid var(--color-border);
+    border-radius: var(--border-radius);
     min-width: 160px;
     z-index: 1;
     top: 100%;
@@ -285,13 +287,13 @@ summary:focus,
 .flash-messages {
     margin-top: 10px;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
 }
 
 .flash-message {
     padding: 12px 16px;
     margin: 5px 0;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     border-left: 4px solid;
     font-weight: 500;
 }
@@ -322,7 +324,7 @@ summary:focus,
 }
 
 .file-info {
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     padding: 8px;
     margin-top: 8px;
     font-size: 13px;
@@ -332,7 +334,7 @@ summary:focus,
 
 .delete-btn {
     background-color: var(--color-delete-btn-bg);
-    border: 1px solid var(--color-delete-btn-border);
+    border: var(--border-width-thin) solid var(--color-delete-btn-border);
     color: var(--color-delete-btn);
 }
 
@@ -367,14 +369,14 @@ time {
     font-size: 1.4em;
     display: inline-block;
     padding: 0.2em;
-    border-radius: 0.3em;
+    border-radius: var(--border-radius);
 }
 
 .mood-option:hover span { background-color: var(--color-mood-hover); }
 
 .mood-option input:checked + span {
     background-color: var(--color-mood-selected);
-    outline: 2px solid var(--color-mood-border);
+    outline: var(--border-width) solid var(--color-mood-border);
 }
 
 /* emoji management page */
@@ -384,7 +386,7 @@ time {
     gap: 12px;
     padding: 8px 12px;
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     background-color: var(--color-bg);
     margin-bottom: 6px;
 }

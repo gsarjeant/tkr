@@ -34,13 +34,14 @@ class TickModel {
 
                 // Ticks are pipe-delimited: timestamp|text
                 // But just in case a tick contains a pipe, only split on the first one that occurs
-                list($time, $emoji, $tick) = explode('|', $line, 3);
+                list($time, $mood, $tick) = explode('|', $line, 3);
 
                 // Build the timestamp from the date and time
                 // Ticks are always stored in UTC
                 $timestampUTC = "$year-$month-$day $time";
                 yield [
                     'timestamp' => $timestampUTC,
+                    'mood' => $mood,
                     'tick' => $tick,
                 ];
 
@@ -51,7 +52,7 @@ class TickModel {
         }
     }
 
-    public static function save(string $tick): void {
+    public static function save(string $tick, string $mood=''): void {
         // build the tick path and filename from the current time
         $now = new DateTime('now', new DateTimeZone('UTC'));
 
@@ -70,7 +71,7 @@ class TickModel {
         }
 
         // write the tick to the file (the file will be created if it doesn't exist)
-        $content = $time . "|" . $tick . "\n";
+        $content = $time . '|' . $mood . '|' . $tick . "\n";
         file_put_contents($filename, $content, FILE_APPEND);
     }
 

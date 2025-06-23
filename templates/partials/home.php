@@ -32,6 +32,7 @@
                 <div class="profile-tick">
                     <form class="profile-tick-form" method="post">
                         <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
+                        <input type="hidden" name="tick_mood" value="<?= Util::escape_html($user->mood) ?>">
                         <textarea name="new_tick"
                                   aria-label="What's ticking?"
                                   placeholder="What's ticking?"

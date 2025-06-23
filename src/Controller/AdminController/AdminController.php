@@ -65,7 +65,7 @@ class AdminController extends Controller {
             $basePath            = trim($_POST['base_path'] ?? '/');
             $itemsPerPage        = (int) ($_POST['items_per_page'] ?? 25);
             $strictAccessibility = isset($_POST['strict_accessibility']);
-            $showTickMood = isset($_POST['strict_accessibility']);
+            $showTickMood        = isset($_POST['show_tick_mood']);
 
             // Password
             $password        = $_POST['password'] ?? '';

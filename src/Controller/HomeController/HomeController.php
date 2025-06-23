@@ -29,7 +29,7 @@ class HomeController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['new_tick'])) {
             // save the tick
             if (trim($_POST['new_tick'])){
-                TickModel::save($_POST['new_tick']);
+                TickModel::save($_POST['new_tick'], $_POST['tick_mood']);
             }
         }
 

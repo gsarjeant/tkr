@@ -72,7 +72,7 @@ class ConfigModel {
                 strict_accessibility,
                 show_tick_mood
                 )
-                VALUES (1, ?, ?, ?, ?, ?, ?)");
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)");
         } else {
             $stmt = $db->prepare("UPDATE settings SET
                 site_title=?,

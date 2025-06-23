@@ -1,6 +1,7 @@
 <?php
 class HomeView {
     public function renderTicksSection(string $siteDescription, array $ticks, int $page, int $limit){
+        global $config;
         ob_start();
         ?>
 
@@ -12,6 +13,9 @@ class HomeView {
                 ?>
                 <li class="tick" tabindex="0">
                     <time datetime="<?php echo $datetime->format('c') ?>"><?php echo Util::escape_html($relativeTime) ?></time>
+                    <?php if ($config->showTickMood): ?>
+                        <span><?php echo $tick['mood'] ?></span>
+                    <?php endif; ?>
                     <span class="tick-text"><?php echo Util::linkify(Util::escape_html($tick['tick'])) ?></span>
                 </li>
             <?php endforeach; ?>

@@ -6,25 +6,27 @@ A lightweight, HTML-only status feed for self-hosted personal websites. Written 
 
 ### Mobile
 
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile-v3.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-mobile-v4.png"
      alt="tkr logged out view - mobile"
      width="40%" height="40%">
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile-v3.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-mobile-v4.png"
      alt="tkr logged in view - mobile"
      width="40%" height="40%">
 
 ### Desktop
 
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-desktop-v2.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-out-desktop-v4.png"
      alt="tkr logged in view - desktop"
      width="60%" height="60%">
 
-<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-desktop-v2.png"
+<img src="https://subcultureofone.org/images/tkr/tkr-logged-in-desktop-v4.png"
      alt="tkr logged in view - desktop"
      width="60%" height="60%">
+
 ## Features
 
 * HTML and CSS implementation. No Javascript.
+* Accessible by default
 * RSS `/feed/rss` and Atom `/feed/atom` feeds
 * CSS uploads for custom theming
 * Custom emoji to personalize moods (unicode only)
@@ -91,7 +93,7 @@ If you'd prefer to install from git:
 1. Browse to your tkr URL. You'll be presented with the setup screen to complete initial configuration.
 ![tkr setup page](https://subcultureofone.org/images/tkr/tkr-setup.png)
 
-## Server configuration notes
+### Server configuration notes
 
 The document root should be `/PATH/TO/tkr/public`. This will ensure that only the files that need to be accessible from the internet are served by your web server.
 
@@ -113,6 +115,12 @@ There is an `.htaccess` file in the `tkr/` root directory. It's designed for the
 The [docker](./docker) directory contains docker-compose.yml files and web server configs for some different server configurations. For simplicity, these do not use SSL.
 
 To run tkr locally on your machine, copy the docker-compose file you're interested in to `tkr/` and run `docker compose up`.
+
+## Accessibility Note
+
+The "Strict Accessibility" setting (enabled by default) addes `tabindex="0"` to all `<a>` tags to force them to get tab focus. This isn't strictly best practice. The `<a>` tag should get tab focus by default. But I've learned that some browsers (at least Safari and Vivaldi) disable this in their default configurations, making accessibility an opt-in feature.
+
+If you'd like to revert to the standard behavior, toggle this setting off. But know that people who navigate by keyboard may have to reconfigure their browser settings in order to select hyperlinks.
 
 ## Storage
 
@@ -144,16 +152,28 @@ It's been a lot of fun to get back to building something. I'm grateful to the pe
 * [status.cafe](https://status.cafe) - The technological inspiration. Unless you really want to self-host, you should use status.cafe instead! I took a lot of inspiration from its design and then I made the CSS way heavier and probably lost some of the soul along the way.
 * [32-bit cafe](https://32bit.cafe) - I started in technology as a hobbyist and idealist. Then I became a professional. The decades since have sucked the joy and the hope out of technology. 32-bit cafe reminded me that they're both still there.
 
-## TODO
+## Planned 0.y.z releases to 1.0
 
-* Add tests
+I'd like to alternate beteen architecture and feature releases between here and 1.0
+
+### 0.7.5 (architecture improvements)
+* Add linting and tests
 * Add artifact build pipeline
-* Validate HTML semantics on all pages
-* Validate accessibility on all pages
-* Simplify the CSS
-* Add logging, including log viewer screen
-* Improve exception handling
+
+### 0.8.0 (features and enhancements)
 * Support microformats
 * Support h-feed and JSON
+
+### 0.8.5 (architecture improvements)
+* Add docker build and deployment
+
+### 0.9.0 (features and enhancements)
 * Allow customization of time zone and time display for ticks
-* Probably a bunch of other stuff I'm not thinking of
+
+### 0.9.5 (architecture enhancements)
+* Improve exception handling
+* Add logging, including log viewer screen
+
+### 1.0.0
+* Polish README and other docs
+* Set up dedicated webpage

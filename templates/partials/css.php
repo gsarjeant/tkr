@@ -8,18 +8,16 @@
                     <legend>Manage</legend>
                     <div class="fieldset-items">
                         <label for="selectCssFile">Select CSS File</label>
-                        <select id="selectCssFile" name="selectCssFile" value=<?= $config->cssId ?>>
-                            <option value="">Default</option>
+                        <select id="selectCssFile" name="selectCssFile">
+                            <option value="" <?php if(!$config->cssId): ?>selected<?php endif; ?>>Default</option>
 <?php foreach ($customCss as $cssFile): ?>
     <?php
-        if ($cssFile['id'] == $config->cssId){
+        if ((int) $cssFile['id'] == $config->cssId){
             $cssDescription = $cssFile['description'];
             $selected = "selected";
         }
     ?>
-
-                            <option value=<?= $cssFile['id'] ?>
-                                    <?= isset($selected) ? $selected : ""?>>
+                            <option value="<?= $cssFile['id'] ?>"<?= isset($selected) ? $selected : ""?>>
                                     <?=Util::escape_html($cssFile['filename'])?>
                             </option>
 <?php endforeach; ?>

@@ -37,6 +37,7 @@ class ConfigModel {
             $c->baseUrl = $row['base_url'];
             $c->basePath = $row['base_path'];
             $c->itemsPerPage = (int) $row['items_per_page'];
+            $c->cssId = (int) $row['css_id'];
             $c->strictAccessibility = (bool) $row['strict_accessibility'];
             $c->showTickMood = (bool) $row['show_tick_mood'];
         }

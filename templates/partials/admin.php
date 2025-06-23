@@ -60,7 +60,7 @@
                             name="base_path"
                             value="<?= Util::escape_html($config->basePath) ?>"
                             required>
-                        <label for="items_per_page">Items per page (max 50) <span class=required>*</span></label>
+                        <label for="items_per_page">Ticks per page (max 50) <span class=required>*</span></label>
                         <input type="number"
                             id="items_per_page"
                             name="items_per_page"

@@ -12,7 +12,10 @@
                             <span class="profile-greeting-content-mood"><?php echo Util::escape_html($user->mood) ?></span>
                         </span>
 <?php if (Session::isLoggedIn()): ?>
-                        <a tabindex="0" href="<?= Util::escape_html($config->basePath) ?>mood" class="change-mood">Change mood</a>
+                        <a
+                            <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
+                            href="<?= Util::escape_html($config->basePath) ?>mood"
+                            class="change-mood">Change mood</a>
 <?php endif ?>
                     </dd>
 <?php if (!empty($user->about)): ?>

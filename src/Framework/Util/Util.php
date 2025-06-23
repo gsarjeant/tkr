@@ -17,10 +17,12 @@ class Util {
         return preg_replace_callback(
             '~(https?://[^\s<>"\'()]+)~i',
             function($matches) use ($link_attrs) {
+                global $config;
                 $escaped_url = rtrim($matches[1], '.,!?;:)]}>');
                 $clean_url = html_entity_decode($escaped_url, ENT_QUOTES, 'UTF-8');
+                $tabIndex = $config->strictAccessibility ? ' tabindex="0" ' : ' ';
 
-                return '<a tabindex="0" href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
+                return '<a' . $tabIndex . 'href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
             },
             $text
         );

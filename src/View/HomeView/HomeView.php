@@ -22,10 +22,12 @@ class HomeView {
             </ul>
             <div class="tick-pagination">
             <?php if ($page > 1): ?>
-                <a tabindex="0" href="?page=<?php echo $page - 1 ?>">&laquo; Newer</a>
+                <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
+                   href="?page=<?php echo $page - 1 ?>">&laquo; Newer</a>
             <?php endif; ?>
             <?php if (count($ticks) === $limit): ?>
-                <a tabindex="0" href="?page=<?php echo $page + 1 ?>">Older &raquo;</a>
+                <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
+                   href="?page=<?php echo $page + 1 ?>">Older &raquo;</a>
             <?php endif; ?>
             </div>
 

@@ -1,7 +1,7 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var Array $customCss */ ?>
         <h1>CSS Management</h1>
-        <div>
+        <main>
             <form action="<?= $config->basePath ?>admin/css" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
@@ -59,4 +59,4 @@
                     </div>
                 </fieldset>
             </form>
-        </div>
+</main>

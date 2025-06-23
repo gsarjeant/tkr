@@ -4,7 +4,7 @@
     --color-bg: white;
     --color-border: black;
     --color-delete-btn-bg: linen;
-    --color-delete-btn: crimson;
+    --color-delete-btn: #721c24;
     --color-delete-btn-border: lightcoral;
     --color-flash-error: #721c24;
     --color-flash-error-bg: mistyrose;
@@ -373,7 +373,15 @@ time {
 }
 
 /* Mood selection page */
-.mood-option input { display: none; }
+.mood-option input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
 
 .mood-option span {
     font-size: 1.4em;
@@ -383,6 +391,12 @@ time {
 }
 
 .mood-option:hover span { background-color: var(--color-mood-hover); }
+
+.mood-option input:focus + span {
+    background-color: var(--color-mood-hover);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
 
 .mood-option input:checked + span {
     background-color: var(--color-mood-selected);

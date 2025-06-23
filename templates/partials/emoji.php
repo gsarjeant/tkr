@@ -1,7 +1,7 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var array $emojiList */ ?>
         <h1>Emoji Management</h1>
-        <div>
+        <main>
             <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
@@ -46,4 +46,4 @@
                 </fieldset>
 <?php endif; ?>
             </form>
-        </div>
+        </main>

@@ -1,0 +1,2 @@
+ALTER TABLE settings
+ADD COLUMN show_tick_mood BOOLEAN DEFAULT TRUE;

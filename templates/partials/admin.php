@@ -57,6 +57,18 @@
                             name="items_per_page"
                             value="<?= $config->itemsPerPage ?>" min="1" max="50"
                             required>
+                        <label>Strict accessibility</label>
+                        <input type="checkbox"
+                               id="strict_accessibility"
+                               name="strict_accessibility"
+                               value="1"
+                               <?php if ($config->strictAccessibility): ?> checked <?php endif; ?>>
+                        <label>Show tick mood</label>
+                        <input type="checkbox"
+                               id="show_tick_mood"
+                               name="show_tick_mood"
+                               value="1"
+                               <?php if ($config->showTickMood): ?> checked <?php endif; ?>>
                     </div>
                 </fieldset>
                 <fieldset>

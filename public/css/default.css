@@ -72,6 +72,16 @@ select {
     box-sizing: border-box;
 }
 
+input[type="checkbox"] {
+    width: auto;
+    height: 2rem;
+    aspect-ratio: 1;
+    margin: 0;
+    cursor: pointer;
+    justify-self: start;
+    align-self: center;
+}
+
 /* A bit of custom styling for the file input */
 input[type="file"] {
     border-style: dashed;
@@ -429,6 +439,13 @@ time {
         - Once the width exceeds that (e.g. desktops), it will convert to horizontal alignment
 */
 @media (min-width: 600px) {
+    input[type="checkbox"] {
+        height: 100%;
+        /*grid-column: 2;*/
+        justify-self: start;
+        align-self: center;
+    }
+
     label {
         text-align: right;
         padding-top: 10px;

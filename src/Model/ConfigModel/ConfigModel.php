@@ -8,6 +8,8 @@ class ConfigModel {
     public int $itemsPerPage = 25;
     public string $timezone = 'relative';
     public ?int $cssId = null;
+    public bool $strictAccessibility = true;
+    public bool $showTickMood = true;
 
     // load config from sqlite database
     public static function load(): self {
@@ -17,7 +19,16 @@ class ConfigModel {
         $c->basePath = ($c->basePath === '') ? $init['base_path'] : $c->basePath;
 
         global $db;
-        $stmt = $db->query("SELECT site_title, site_description, base_url, base_path, items_per_page, css_id FROM settings WHERE id=1");
+        $stmt = $db->query("SELECT site_title,
+                                   site_description,
+                                   base_url,
+                                   base_path,
+                                   items_per_page,
+                                   css_id,
+                                   strict_accessibility,
+                                   show_tick_mood
+                            FROM settings WHERE id=1");
+
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
@@ -26,7 +37,8 @@ class ConfigModel {
             $c->baseUrl = $row['base_url'];
             $c->basePath = $row['base_path'];
             $c->itemsPerPage = (int) $row['items_per_page'];
-            $c->cssId = (int) $row['css_id'];
+            $c->strictAccessibility = (bool) $row['strict_accessibility'];
+            $c->showTickMood = (bool) $row['show_tick_mood'];
         }
 
         return $c;
@@ -49,11 +61,39 @@ class ConfigModel {
         $settingsCount = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
         if ($settingsCount === 0){
-            $stmt = $db->prepare("INSERT INTO settings (id, site_title, site_description, base_url, base_path, items_per_page, css_id) VALUES (1, ?, ?, ?, ?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO settings (
+                id,
+                site_title,
+                site_description,
+                base_url,
+                base_path,
+                items_per_page,
+                css_id,
+                strict_accessibility,
+                show_tick_mood
+                )
+                VALUES (1, ?, ?, ?, ?, ?, ?)");
         } else {
-            $stmt = $db->prepare("UPDATE settings SET site_title=?, site_description=?, base_url=?, base_path=?, items_per_page=?, css_id=? WHERE id=1");
+            $stmt = $db->prepare("UPDATE settings SET
+                site_title=?,
+                site_description=?,
+                base_url=?,
+                base_path=?,
+                items_per_page=?,
+                css_id=?,
+                strict_accessibility=?,
+                show_tick_mood=?
+                WHERE id=1");
         }
-        $stmt->execute([$this->siteTitle, $this->siteDescription, $this->baseUrl, $this->basePath, $this->itemsPerPage, $this->cssId]);
+        $stmt->execute([$this->siteTitle,
+                        $this->siteDescription,
+                        $this->baseUrl,
+                        $this->basePath,
+                        $this->itemsPerPage,
+                        $this->cssId,
+                        $this->strictAccessibility,
+                        $this->showTickMood
+                    ]);
 
         return self::load();
     }

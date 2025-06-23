@@ -52,22 +52,24 @@ class AdminController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = [];
 
-            // UserModel profile
-            $username        = trim($_POST['username'] ?? '');
-            $displayName     = trim($_POST['display_name'] ?? '');
-            $about           = trim($_POST['about'] ?? '');
-            $website         = trim($_POST['website'] ?? '');
+            // User profile
+            $username    = trim($_POST['username'] ?? '');
+            $displayName = trim($_POST['display_name'] ?? '');
+            $about       = trim($_POST['about'] ?? '');
+            $website     = trim($_POST['website'] ?? '');
 
             // Site settings
-            $siteTitle       = trim($_POST['site_title']) ?? '';
-            $siteDescription = trim($_POST['site_description']) ?? '';
-            $baseUrl         = trim($_POST['base_url'] ?? '');
-            $basePath        = trim($_POST['base_path'] ?? '/');
-            $itemsPerPage    = (int) ($_POST['items_per_page'] ?? 25);
+            $siteTitle           = trim($_POST['site_title']) ?? '';
+            $siteDescription     = trim($_POST['site_description']) ?? '';
+            $baseUrl             = trim($_POST['base_url'] ?? '');
+            $basePath            = trim($_POST['base_path'] ?? '/');
+            $itemsPerPage        = (int) ($_POST['items_per_page'] ?? 25);
+            $strictAccessibility = isset($_POST['strict_accessibility']);
+            $showTickMood = isset($_POST['strict_accessibility']);
 
             // Password
-            $password                = $_POST['password'] ?? '';
-            $confirmPassword         = $_POST['confirm_password'] ?? '';
+            $password        = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
 
             // Validate user profile
             if (!$username) {
@@ -112,6 +114,8 @@ class AdminController extends Controller {
                 $config->baseUrl = $baseUrl;
                 $config->basePath = $basePath;
                 $config->itemsPerPage = $itemsPerPage;
+                $config->strictAccessibility = $strictAccessibility;
+                $config->showTickMood = $showTickMood;
 
                 // Save site settings and reload config from database
                 // TODO - raise and handle exception on failure

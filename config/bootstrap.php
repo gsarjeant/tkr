@@ -66,6 +66,8 @@ function confirm_setup(): void {
     validate_storage_subdirs();
     validate_tables();
     validate_table_contents();
+    migrate_db();
+    migrate_tick_files();
 }
 
 // Make sure the storage/ directory exists and is writable
@@ -114,6 +116,38 @@ function validate_storage_subdirs(): void {
     }
 }
 
+function migrate_tick_files() {
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(TICKS_DIR, RecursiveDirectoryIterator::SKIP_DOTS)
+    );
+
+    foreach ($files as $file) {
+        if ($file->isFile() && str_ends_with($file->getFilename(), '.txt')) {
+            migrate_tick_file($file->getPathname());
+        }
+    }
+}
+
+function migrate_tick_file($filepath) {
+    $lines = file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $modified = false;
+
+    foreach ($lines as &$line) {
+        $fields = explode('|', $line);
+        if (count($fields) === 2) {
+            // Convert id|text to id|emoji|text
+            $line = $fields[0] . '||' . $fields[1];
+            $modified = true;
+        }
+    }
+
+    if ($modified) {
+        file_put_contents($filepath, implode("\n", $lines) . "\n");
+        // TODO: log properly
+        //echo "Migrated: " . basename($filepath) . "\n";
+    }
+}
+
 function get_db(): PDO {
     try {
         // SQLite will just create this if it doesn't exist.
@@ -130,6 +164,93 @@ function get_db(): PDO {
     }
 
     return $db;
+}
+
+// The database version will just be an int
+// stored as PRAGMA user_version. It will
+// correspond to the most recent migration file applied to the db.
+function get_db_version(): int {
+    $db = get_db();
+
+    return $db->query("PRAGMA user_version")->fetchColumn() ?? 0;
+}
+
+function migration_number_from_file(string $filename): int {
+    $basename = basename($filename, '.sql');
+    $parts = explode('_', $basename);
+    return (int) $parts[0];
+}
+
+function set_db_version(int $newVersion): void {
+    $currentVersion = get_db_version();
+
+    if ($newVersion <= $currentVersion){
+        throw new SetupException(
+            "New version ($newVersion) must be greater than current version ($currentVersion)",
+            'db_migration'
+        );
+    }
+
+    $db = get_db();
+    $db->exec("PRAGMA user_version = $newVersion");
+}
+
+function get_pending_migrations(): array {
+    $currentVersion = get_db_version();
+    $files = glob(DATA_DIR . '/migrations/*.sql');
+
+    $pending = [];
+    foreach ($files as $file) {
+        $version = migration_number_from_file($file);
+        if ($version > $currentVersion) {
+            $pending[$version] = $file;
+        }
+    }
+
+    ksort($pending);
+    return $pending;
+}
+
+function migrate_db(): void {
+    $migrations = get_pending_migrations();
+
+    if (empty($migrations)) {
+        # TODO: log
+        return;
+    }
+
+    $db = get_db();
+    $db->beginTransaction();
+
+    try {
+        foreach ($migrations as $version => $file) {
+            $filename = basename($file);
+            // TODO: log properly
+
+            $sql = file_get_contents($file);
+            if ($sql === false) {
+                throw new Exception("Could not read migration file: $file");
+            }
+
+            // Execute the migration SQL
+            $db->exec($sql);
+        }
+
+        // Update db version
+        $db->commit();
+        set_db_version($version);
+        //TODO: log properly
+        //echo "All migrations completed successfully.\n";
+
+    } catch (Exception $e) {
+        $db->rollBack();
+        throw new SetupException(
+            "Migration failed: $filename",
+            'db_migration',
+            0,
+            $e
+        );
+    }
 }
 
 function create_tables(): void {

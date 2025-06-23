@@ -34,9 +34,7 @@ class TickModel {
 
                 // Ticks are pipe-delimited: timestamp|text
                 // But just in case a tick contains a pipe, only split on the first one that occurs
-                $tickParts = explode('|', $line, 2);
-                $time = $tickParts[0];
-                $tick = $tickParts[1];
+                list($time, $emoji, $tick) = explode('|', $line, 3);
 
                 // Build the timestamp from the date and time
                 // Ticks are always stored in UTC
@@ -90,10 +88,13 @@ class TickModel {
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
             if (str_starts_with($line, $timestamp)) {
-                $tick = explode('|', $line)[1];
+                echo $line;
+                exit;
+                list($time, $emoji, $tick) = explode('|', $line, 3);
 
                 return [
                     'tickTime' => $tickTime,
+                    'emoji' => $emoji,
                     'tick' => $tick,
                     'config' => ConfigModel::load(),
                 ];

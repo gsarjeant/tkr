@@ -7,6 +7,7 @@
 
 // Define all the important paths
 define('APP_ROOT', dirname(dirname(__FILE__)));
+define('CONFIG_DIR', APP_ROOT . '/config');
 define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
@@ -197,7 +198,7 @@ function set_db_version(int $newVersion): void {
 
 function get_pending_migrations(): array {
     $currentVersion = get_db_version();
-    $files = glob(DATA_DIR . '/migrations/*.sql');
+    $files = glob(CONFIG_DIR . '/migrations/*.sql');
 
     $pending = [];
     foreach ($files as $file) {

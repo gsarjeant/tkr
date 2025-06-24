@@ -44,7 +44,7 @@ I'm trying to make sure that the HTML is both semantically valid and accessible,
 
 ## Installation
 
-1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.6.2.zip
+1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.7.0.zip
 1. Copy the .zip file to your server and extract it
 1. Copy the `tkr` directory to the location you want to serve it from
     * on debian-based systems, `/var/www/tkr` is recommended
@@ -152,9 +152,9 @@ It's been a lot of fun to get back to building something. I'm grateful to the pe
 * [status.cafe](https://status.cafe) - The technological inspiration. Unless you really want to self-host, you should use status.cafe instead! I took a lot of inspiration from its design and then I made the CSS way heavier and probably lost some of the soul along the way.
 * [32-bit cafe](https://32bit.cafe) - I started in technology as a hobbyist and idealist. Then I became a professional. The decades since have sucked the joy and the hope out of technology. 32-bit cafe reminded me that they're both still there.
 
-## Planned 0.y.z releases to 1.0
+## Tentative 0.y.z releases to 1.0
 
-I'd like to alternate beteen architecture and feature releases between here and 1.0
+I'd like to alternate beteen architecture and feature releases between here and 1.0. This is my current thinking, but these may change.
 
 ### 0.7.5 (architecture improvements)
 * Add linting and tests

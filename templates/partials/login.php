@@ -10,6 +10,6 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required></label>
             <div></div>
-            <button type="submit" class="submit-btn">Login</button>
+            <button type="submit">Login</button>
         </div>
     </form>

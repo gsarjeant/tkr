@@ -13,7 +13,7 @@ if (preg_match('/\.php$/', $path)) {
 
 // Define base paths and load classes
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
-load_classes();
+//load_classes();
 
 // Make sure the initial setup is complete
 // unless we're already heading to setup

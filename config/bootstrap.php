@@ -63,44 +63,26 @@ function handle_setup_exception(SetupException $e){
 }
 
 // Janky autoloader function
-// This should work better with PHPUnit,
-// and is a bit more consistent with current frameworks
+// This is a bit more consistent with current frameworks
 function autoloader($className) {
-    //See if the class is the base controller
-    if ($className === 'Controller'){
-        include_once SRC_DIR . '/Controller/Controller.php';
-        return;
+    $classFilename = $className . '.php';
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(SRC_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    foreach ($iterator as $file) {
+        if ($file->getFilename() === $classFilename) {
+            include_once $file->getPathname();
+            return;
+        }
     }
 
-    //See if the class is a controller
-    if (preg_match('/^[A-Za-z]+Controller$/', $className) === 1 ) {
-        include_once SRC_DIR . '/Controller/' . "$className/$className.php";
-        return;
-    }
-
-    //See if the class is a View
-    if (preg_match('/^[A-Za-z]+View$/', $className) === 1 ) {
-        include_once SRC_DIR . '/View/' . "$className/$className.php";
-        return;
-    }
-
-    //See if the class is a Model
-    if (preg_match('/^[A-Za-z]+Model$/', $className) === 1 ) {
-        include_once SRC_DIR . '/Model/' . "$className/$className.php";
-        return;
-    }
-
-    //Try loading the class from Framework
-    try {
-        include_once SRC_DIR . '/Framework/' . "$className/$className.php";
-    } catch(Exception $e) {
-        throw new SetupException(
-            "Could not load Class $className: " . $e->getMessage(),
-            'load_classes',
-            0,
-            $e
-        );
-    }
+    throw new SetupException(
+        "Could not load Class $className: " . $e->getMessage(),
+        'load_classes'
+    );
 }
 
 // Register the autoloader

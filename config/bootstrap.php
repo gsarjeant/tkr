@@ -24,17 +24,13 @@ function autoloader($className) {
         RecursiveIteratorIterator::LEAVES_ONLY
     );
 
+    // I'm just going to let this fail hard if a requested class doesn't exist.
     foreach ($files as $file) {
         if ($file->getFilename() === $classFilename) {
             include_once $file->getPathname();
             return;
         }
     }
-
-    throw new SetupException(
-        "Could not load Class $className: " . $e->getMessage(),
-        'load_classes'
-    );
 }
 
 // Register the autoloader

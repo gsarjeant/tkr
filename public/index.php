@@ -13,25 +13,27 @@ if (preg_match('/\.php$/', $path)) {
 
 // Define base paths and load classes
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
-//load_classes();
 
 // Make sure the initial setup is complete
 // unless we're already heading to setup
 if (!(preg_match('/setup$/', $path))) {
     try {
-        confirm_setup();
+        // filesystem validation
+        $fsMgr = new Filesystem();
+        $fsMgr->validate();
+
+        // database validation
+        $dbMgr = new Database();
+        $dbMgr->validate();
     } catch (SetupException $e) {
-        handle_setup_exception($e);
+        $e->handle();
         exit;
     }
 }
 
 // initialize the database
 global $db;
-$db = get_db();
-
-// Everything's loaded and setup is confirmed.
-// Let's start ticking.
+$db = Database::get();
 
 // Initialize core entities
 // Defining these as globals isn't great practice,

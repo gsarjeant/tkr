@@ -1,0 +1,15 @@
+name: Run unit tests
+run-name: ${{ gitea.repository }} PHP unit tests
+on: [push]
+
+jobs:
+  run-unit-tests:
+    runs-on: php8.4-test-runner
+    container:
+      image: "${{ secrets.CONTAINER_REGISTRY_URL}}/${{ secrets.CONTAINER_REGISTRY_USERNAME}}/php8.4-test-runner:0.0.1"
+      credentials:
+        username: "${{ secrets.CONTAINER_REGISTRY_USERNAME }}"
+        password: "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}"
+
+    steps:
+      - run: pwd

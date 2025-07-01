@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 
 final class UtilTest extends TestCase
 {
-    public function testRelativeTime(): void
+    public function testCanDisplayRelativeTime(): void
     {
         $datetime = new DateTimeImmutable();
 

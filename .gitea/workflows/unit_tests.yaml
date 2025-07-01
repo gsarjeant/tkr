@@ -12,4 +12,6 @@ jobs:
         password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
 
     steps:
-      - run: pwd
+      - uses: actions/checkout@v2
+      - name: Get directory contents
+        run: ls

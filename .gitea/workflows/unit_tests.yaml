@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   run-unit-tests:
-    runs-on: php8.4-test-runner
+    runs-on: ubuntu-latest
     container:
       image: "${{ secrets.CONTAINER_REGISTRY_URL}}/${{ secrets.CONTAINER_REGISTRY_USERNAME}}/php8.4-test-runner:0.0.1"
       credentials:

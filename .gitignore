@@ -1,10 +1,15 @@
 .vscode
 .DS_Store
 
+# PHP Unit tests
+phpunit
+.phpunit.result.cache
+
+# Filesystem storage items
 *.sqlite
 *.txt
-
-/docker-compose.yml
-init_complete
 storage/upload/css
+
+# Testing stuff
+/docker-compose.yml
 scratch

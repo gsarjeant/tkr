@@ -1,6 +1,6 @@
 name: Run unit tests
 run-name: ${{ gitea.repository }} PHP unit tests
-on: [push]
+on: [push, pull_request]
 
 jobs:
   run-unit-tests:

@@ -13,3 +13,6 @@ storage/upload/css
 # Testing stuff
 /docker-compose.yml
 scratch
+
+# Build artifacts
+tkr.tgz

@@ -3,7 +3,7 @@ run-name: ${{ gitea.repository }} PHP unit tests
 on:
   push:
     tags:
-      - v*.**
+      - v*.**.**
 
 jobs:
   build_and_publish:
@@ -18,3 +18,9 @@ jobs:
             --exclude='./storage/upload' \
             -czpvf tkr.${{ gitea.ref_name }}.tgz \
             config public src storage templates
+      - name: Push to Generic gitea registry
+        run: |
+          curl
+          --user ${{ secrets.CONTAINER_REGISTRY_USERNAME}}:${{ secrets.CONTAINER_REGISTRY_TOKEN }} \
+          --upload-file tkr.${{ gitea.ref_name}}.tgz \
+          https://gitea.subcultureofone.org/api/packages/${{ secrets.CONTAINER_REGISTRY_USERNAME }}/generic/tkr/${{ gitea.ref_name }}/tkr.${{ gitea.ref_name }}.tgz

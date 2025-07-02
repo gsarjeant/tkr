@@ -20,7 +20,7 @@ jobs:
             config public src storage templates
       - name: Push to Generic gitea registry
         run: |
-          curl
+          curl \
           --user ${{ secrets.CONTAINER_REGISTRY_USERNAME}}:${{ secrets.CONTAINER_REGISTRY_TOKEN }} \
           --upload-file tkr.${{ gitea.ref_name}}.tgz \
           https://gitea.subcultureofone.org/api/packages/${{ secrets.CONTAINER_REGISTRY_USERNAME }}/generic/tkr/${{ gitea.ref_name }}/tkr.${{ gitea.ref_name }}.tgz

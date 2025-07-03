@@ -13,10 +13,11 @@ jobs:
       - name: Build archive
         run: |
           tar \
-            --exclude='./storage/db' \
-            --exclude='./storage/ticks' \
-            --exclude='./storage/upload' \
-            -czpvf tkr.${{ gitea.ref_name }}.tgz \
+            --transform 's,^,tkr/,'
+            --exclude='storage/db' \
+            --exclude='storage/ticks' \
+            --exclude='storage/upload' \
+            -czvf tkr.${{ gitea.ref_name }}.tgz \
             config public src storage templates
       - name: Push to Generic gitea registry
         run: |

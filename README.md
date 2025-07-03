@@ -1,4 +1,5 @@
 # tkr
+![Unit tests status](https://gitea.subcultureofone.org/greg/tkr/actions/workflows/unit_tests.yaml/badge.svg)
 
 A lightweight, HTML-only status feed for self-hosted personal websites. Written in PHP. Heavily inspired by [status.cafe](https://status.cafe).
 
@@ -44,8 +45,8 @@ I'm trying to make sure that the HTML is both semantically valid and accessible,
 
 ## Installation
 
-1. Download the latest tkr archive from https://subcultureofone.org/files/tkr/tkr.0.7.0.zip
-1. Copy the .zip file to your server and extract it
+1. Download the latest tkr archive from [the packages page](https://gitea.subcultureofone.org/greg/tkr/packages)
+1. Copy the `.tgz` file to your server and extract it
 1. Copy the `tkr` directory to the location you want to serve it from
     * on debian-based systems, `/var/www/tkr` is recommended
 1. Make the `storage` directory writable by the web server account.

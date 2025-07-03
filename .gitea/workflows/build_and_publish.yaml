@@ -1,5 +1,5 @@
-name: Run unit tests
-run-name: ${{ gitea.repository }} PHP unit tests
+name: Build and publish artifacts
+run-name: ${{ gitea.repository }} build and publish
 on:
   push:
     tags:

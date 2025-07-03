@@ -13,7 +13,7 @@ jobs:
       - name: Build archive
         run: |
           tar \
-            --transform 's,^,tkr/,'
+            --transform 's,^,tkr/,' \
             --exclude='storage/db' \
             --exclude='storage/ticks' \
             --exclude='storage/upload' \

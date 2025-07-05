@@ -52,15 +52,4 @@ class Util {
         }
         return $diff->s . ' second' . ($diff->s != 1 ? 's' : '') . ' ago';
     }
-
-    public static function tick_time_to_tick_path($tickTime){
-        [$date, $time] = explode(' ', $tickTime);
-        $dateParts = explode('-', $date);
-        $timeParts = explode(':', $time);
-
-        [$year, $month, $day] = $dateParts;
-        [$hour, $minute, $second] = $timeParts;
-
-        return "$year/$month/$day/$hour/$minute/$second";
-    }
 }

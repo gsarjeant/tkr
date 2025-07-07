@@ -30,6 +30,8 @@ class Util {
 
     // For relative time display, compare the stored time to the current time
     // and display it as "X seconds/minutes/hours/days etc." ago
+    //
+    // TODO: Convert to either accepting a DateTime or use DateTime->fromFormat()
     public static function relative_time(string $tickTime): string {
         $datetime = new DateTime($tickTime);
         $now = new DateTime('now', $datetime->getTimezone());

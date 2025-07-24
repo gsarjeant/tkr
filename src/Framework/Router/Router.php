@@ -21,7 +21,7 @@ class Router {
         ['mood', 'MoodController@handlePost', ['POST']],
         ['setup', 'AdminController@showSetup'],
         ['setup', 'AdminController@handleSetup', ['POST']],
-        ['tick/{y}/{m}/{d}/{h}/{i}/{s}', 'TickController'],
+        ['tick/{id}', 'TickController'],
         ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
     ];
 

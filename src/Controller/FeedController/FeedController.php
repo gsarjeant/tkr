@@ -1,7 +1,5 @@
 <?php
 class FeedController extends Controller {
-    private ConfigModel $config;
-    private array $ticks;
     private array $vars;
 
     protected function render(string $templateFile, array $vars = []) {
@@ -16,11 +14,13 @@ class FeedController extends Controller {
     }
 
     public function __construct(){
-        $this->config = ConfigModel::load();
-        $this->ticks = iterator_to_array(TickModel::streamTicks($this->config->itemsPerPage));
+        $config = ConfigModel::load();
+        $tickModel = new TickModel();
+        $ticks = iterator_to_array($tickModel->stream($config->itemsPerPage));
+
         $this->vars = [
-            'config' => $this->config,
-            'ticks' => $this->ticks,
+            'config' => $config,
+            'ticks' => $ticks,
         ];
     }
 

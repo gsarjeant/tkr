@@ -1,0 +1,1 @@
+CREATE INDEX idx_tick_timestamp ON tick (timestamp DESC);

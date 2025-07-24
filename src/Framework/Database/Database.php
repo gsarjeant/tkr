@@ -27,10 +27,12 @@ class Database{
     // The database version will just be an int
     // stored as PRAGMA user_version. It will
     // correspond to the most recent migration file applied to the db.
+    //
+    // I'm starting from 0, so if the user_version is NULL, I'll return -1.
     private function getVersion(): int {
         $db = self::get();
 
-        return $db->query("PRAGMA user_version")->fetchColumn() ?? 0;
+        return $db->query("PRAGMA user_version")->fetchColumn() ?? -1;
     }
 
     private function migrationNumberFromFile(string $filename): int {
@@ -77,7 +79,7 @@ class Database{
             return;
         }
 
-        $db = get_db();
+        $db = self::get();
         $db->beginTransaction();
 
         try {

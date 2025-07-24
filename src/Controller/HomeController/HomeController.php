@@ -7,9 +7,10 @@ class HomeController extends Controller {
         global $config;
         global $user;
 
+        $tickModel = new TickModel();
         $limit = $config->itemsPerPage;
         $offset = ($page - 1) * $limit;
-        $ticks = iterator_to_array(TickModel::streamTicks($limit, $offset));
+        $ticks = iterator_to_array($tickModel->stream($limit, $offset));
 
         $view = new HomeView();
         $tickList = $view->renderTicksSection($config->siteDescription, $ticks, $page, $limit);
@@ -29,7 +30,8 @@ class HomeController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' and isset($_POST['new_tick'])) {
             // save the tick
             if (trim($_POST['new_tick'])){
-                TickModel::save($_POST['new_tick'], $_POST['tick_mood']);
+                $tickModel = new TickModel();
+                $tickModel->insert($_POST['new_tick']);
             }
         }
 

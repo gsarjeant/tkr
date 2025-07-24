@@ -22,17 +22,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
         <name><?= Util::escape_xml($config->siteTitle) ?></name>
   </author>
 <?php foreach ($ticks as $tick):
-    // decompose the tick timestamp into the date/time parts
-    [$date, $time] = explode(' ', $tick['timestamp']);
-
-    $dateParts = explode('-', $date);
-    [$year, $month, $day] = $dateParts;
-
-    $timeParts = explode(':', $time);
-    [$hour, $minute, $second] = $timeParts;
-
     // build the tick entry components
-    $tickPath = "tick/$year/$month/$day/$hour/$minute/$second";
+    $tickPath = "tick/" . $tick['id'];
     $tickUrl = Util::escape_xml($siteUrl . $basePath . $tickPath);
     $tickTime = date(DATE_ATOM, strtotime($tick['timestamp']));
     $tickTitle = Util::escape_xml($tick['tick']);

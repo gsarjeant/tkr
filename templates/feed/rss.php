@@ -19,17 +19,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>
 <?php foreach ($ticks as $tick):
-    // decompose the tick timestamp into the date/time parts
-    [$date, $time] = explode(' ', $tick['timestamp']);
-
-    $dateParts = explode('-', $date);
-    [$year, $month, $day] = $dateParts;
-
-    $timeParts = explode(':', $time);
-    [$hour, $minute, $second] = $timeParts;
-
     // build the tick entry components
-    $tickPath = "tick/$year/$month/$day/$hour/$minute/$second";
+    //$tickPath = "tick/$year/$month/$day/$hour/$minute/$second";
+    $tickPath = "tick/" . $tick['id'];
     $tickUrl = Util::escape_xml($config->baseUrl . $config->basePath . $tickPath);
     $tickDate = date(DATE_RSS, strtotime($tick['timestamp']));
     $tickTitle = Util::escape_xml($tick['tick']);

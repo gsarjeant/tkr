@@ -9,7 +9,6 @@ class ConfigModel {
     public string $timezone = 'relative';
     public ?int $cssId = null;
     public bool $strictAccessibility = true;
-    public bool $showTickMood = true;
 
     // load config from sqlite database
     public static function load(): self {
@@ -25,8 +24,7 @@ class ConfigModel {
                                    base_path,
                                    items_per_page,
                                    css_id,
-                                   strict_accessibility,
-                                   show_tick_mood
+                                   strict_accessibility
                             FROM settings WHERE id=1");
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -39,7 +37,6 @@ class ConfigModel {
             $c->itemsPerPage = (int) $row['items_per_page'];
             $c->cssId = (int) $row['css_id'];
             $c->strictAccessibility = (bool) $row['strict_accessibility'];
-            $c->showTickMood = (bool) $row['show_tick_mood'];
         }
 
         return $c;
@@ -71,9 +68,8 @@ class ConfigModel {
                 items_per_page,
                 css_id,
                 strict_accessibility,
-                show_tick_mood
                 )
-                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)");
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?)");
         } else {
             $stmt = $db->prepare("UPDATE settings SET
                 site_title=?,
@@ -82,8 +78,7 @@ class ConfigModel {
                 base_path=?,
                 items_per_page=?,
                 css_id=?,
-                strict_accessibility=?,
-                show_tick_mood=?
+                strict_accessibility=?
                 WHERE id=1");
         }
         $stmt->execute([$this->siteTitle,
@@ -93,7 +88,6 @@ class ConfigModel {
                         $this->itemsPerPage,
                         $this->cssId,
                         $this->strictAccessibility,
-                        $this->showTickMood
                     ]);
 
         return self::load();

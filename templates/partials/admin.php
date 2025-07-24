@@ -22,11 +22,6 @@
                                name="display_name"
                                value="<?= Util::escape_html($user->displayName) ?>"
                                required>
-                        <label for="about">About </label>
-                        <input type="text"
-                            id="about"
-                            name="about"
-                            value="<?= Util::escape_html($user->about) ?>">
                         <label for="website">Website </label>
                         <input type="text"
                             id="website"
@@ -72,12 +67,6 @@
                                name="strict_accessibility"
                                value="1"
                                <?php if ($config->strictAccessibility): ?> checked <?php endif; ?>>
-                        <label for="show_tick_mood">Show tick mood</label>
-                        <input type="checkbox"
-                               id="show_tick_mood"
-                               name="show_tick_mood"
-                               value="1"
-                               <?php if ($config->showTickMood): ?> checked <?php endif; ?>>
                     </div>
                 </fieldset>
                 <fieldset>

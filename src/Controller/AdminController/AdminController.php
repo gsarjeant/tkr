@@ -55,7 +55,6 @@ class AdminController extends Controller {
             // User profile
             $username    = trim($_POST['username'] ?? '');
             $displayName = trim($_POST['display_name'] ?? '');
-            $about       = trim($_POST['about'] ?? '');
             $website     = trim($_POST['website'] ?? '');
 
             // Site settings
@@ -115,7 +114,6 @@ class AdminController extends Controller {
                 $config->basePath = $basePath;
                 $config->itemsPerPage = $itemsPerPage;
                 $config->strictAccessibility = $strictAccessibility;
-                $config->showTickMood = $showTickMood;
 
                 // Save site settings and reload config from database
                 // TODO - raise and handle exception on failure
@@ -124,7 +122,6 @@ class AdminController extends Controller {
                 // Update user profile
                 $user->username = $username;
                 $user->displayName = $displayName;
-                $user->about = $about;
                 $user->website = $website;
 
                 // Save user profile and reload user from database

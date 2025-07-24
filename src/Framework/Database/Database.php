@@ -92,8 +92,16 @@ class Database{
                     throw new Exception("Could not read migration file: $file");
                 }
 
-                // Execute the migration SQL
-                $db->exec($sql);
+                // Remove comments and split by semicolon
+                $sql = preg_replace('/--.*$/m', '', $sql);
+                $statements = preg_split('/;\s*$/m', $sql, -1, PREG_SPLIT_NO_EMPTY);
+
+                // Execute each statement
+                foreach ($statements as $statement){
+                    if (!empty($statement)){
+                        $db->exec($statement);
+                    }
+                }
             }
 
             // Update db version

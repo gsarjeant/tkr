@@ -25,6 +25,10 @@ if (!(preg_match('/setup$/', $path))) {
         // database validation
         $dbMgr = new Database();
         $dbMgr->validate();
+
+        // filesystem Migration
+        // TODO - delete
+        $fsMgr->migrate();
     } catch (SetupException $e) {
         $e->handle();
         exit;

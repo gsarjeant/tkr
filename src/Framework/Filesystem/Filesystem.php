@@ -5,6 +5,10 @@ class Filesystem {
     public function validate(): void{
         $this->validateStorageDir();
         $this->validateStorageSubdirs();
+    }
+
+    // TODO - delete this
+    public function migrate(): void{
         $this->migrateTickFiles();
         $this->moveTicksToDatabase();
     }

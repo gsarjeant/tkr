@@ -12,7 +12,7 @@ class SetupException extends Exception {
     // Exceptions don't generally define their own handlers,
     // but this is a very specific case.
     public function handle(){
-        switch ($this->setupIssue()){
+        switch ($this->setupIssue){
             case 'storage_missing':
             case 'storage_permissions':
             case 'directory_creation':

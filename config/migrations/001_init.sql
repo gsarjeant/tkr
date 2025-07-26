@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS settings (
     base_url TEXT NOT NULL,
     base_path TEXT NOT NULL,
     items_per_page INTEGER NOT NULL,
-    css_id INTEGER NULL
+    css_id INTEGER NULL,
+    strict_accessibility BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS css (

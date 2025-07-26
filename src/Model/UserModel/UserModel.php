@@ -30,7 +30,7 @@ class UserModel {
       $userCount = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
 
       if ($userCount === 0){
-        $stmt = $db->prepare("INSERT INTO user (id, username, display_name, website, mood) VALUES (1, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO user (id, username, display_name, website, mood) VALUES (1, ?, ?, ?, ?)");
       } else {
         $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, website=?, mood=? WHERE id=1");
       }

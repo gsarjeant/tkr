@@ -67,7 +67,7 @@ class ConfigModel {
                 base_path,
                 items_per_page,
                 css_id,
-                strict_accessibility,
+                strict_accessibility
                 )
                 VALUES (1, ?, ?, ?, ?, ?, ?, ?)");
         } else {

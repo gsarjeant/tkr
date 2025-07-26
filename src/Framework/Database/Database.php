@@ -1,5 +1,6 @@
 <?php
 class Database{
+    // TODO = Make this not static
     public static function get(): PDO {
         try {
             // SQLite will just create this if it doesn't exist.
@@ -19,20 +20,16 @@ class Database{
     }
 
     public function validate(): void{
-        $this->validateTables();
         $this->validateTableContents();
-        $this->migrate();
     }
 
     // The database version will just be an int
     // stored as PRAGMA user_version. It will
     // correspond to the most recent migration file applied to the db.
-    //
-    // I'm starting from 0, so if the user_version is NULL, I'll return -1.
     private function getVersion(): int {
         $db = self::get();
 
-        return $db->query("PRAGMA user_version")->fetchColumn() ?? -1;
+        return $db->query("PRAGMA user_version")->fetchColumn() ?? 0;
     }
 
     private function migrationNumberFromFile(string $filename): int {
@@ -71,7 +68,7 @@ class Database{
         return $pending;
     }
 
-    private function migrate(): void {
+    public function migrate(): void {
         $migrations = $this->getPendingMigrations();
 
         if (empty($migrations)) {
@@ -121,78 +118,6 @@ class Database{
         }
     }
 
-    private function createTables(): void {
-        $db = self::get();
-
-        try {
-            // user table
-            $db->exec("CREATE TABLE IF NOT EXISTS user (
-                id INTEGER PRIMARY KEY,
-                username TEXT NOT NULL,
-                display_name TEXT NOT NULL,
-                password_hash TEXT NULL,
-                about TEXT NULL,
-                website TEXT NULL,
-                mood TEXT NULL
-            )");
-
-            // settings table
-            $db->exec("CREATE TABLE IF NOT EXISTS settings (
-                id INTEGER PRIMARY KEY,
-                site_title TEXT NOT NULL,
-                site_description TEXT NULL,
-                base_url TEXT NOT NULL,
-                base_path TEXT NOT NULL,
-                items_per_page INTEGER NOT NULL,
-                css_id INTEGER NULL
-            )");
-
-            // css table
-            $db->exec("CREATE TABLE IF NOT EXISTS css (
-                id INTEGER PRIMARY KEY,
-                filename TEXT UNIQUE NOT NULL,
-                description TEXT NULL
-            )");
-
-            // mood table
-            $db->exec("CREATE TABLE IF NOT EXISTS emoji(
-                id INTEGER PRIMARY KEY,
-                emoji TEXT UNIQUE NOT NULL,
-                description TEXT NOT NULL
-            )");
-        } catch (PDOException $e) {
-            throw new SetupException(
-                "Table creation failed: " . $e->getMessage(),
-                'table_creation',
-                0,
-                $e
-            );
-        }
-    }
-
-    // make sure all tables exist
-    // attempt to create them if they don't
-    private function validateTables(): void {
-        $appTables = array();
-        $appTables[] = "settings";
-        $appTables[] = "user";
-        $appTables[] = "css";
-        $appTables[] = "emoji";
-
-        $db = self::get();
-
-        foreach ($appTables as $appTable){
-            $stmt = $db->prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?");
-            $stmt->execute([$appTable]);
-            if (!$stmt->fetch()){
-                // At least one table doesn't exist.
-                // Try creating tables (hacky, but I have 4 total tables)
-                // Will throw an exception if it fails
-                $this->createTables();
-            }
-        }
-    }
-
     // make sure tables that need to be seeded have been
     private function validateTableContents(): void {
         $db = self::get();
@@ -201,8 +126,8 @@ class Database{
         $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
         $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
-        // If either required table has no records and we aren't on /admin,
-        // redirect to /admin to complete setup
+        // If either required table has no records, throw an exception.
+        // This will be caught and redirect to setup.
         if ($user_count === 0 || $settings_count === 0){
             throw new SetupException(
                 "Required tables aren't populated. Please complete setup",

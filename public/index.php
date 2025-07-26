@@ -14,16 +14,19 @@ if (preg_match('/\.php$/', $path)) {
 // Define base paths and load classes
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 
+// validate that necessary directories exist and are writable
+$fsMgr = new Filesystem();
+$fsMgr->validate();
+
+// do any necessary database migrations
+$dbMgr = new Database();
+$dbMgr->migrate();
+
 // Make sure the initial setup is complete
 // unless we're already heading to setup
 if (!(preg_match('/setup$/', $path))) {
     try {
-        // filesystem validation
-        $fsMgr = new Filesystem();
-        $fsMgr->validate();
-
         // database validation
-        $dbMgr = new Database();
         $dbMgr->validate();
     } catch (SetupException $e) {
         $e->handle();
@@ -31,7 +34,8 @@ if (!(preg_match('/setup$/', $path))) {
     }
 }
 
-// initialize the database
+// Get a database connection
+// TODO: Change from static function.
 global $db;
 $db = Database::get();
 

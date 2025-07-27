@@ -1,5 +1,5 @@
 name: Prerequisites Testing
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
   test-php-version-requirements:

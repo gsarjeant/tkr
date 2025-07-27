@@ -528,7 +528,23 @@ class Prerequisites {
 
         // Write out guidance for storage directory permissions
         // if running the CLI script as root (since it will always appear to be writable)
-        if ($this->isCli && posix_getuid() === 0) {
+        if ($this->isCli && function_exists('posix_getuid') && posix_getuid() === 0) {
+            $this->addCheck(
+                'Root User Warning',
+                false,
+                'Running as root - permission checks may be inaccurate. After setup, ensure storage/ is owned by your web server user',
+                'warning'
+            );
+        } elseif ($this->isCli && !function_exists('posix_getuid')) {
+            $this->addCheck(
+                'POSIX Extension',
+                false,
+                'POSIX extension not available - cannot detect if running as root',
+                'warning'
+            );
+        }
+
+        if ($this->isCli && function_exists('posix_getuid') && posix_getuid() === 0) {
             $this->log("\n📋 ROOT USER SETUP RECOMMENDATIONS:");
             $this->log("After uploading to your web server,");
             $this->log("make sure the storage directory is writable by the web server user by running:");

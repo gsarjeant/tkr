@@ -128,7 +128,7 @@ class Prerequisites {
     }
 
     private function checkRecommendedExtensions() {
-        $recommendedExtensions = array('mbstring', 'curl', 'fileinfo', 'session');
+        $recommendedExtensions = array('mbstring', 'fileinfo', 'session');
 
         foreach ($recommendedExtensions as $ext) {
             $loaded = extension_loaded($ext);

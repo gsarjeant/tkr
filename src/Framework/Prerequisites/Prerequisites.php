@@ -171,11 +171,20 @@ class Prerequisites {
 
     private function checkStoragePermissions() {
         // Issue a warning if running as root in CLI context
-        if ($this->isCli && posix_getuid() === 0) {
+        // Write out guidance for storage directory permissions
+        // if running the CLI script as root (since it will always appear to be writable)
+        if ($this->isCli && function_exists('posix_getuid') && posix_getuid() === 0) {
             $this->addCheck(
                 'Root User Warning',
                 false,
                 'Running as root - permission checks may be inaccurate. After setup, ensure storage/ is owned by your web server user',
+                'warning'
+            );
+        } elseif ($this->isCli && !function_exists('posix_getuid')) {
+            $this->addCheck(
+                'POSIX Extension',
+                false,
+                'POSIX extension not available - cannot detect if running as root',
                 'warning'
             );
         }
@@ -524,24 +533,6 @@ class Prerequisites {
             foreach ($this->warnings as $warning) {
                 $this->log("  • {$warning}");
             }
-        }
-
-        // Write out guidance for storage directory permissions
-        // if running the CLI script as root (since it will always appear to be writable)
-        if ($this->isCli && function_exists('posix_getuid') && posix_getuid() === 0) {
-            $this->addCheck(
-                'Root User Warning',
-                false,
-                'Running as root - permission checks may be inaccurate. After setup, ensure storage/ is owned by your web server user',
-                'warning'
-            );
-        } elseif ($this->isCli && !function_exists('posix_getuid')) {
-            $this->addCheck(
-                'POSIX Extension',
-                false,
-                'POSIX extension not available - cannot detect if running as root',
-                'warning'
-            );
         }
 
         if ($this->isCli && function_exists('posix_getuid') && posix_getuid() === 0) {

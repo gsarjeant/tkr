@@ -170,6 +170,16 @@ class Prerequisites {
     }
 
     private function checkStoragePermissions() {
+        // Issue a warning if running as root in CLI context
+        if ($this->isCli && posix_getuid() === 0) {
+            $this->addCheck(
+                'Root User Warning',
+                false,
+                'Running as root - permission checks may be inaccurate. After setup, ensure storage/ is owned by your web server user',
+                'warning'
+            );
+        }
+
         $storageDirs = array(
             'storage',
             'storage/db',
@@ -514,6 +524,17 @@ class Prerequisites {
             foreach ($this->warnings as $warning) {
                 $this->log("  • {$warning}");
             }
+        }
+
+        // Write out guidance for storage directory permissions
+        // if running the CLI script as root (since it will always appear to be writable)
+        if ($this->isCli && posix_getuid() === 0) {
+            $this->log("\n📋 ROOT USER SETUP RECOMMENDATIONS:");
+            $this->log("After uploading to your web server,");
+            $this->log("make sure the storage directory is writable by the web server user by running:");
+            $this->log("  chown -R www-data:www-data storage/     # Debian/Ubuntu");
+            $this->log("  chown -R apache:apache storage/         # RHEL/CentOS/Fedora");
+            $this->log("  chmod -R 770 storage/                   # Ensure writability");
         }
 
         $this->log("\n📝 Full log saved to: " . $this->logFile);

@@ -14,20 +14,27 @@ if (preg_match('/\.php$/', $path)) {
 // Define base paths and load classes
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 
-// validate that necessary directories exist and are writable
-$fsMgr = new Filesystem();
-$fsMgr->validate();
+// Check prerequisites.
+$prerequisites = new Prerequisites();
+$results = $prerequisites->validate();
+if (count($prerequisites->getErrors()) > 0) {
+    $prerequisites->generateWebSummary($results);
+    exit;
+}
 
-// do any necessary database migrations
+// Do any necessary database migrations
 $dbMgr = new Database();
 $dbMgr->migrate();
 
 // Make sure the initial setup is complete
 // unless we're already heading to setup
+//
+// TODO: Consider simplifying this.
+// Might not need the custom exception now that the prereq checker is more robust.
 if (!(preg_match('/setup$/', $path))) {
     try {
-        // database validation
-        $dbMgr->validate();
+        // Make sure setup has been completed
+        $dbMgr->confirmSetup();
     } catch (SetupException $e) {
         $e->handle();
         exit;

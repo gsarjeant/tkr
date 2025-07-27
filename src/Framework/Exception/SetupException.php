@@ -13,13 +13,8 @@ class SetupException extends Exception {
     // but this is a very specific case.
     public function handle(){
         switch ($this->setupIssue){
-            case 'storage_missing':
-            case 'storage_permissions':
-            case 'directory_creation':
-            case 'directory_permissions':
             case 'database_connection':
-            case 'load_classes':
-            case 'table_creation':
+            case 'db_migration':
                 // Unrecoverable errors.
                 // Show error message and exit
                 http_response_code(500);
@@ -31,7 +26,7 @@ class SetupException extends Exception {
                 // Redirect to setup if we aren't already headed there.
                 // NOTE: Just read directly from init.php instead of
                 //       trying to use the config object. This is the initial
-                //       setup. It shouldn't assume anything can be loaded.
+                //       setup. It shouldn't assume any data can be loaded.
                 $init = require APP_ROOT . '/config/init.php';
                 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 

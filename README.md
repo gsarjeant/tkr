@@ -1,4 +1,5 @@
 # tkr
+![Prerequisite tests status](https://gitea.subcultureofone.org/greg/tkr/actions/workflows/prerequisites.yaml/badge.svg)
 ![Unit tests status](https://gitea.subcultureofone.org/greg/tkr/actions/workflows/unit_tests.yaml/badge.svg)
 
 A lightweight, HTML-only status feed for self-hosted personal websites. Written in PHP. Heavily inspired by [status.cafe](https://status.cafe).

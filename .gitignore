@@ -16,3 +16,6 @@ scratch
 
 # Build artifacts
 tkr.tgz
+
+# Test logs
+storage/prerequisite-check.log

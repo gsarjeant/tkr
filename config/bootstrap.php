@@ -9,10 +9,9 @@ define('CONFIG_DIR', APP_ROOT . '/config');
 define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
 define('TEMPLATES_DIR', APP_ROOT . '/templates');
-define('TICKS_DIR', STORAGE_DIR . '/ticks');
 define('DATA_DIR', STORAGE_DIR . '/db');
-define('CSS_UPLOAD_DIR', STORAGE_DIR . '/upload/css');
 define('DB_FILE', DATA_DIR . '/tkr.sqlite');
+define('CSS_UPLOAD_DIR', STORAGE_DIR . '/upload/css');
 
 // Janky autoloader function
 // This is a bit more consistent with current frameworks

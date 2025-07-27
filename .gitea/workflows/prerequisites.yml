@@ -1,0 +1,163 @@
+name: Prerequisites Testing
+on: [pull_request]
+
+jobs:
+  test-php-version-requirements:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo,pdo_sqlite
+
+      - name: Test PHP version requirement
+        run: |
+          if [[ "${{ matrix.php }}" < "8.2" ]]; then
+            echo "Testing PHP ${{ matrix.php }} - should fail"
+            if php check-prerequisites.php; then
+              echo "ERROR: Should have failed with PHP ${{ matrix.php }}"
+              exit 1
+            fi
+            echo "✓ Correctly failed with old PHP version"
+          else
+            echo "Testing PHP ${{ matrix.php }} - should pass"
+            php check-prerequisites.php
+            echo "✓ Correctly passed with supported PHP version"
+          fi
+
+  test-extension-progression:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3']
+        container: ['fedora:39', 'debian:bookworm', 'alpine:latest']
+    container: ${{ matrix.container }}
+
+    steps:
+      - name: Install Node.js fnd git or actions
+        run: |
+          if [ -f /etc/fedora-release ]; then
+            dnf install -y nodejs npm git
+          elif [ -f /etc/alpine-release ]; then
+            apk add --no-cache nodejs npm git
+          else
+            apt-get update && apt-get install -y nodejs npm git
+          fi
+
+      - uses: actions/checkout@v3
+
+      - name: Install base PHP only
+        run: |
+          if [ -f /etc/fedora-release ]; then
+            dnf --setopt=install_weak_deps=False install -y php php-cli
+          elif [ -f /etc/alpine-release ]; then
+            apk add --no-cache php82
+            ln -s /usr/bin/php82 /usr/bin/php
+          else
+            apt-get update && apt-get install -y php
+          fi
+
+      - name: Test failure with missing extensions
+        run: |
+          echo "Testing with base PHP - should fail"
+          if php check-prerequisites.php; then
+            echo "ERROR: Should have failed with missing extensions"
+            exit 1
+          fi
+          echo "✓ Correctly failed with missing extensions"
+
+      - name: Install PDO extension
+        run: |
+          if [ -f /etc/fedora-release ]; then
+            echo "Not installing PDO on fedora because it includes SQLite support."
+            echo "Will install in subsequent test so this step fails as expected."
+          elif [ -f /etc/alpine-release ]; then
+            apk add --no-cache php82-pdo
+          else
+            apt-get install -y php-pdo
+          fi
+
+      - name: Test still fails without SQLite
+        run: |
+          echo "Testing with PDO but no SQLite - should still fail"
+          if php check-prerequisites.php; then
+            echo "ERROR: Should have failed without SQLite"
+            exit 1
+          fi
+          echo "✓ Correctly failed without SQLite extension"
+
+      - name: Install SQLite extension
+        run: |
+          if [ -f /etc/fedora-release ]; then
+            dnf --setopt=install_weak_deps=False install -y php-pdo
+          elif [ -f /etc/alpine-release ]; then
+            apk add --no-cache php82-pdo_sqlite
+          else
+            apt-get install -y php-sqlite3
+          fi
+
+      - name: Test now passes with required extensions
+        run: |
+          echo "Testing with all required extensions - should pass"
+          php check-prerequisites.php
+          echo "✓ All required extensions detected correctly"
+
+      - name: Install recommended extensions and retest
+        run: |
+          if [ -f /etc/fedora-release ]; then
+            dnf install -y php-mbstring php-curl
+          elif [ -f /etc/alpine-release ]; then
+            apk add --no-cache php82-mbstring php82-curl
+          else
+            apt-get install -y php-mbstring php-curl
+          fi
+          php check-prerequisites.php
+          echo "✓ Recommended extensions also detected"
+
+  test-permission-scenarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo,pdo_sqlite
+
+      - name: Test with unwritable storage directory
+        run: |
+          # Create a non-root user for testing
+          useradd -m -s /bin/bash testuser
+
+          # Make storage unwritable by non-root
+          mkdir -p storage
+          chmod 444 storage
+          chown root:root storage
+
+          # Run as the non-root user - should fail
+          if su testuser -c "php check-prerequisites.php"; then
+            echo "ERROR: Should have failed with unwritable storage"
+            exit 1
+          fi
+          echo "✓ Correctly failed with unwritable storage"
+
+          # Restore permissions for cleanup
+          chmod 755 storage
+
+      - name: Test with missing directories
+        run: |
+          # Remove required directories
+          rm -rf src templates config
+
+          # Should fail
+          if php check-prerequisites.php; then
+            echo "ERROR: Should have failed with missing directories"
+            exit 1
+          fi

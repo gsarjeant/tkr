@@ -119,7 +119,7 @@ class Database{
     }
 
     // make sure tables that need to be seeded have been
-    private function validateTableContents(): void {
+    public function confirmSetup(): void {
         $db = self::get();
 
         // make sure required tables (user, settings) are populated

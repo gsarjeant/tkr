@@ -65,22 +65,19 @@ I'm trying to make sure that the HTML is both semantically valid and accessible,
     * The SSL configurations are basic, but should work. For more robust SSL configurations, see https://ssl-config.mozilla.org
 
 
-### From git
-
-If you'd prefer to install from git:
-
-1. Clone this directory and copy the `/tkr` directory to your web server.
-    * Required subdirectories are:
-        1. `config`
-        1. `public`
-        1. `src`
-        1. `storage`
-        1. `templates`
-    * Exclude the other directories
-2. Follow the main installation from step 4.
-
 ## Initial configuration
 
+1. Run `php tkr/prerequisites.php`. This will confirm that:
+    1. PHP 8.2+ is installed
+    1. All required PHP extensions are installed
+        1. PDO
+        1. PDO::sqlite
+    1. All required directories exist
+    1. The `tkr/storage` directory exists and is writable
+        1. If `tkr/storage` is writable, then it will create the required subdirectories
+            1. `tkr/storage/db`
+            1. `tkr/storage/upload`
+    1. The script will write a summary to stdout and will save a log at `tkr/storage/prerequisite-check.log`
 1. Edit `config/init.php` to set the domain and base path correctly for your configuration.
     * subdirectory installation (e.g. https://my-domain.com/tkr)
     ```

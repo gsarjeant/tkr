@@ -40,7 +40,7 @@ jobs:
     container: ${{ matrix.container }}
 
     steps:
-      - name: Install Node.js fnd git or actions
+      - name: Install Node.js and git
         run: |
           if [ -f /etc/fedora-release ]; then
             dnf install -y nodejs npm git
@@ -154,7 +154,7 @@ jobs:
       - name: Test with missing directories
         run: |
           # Remove required directories
-          rm -rf src templates config
+          rm -rf src templates
 
           # Should fail
           if php check-prerequisites.php; then

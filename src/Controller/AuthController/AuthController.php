@@ -20,21 +20,21 @@ class AuthController extends Controller {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            // TODO: move into user model
-            global $db;
-            $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
-            $stmt->execute([$username]);
-            $user = $stmt->fetch();
+            Log::debug("Login attempt for user {$username}");
 
+            $userModel = new UserModel();
+            $user = $userModel->getByUsername($username);
+
+            //if ($user && password_verify($password, $user['password_hash'])) {
             if ($user && password_verify($password, $user['password_hash'])) {
-                session_regenerate_id(true);
-                // TODO: move into session.php
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                Session::generateCsrfToken(true);
+                Log::info("Successful login for {$username}");
+
+                Session::newLoginSession($user);
                 header('Location: ' . $config->basePath);
                 exit;
             } else {
+                Log::warning("Failed login for {$username}");
+
                 // Set a flash message and reload the login page
                 Session::setFlashMessage('error', 'Invalid username or password');
                 header('Location: ' . $_SERVER['PHP_SELF']);
@@ -44,7 +44,9 @@ class AuthController extends Controller {
     }
 
     function handleLogout(){
+        Log::info("Logout from user " . $_SESSION['username']);
         Session::end();
+
         global $config;
         header('Location: ' . $config->basePath);
         exit;

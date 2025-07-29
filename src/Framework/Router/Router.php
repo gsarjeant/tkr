@@ -33,6 +33,8 @@ class Router {
             $controller = $routeHandler[1];
             $methods = $routeHandler[2] ?? ['GET'];
 
+            Log::debug("Route: '{$routePattern}', Controller {$controller}, Methods: ". implode(',' , $methods));
+
             # Only allow valid route and filename characters
             # to prevent directory traversal and other attacks
             $routePattern = preg_replace('/\{([^}]+)\}/', '([a-zA-Z0-9._-]+)', $routePattern);
@@ -43,18 +45,21 @@ class Router {
                     // Save any path elements we're interested in
                     // (but discard the match on the entire path)
                     array_shift($matches);
+                    Log::debug("Captured path elements: " . implode(',', $matches));
 
                     if (strpos($controller, '@')) {
                         // Get the controller and method that handle this route
-                        [$controllerName, $methodName] = explode('@', $controller);
+                        [$controllerName, $functionName] = explode('@', $controller);
                     } else {
                         // Default to 'index' if no method specified
                         $controllerName = $controller;
-                        $methodName = 'index';
+                        $functionName = 'index';
                     }
 
+                    Log::debug("Handling request with Controller {$controllerName} and function {$functionName}");
+
                     $instance = new $controllerName();
-                    call_user_func_array([$instance, $methodName], $matches);
+                    call_user_func_array([$instance, $functionName], $matches);
                     return true;
                 }
             }

@@ -1,0 +1,2 @@
+ALTER TABLE settings
+ADD COLUMN log_level INTEGER NULL;

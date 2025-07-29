@@ -12,6 +12,14 @@ class SetupException extends Exception {
     // Exceptions don't generally define their own handlers,
     // but this is a very specific case.
     public function handle(){
+        // try to log the error, but keep going if it fails
+        try {
+            Log::error($this->setupIssue . ", " . $this->getMessage());
+        } catch (Exception $e) {
+            // Do nothing and move on to the normal error handling
+            // We don't want to short-circuit this if there's a problem logging
+        }
+
         switch ($this->setupIssue){
             case 'database_connection':
             case 'db_migration':

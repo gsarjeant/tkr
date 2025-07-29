@@ -42,11 +42,20 @@ class UserModel {
 
    // Making this a separate function to avoid
    // loading the password into memory
-   public function set_password(string $password): void {
+   public function setPassword(string $password): void {
         global $db;
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $db->prepare("UPDATE user SET password_hash=? WHERE id=1");
         $stmt->execute([$hash]);
+   }
+
+   public function getByUsername($username){
+        global $db;
+        $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
+        $stmt->execute([$username]);
+        $record = $stmt->fetch();
+
+        return $record;
    }
 }

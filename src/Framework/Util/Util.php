@@ -1,5 +1,13 @@
 <?php
 class Util {
+    public static function getClientIp() {
+        return $_SERVER['HTTP_CLIENT_IP'] ??
+               $_SERVER['HTTP_X_FORWARDED_FOR'] ??
+               $_SERVER['HTTP_X_REAL_IP'] ??
+               $_SERVER['REMOTE_ADDR'] ??
+               'unknown';
+    }
+
     public static function escape_html(string $text): string {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }

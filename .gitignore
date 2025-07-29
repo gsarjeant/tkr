@@ -9,6 +9,7 @@ phpunit
 *.sqlite
 *.txt
 storage/upload/css
+storage/logs
 
 # Testing stuff
 /docker-compose.yml

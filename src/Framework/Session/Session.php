@@ -6,8 +6,28 @@ class Session {
     // global $_SESSION associative array
     public static function start(): void{
         if (session_status() === PHP_SESSION_NONE) {
+            $existingSessionId = $_COOKIE['PHPSESSID'] ?? null;
             session_start();
+
+            if ($existingSessionId && session_id() === $existingSessionId) {
+                Log::debug("Resumed existing login session: " . session_id());
+            } else {
+                Log::debug("Created new login session: " . session_id());
+            }
+        } else {
+            Log::debug('Session already active in this request: ' . session_id());
         }
+    }
+
+    public static function newLoginSession(Array $user){
+        Log::debug("Starting new login session for {$user['username']}");
+
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        self::generateCsrfToken(true);
+
+        Log::debug("Started new login session for {$user['username']}");
     }
 
     public static function generateCsrfToken(bool $regenerate = false): void{
@@ -59,6 +79,7 @@ class Session {
     }
 
     public static function end(): void {
+        Log::debug("Ending session: " . session_id());
         $_SESSION = [];
         session_destroy();
     }

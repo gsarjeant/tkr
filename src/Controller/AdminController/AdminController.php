@@ -64,7 +64,7 @@ class AdminController extends Controller {
             $basePath            = trim($_POST['base_path'] ?? '/');
             $itemsPerPage        = (int) ($_POST['items_per_page'] ?? 25);
             $strictAccessibility = isset($_POST['strict_accessibility']);
-            $showTickMood        = isset($_POST['show_tick_mood']);
+            $logLevel            = (int) ($_POST['log_level'] ?? '');
 
             // Password
             $password        = $_POST['password'] ?? '';
@@ -114,6 +114,7 @@ class AdminController extends Controller {
                 $config->basePath = $basePath;
                 $config->itemsPerPage = $itemsPerPage;
                 $config->strictAccessibility = $strictAccessibility;
+                $config->logLevel = $logLevel;
 
                 // Save site settings and reload config from database
                 // TODO - raise and handle exception on failure
@@ -131,7 +132,7 @@ class AdminController extends Controller {
                 // Update the password if one was sent
                 // TODO - raise and handle exception on failure
                 if($password){
-                    $user->set_password($password);
+                    $user->setPassword($password);
                 }
 
                 Session::setFlashMessage('success', 'Settings updated');

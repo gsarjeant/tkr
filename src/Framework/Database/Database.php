@@ -60,6 +60,7 @@ class Database{
         foreach ($files as $file) {
             $version = $this->migrationNumberFromFile($file);
             if ($version > $currentVersion) {
+                Log::debug("Found pending migration ({$version}): " . basename($file));
                 $pending[$version] = $file;
             }
         }
@@ -72,9 +73,11 @@ class Database{
         $migrations = $this->getPendingMigrations();
 
         if (empty($migrations)) {
-            # TODO: log
+            Log::debug("No pending migrations");
             return;
         }
+        Log::info("Found " . count($migrations) . "pending migrations.");
+        Log::info("Updating database. Current Version: " . $this->getVersion());
 
         $db = self::get();
         $db->beginTransaction();
@@ -82,7 +85,7 @@ class Database{
         try {
             foreach ($migrations as $version => $file) {
                 $filename = basename($file);
-                // TODO: log properly
+                Log::debug("Starting migration: {$filename}");
 
                 $sql = file_get_contents($file);
                 if ($sql === false) {
@@ -96,17 +99,20 @@ class Database{
                 // Execute each statement
                 foreach ($statements as $statement){
                     if (!empty($statement)){
+                        Log::debug("Migration statement: {$statement}");
                         $db->exec($statement);
                     }
                 }
+
+                Log::info("Applied migration {$filename}");
             }
 
             // Update db version
             $db->commit();
             $this->setVersion($version);
-            //TODO: log properly
-            //echo "All migrations completed successfully.\n";
 
+            Log::info("Applied " . count($migrations) . " migrations.");
+            Log::info("Updated database version to " . $this->getVersion());
         } catch (Exception $e) {
             $db->rollBack();
             throw new SetupException(

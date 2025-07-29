@@ -67,6 +67,13 @@
                                name="strict_accessibility"
                                value="1"
                                <?php if ($config->strictAccessibility): ?> checked <?php endif; ?>>
+                        <label for="strict_accessibility">Log Level</label>
+                        <select id="log_level" name="log_level">
+                            <option value="1" <?= ($config->logLevel ?? 2) == 1 ? 'selected' : '' ?>>DEBUG</option>
+                            <option value="2" <?= ($config->logLevel ?? 2) == 2 ? 'selected' : '' ?>>INFO</option>
+                            <option value="3" <?= ($config->logLevel ?? 2) == 3 ? 'selected' : '' ?>>WARNING</option>
+                            <option value="4" <?= ($config->logLevel ?? 2) == 4 ? 'selected' : '' ?>>ERROR</option>
+                        </select>
                     </div>
                 </fieldset>
                 <fieldset>

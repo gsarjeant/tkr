@@ -9,6 +9,7 @@ class ConfigModel {
     public string $timezone = 'relative';
     public ?int $cssId = null;
     public bool $strictAccessibility = true;
+    public ?int $logLevel = null;
 
     // load config from sqlite database
     public static function load(): self {
@@ -24,7 +25,8 @@ class ConfigModel {
                                    base_path,
                                    items_per_page,
                                    css_id,
-                                   strict_accessibility
+                                   strict_accessibility,
+                                   log_level
                             FROM settings WHERE id=1");
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -37,6 +39,7 @@ class ConfigModel {
             $c->itemsPerPage = (int) $row['items_per_page'];
             $c->cssId = (int) $row['css_id'];
             $c->strictAccessibility = (bool) $row['strict_accessibility'];
+            $c->logLevel = $row['log_level'];
         }
 
         return $c;
@@ -67,9 +70,10 @@ class ConfigModel {
                 base_path,
                 items_per_page,
                 css_id,
-                strict_accessibility
+                strict_accessibility,
+                log_level
                 )
-                VALUES (1, ?, ?, ?, ?, ?, ?, ?)");
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)");
         } else {
             $stmt = $db->prepare("UPDATE settings SET
                 site_title=?,
@@ -78,9 +82,11 @@ class ConfigModel {
                 base_path=?,
                 items_per_page=?,
                 css_id=?,
-                strict_accessibility=?
+                strict_accessibility=?,
+                log_level=?
                 WHERE id=1");
         }
+
         $stmt->execute([$this->siteTitle,
                         $this->siteDescription,
                         $this->baseUrl,
@@ -88,6 +94,7 @@ class ConfigModel {
                         $this->itemsPerPage,
                         $this->cssId,
                         $this->strictAccessibility,
+                        $this->logLevel
                     ]);
 
         return self::load();

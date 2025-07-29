@@ -143,6 +143,19 @@ tkr stores profile information, custom emojis, and uploaded css metadata in a SQ
 
 You don't have to do any database setup. The database is automatically created and initialized on first run.
 
+## FAQ
+
+### Why don't I see the right IPs in the logs?
+
+This can happen for a few reasons. Some common ones are:
+
+**Docker Development:** If running via Docker, you may see `192.168.65.1` (Docker Desktop gateway). This is normal for development.
+
+**Behind a Proxy/CDN:** If you're behind Cloudflare (with proxy enabled), load balancers, or other proxies, all requests may appear to come from the proxy's IP addresses.
+
+- **For accurate IP logging:** Configure your web server to trust proxy headers. See your proxy provider's documentation for the required nginx/Apache configuration.
+
+
 ## Acknowledgements
 
 It's been a lot of fun to get back to building something. I'm grateful to the people and projects that inspired me to do it:

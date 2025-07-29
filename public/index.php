@@ -67,6 +67,7 @@ if (strpos($path, $config->basePath) === 0) {
 
 // strip the trailing slash from the resulting route
 $path = trim($path, '/');
+Log::debug("Path requested: {$path}");
 
 // if this is a POST and we aren't in setup,
 // make sure there's a valid session
@@ -75,12 +76,14 @@ if ($method === 'POST' && $path != 'setup') {
     if ($path != 'login'){
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
+            Log::info('Attempt to POST with invalid session. Redirecting to login.');
             header('Location: ' . $config->basePath . '/login');
             exit;
         }
     } else {
         if (!Session::isValidCsrfToken($_POST['csrf_token'])) {
             // Just die if the token is invalid on login
+            Log::error("Attempt to log in with invalid CSRF token.");
             die('Invalid CSRF token');
             exit;
         }
@@ -92,6 +95,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Render the requested route or throw a 404
 if (!Router::route($path, $method)){
+    Log::error("No route found for path {$path}");
     http_response_code(404);
     echo "404 - Page Not Found";
     exit;

@@ -37,7 +37,6 @@ class Prerequisites {
      */
     private function log($message, $overwrite=false) {
         $logDir = dirname($this->logFile);
-        //print("Log dir: {$logDir}");
         if (!is_dir($logDir)) {
             if (!@mkdir($logDir, 0770, true)) {
                 // Can't create storage dir - just output, don't log to file
@@ -48,6 +47,10 @@ class Prerequisites {
             }
         }
 
+        // Overwrite the log if $overwrite is set
+        // I overwrite the log for each new validation run,
+        // because prior results are irrelevant.
+        // This keeps it from growing without bound.
         $flags = LOCK_EX;
         if (!$overwrite) {
             $flags |= FILE_APPEND;
@@ -66,6 +69,7 @@ class Prerequisites {
         }
     }
 
+    // Record the result of a validation check.
     private function addCheck($name, $status, $message, $severity = 'info') {
         $this->checks[] = array(
             'name' => $name,
@@ -85,6 +89,7 @@ class Prerequisites {
     }
 
     private function checkPhpVersion() {
+        // TODO - move to bootstrap.php?
         $minVersion = '8.2.0';
         $currentVersion = PHP_VERSION;
         $versionOk = version_compare($currentVersion, $minVersion, '>=');
@@ -192,6 +197,7 @@ class Prerequisites {
         $storageDirs = array(
             'storage',
             'storage/db',
+            'storage/logs',
             'storage/upload',
             'storage/upload/css'
         );

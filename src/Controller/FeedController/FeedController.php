@@ -13,6 +13,7 @@ class FeedController extends Controller {
 
     public function rss(){
         $generator = new RssGenerator($this->config, $this->ticks);
+        Log::debug("Generating RSS feed with " . count($this->ticks) . " ticks");
 
         header('Content-Type: ' . $generator->getContentType());
         echo $generator->generate();
@@ -20,6 +21,7 @@ class FeedController extends Controller {
 
     public function atom(){
         $generator = new AtomGenerator($this->config, $this->ticks);
+        Log::debug("Generating Atom feed with " . count($this->ticks) . " ticks");
 
         header('Content-Type: ' . $generator->getContentType());
         echo $generator->generate();

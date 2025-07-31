@@ -3,6 +3,8 @@ class AtomGenerator extends FeedGenerator {
     public function generate(): string {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= $this->buildFeed();
+
+        Log::debug("Generated Atom feed: " . strlen($xml) . " bytes");
         return $xml;
     }
 
@@ -11,6 +13,7 @@ class AtomGenerator extends FeedGenerator {
     }
 
     private function buildFeed(): string {
+        Log::debug("Building Atom feed for " . $this->config->siteTitle);
         $feedTitle = Util::escape_xml($this->config->siteTitle . " Atom Feed");
         $siteUrl = Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath));
         $feedUrl = Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath, 'feed/atom'));

@@ -5,6 +5,8 @@ class RssGenerator extends FeedGenerator {
         $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";
         $xml .= $this->buildChannel();
         $xml .= '</rss>' . "\n";
+
+        Log::debug("Generated RSS feed: " . strlen($xml) . " bytes");
         return $xml;
     }
 
@@ -13,6 +15,7 @@ class RssGenerator extends FeedGenerator {
     }
 
     private function buildChannel(): string {
+        Log::debug("Building RSS channel for " . $this->config->siteTitle);
         ob_start();
         ?>
 <channel>

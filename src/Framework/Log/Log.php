@@ -10,6 +10,7 @@ class Log {
     private static $logFile;
     private static $maxLines = 1000;
     private static $maxFiles = 5;
+    private static $routeContext = '';
 
     public static function init() {
         self::$logFile = STORAGE_DIR . '/logs/tkr.log';
@@ -20,6 +21,10 @@ class Log {
         if (!is_dir($logDir)) {
             mkdir($logDir, 0770, true);
         }
+    }
+
+    public static function setRouteContext(string $route): void {
+        self::$routeContext = $route ? "[$route]" : '';
     }
 
     public static function debug($message) {
@@ -52,7 +57,8 @@ class Log {
         }
 
         $timestamp = date('Y-m-d H:i:s');
-        $logEntry = "[{$timestamp}] {$level}: " . Util::getClientIp() . " - {$message}\n";
+        $context = self::$routeContext ? ' ' . self::$routeContext : '';
+        $logEntry = "[{$timestamp}] {$level}: " . Util::getClientIp() . "{$context} - {$message}\n";
 
         // Rotate if we're at the max file size (1000 lines)
         if (file_exists(self::$logFile)) {

@@ -67,6 +67,9 @@ if (strpos($path, $config->basePath) === 0) {
 
 // strip the trailing slash from the resulting route
 $path = trim($path, '/');
+
+// Set route context for logging
+Log::setRouteContext("$method $path");
 Log::debug("Path requested: {$path}");
 
 // if this is a POST and we aren't in setup,

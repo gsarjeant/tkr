@@ -62,4 +62,21 @@ class Util {
         }
         return $diff->s . ' second' . ($diff->s != 1 ? 's' : '') . ' ago';
     }
+
+    public static function buildUrl(string $baseUrl, string $basePath, string $path = ''): string {
+        // Normalize baseUrl (remove trailing slash)
+        $baseUrl = rtrim($baseUrl, '/');
+        
+        // Normalize basePath (ensure leading slash, remove trailing slash unless it's just '/')
+        if ($basePath === '' || $basePath === '/') {
+            $basePath = '/';
+        } else {
+            $basePath = '/' . trim($basePath, '/') . '/';
+        }
+        
+        // Normalize path (remove leading slash if present)
+        $path = ltrim($path, '/');
+        
+        return $baseUrl . $basePath . $path;
+    }
 }

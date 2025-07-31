@@ -33,14 +33,14 @@ class Router {
             $controller = $routeHandler[1];
             $methods = $routeHandler[2] ?? ['GET'];
 
-            Log::debug("Route: '{$routePattern}', Controller {$controller}, Methods: ". implode(',' , $methods));
-
             # Only allow valid route and filename characters
             # to prevent directory traversal and other attacks
             $routePattern = preg_replace('/\{([^}]+)\}/', '([a-zA-Z0-9._-]+)', $routePattern);
             $routePattern = '#^' . $routePattern . '$#';
 
             if (preg_match($routePattern, $requestPath, $matches)) {
+                Log::debug("Request path: '{$requestPath}', Controller {$controller}, Methods: ". implode(',' , $methods));
+
                 if (in_array($requestMethod, $methods)){
                     // Save any path elements we're interested in
                     // (but discard the match on the entire path)

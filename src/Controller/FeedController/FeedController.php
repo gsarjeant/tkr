@@ -1,34 +1,27 @@
 <?php
 class FeedController extends Controller {
-    private array $vars;
-
-    protected function render(string $templateFile, array $vars = []) {
-        $templatePath = TEMPLATES_DIR . "/" . $templateFile;
-
-        if (!file_exists($templatePath)) {
-            throw new RuntimeException("Template not found: $templatePath");
-        }
-
-        extract($vars, EXTR_SKIP);
-        include $templatePath;
-    }
+    private $config;
+    private $ticks;
 
     public function __construct(){
-        $config = ConfigModel::load();
+        $this->config = ConfigModel::load();
         $tickModel = new TickModel();
-        $ticks = iterator_to_array($tickModel->stream($config->itemsPerPage));
+        $this->ticks = iterator_to_array($tickModel->stream($this->config->itemsPerPage));
 
-        $this->vars = [
-            'config' => $config,
-            'ticks' => $ticks,
-        ];
+        Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
     }
 
     public function rss(){
-        $this->render("feed/rss.php", $this->vars);
+        $generator = new RssGenerator($this->config, $this->ticks);
+
+        header('Content-Type: ' . $generator->getContentType());
+        echo $generator->generate();
     }
 
     public function atom(){
-        $this->render("feed/atom.php", $this->vars);
+        $generator = new AtomGenerator($this->config, $this->ticks);
+
+        header('Content-Type: ' . $generator->getContentType());
+        echo $generator->generate();
     }
 }

@@ -77,7 +77,7 @@ if ($method === 'POST' && $path != 'setup') {
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
             Log::info('Attempt to POST with invalid session. Redirecting to login.');
-            header('Location: ' . $config->basePath . '/login');
+            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'login'));
             exit;
         }
     } else {

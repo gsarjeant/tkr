@@ -2,7 +2,7 @@
 <?php /** @var array $emojiList */ ?>
         <h1>Emoji Management</h1>
         <main>
-            <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
+            <form action="<?= Util::buildRelativeUrl($config->basePath, 'admin/emoji') ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>Add Emoji</legend>
@@ -24,7 +24,7 @@
                 </fieldset>
             </form>
 <?php if (!empty($emojiList)): ?>
-            <form action="<?= $config->basePath ?>admin/emoji" method="post" enctype="multipart/form-data">
+            <form action="<?= Util::buildRelativeUrl($config->basePath, 'admin/emoji') ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset class="delete-emoji-fieldset">
                     <legend>Delete Emoji</legend>

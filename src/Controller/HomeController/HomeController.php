@@ -39,7 +39,7 @@ class HomeController extends Controller {
         global $config;
 
         // redirect to the index (will show the latest tick if one was sent)
-        header('Location: ' . $config->basePath);
+        header('Location: ' . Util::buildRelativeUrl($config->basePath));
         exit;
     }
 

@@ -2,7 +2,7 @@
 <?php /** @var Array $customCss */ ?>
         <h1>CSS Management</h1>
         <main>
-            <form action="<?= $config->basePath ?>admin/css" method="post" enctype="multipart/form-data">
+            <form action="<?= Util::buildRelativeUrl($config->basePath, 'admin/css') ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>Manage</legend>

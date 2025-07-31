@@ -4,7 +4,7 @@
         <h1><?php if ($isSetup): ?>Setup<?php else: ?>Admin<?php endif; ?></h1>
         <main>
             <form
-                action="<?php echo $config->basePath . ($isSetup ? 'setup' : 'admin') ?>"
+                action="<?php echo Util::buildRelativeUrl($config->basePath, ($isSetup ? 'setup' : 'admin')) ?>"
                 method="post">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>

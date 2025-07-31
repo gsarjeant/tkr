@@ -30,7 +30,7 @@ class AdminController extends Controller {
 
     public function handleSave(){
         if (!Session::isLoggedIn()){
-            header('Location: ' . $config->basePath . '/login');
+            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'login'));
             exit;
         }
 

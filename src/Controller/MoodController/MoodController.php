@@ -35,7 +35,7 @@
                 $user = $user->save();
 
                 // go back to the index and show the updated mood
-                header('Location: ' . $config->basePath);
+                header('Location: ' . Util::buildRelativeUrl($config->basePath));
                 exit;
             }
         }

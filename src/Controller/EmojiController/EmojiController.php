@@ -29,7 +29,7 @@
                 break;
             }
 
-            header('Location: ' . $config->basePath . 'admin/emoji');
+            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'admin/emoji'));
             exit;
         }
 

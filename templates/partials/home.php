@@ -14,7 +14,7 @@
 <?php if (Session::isLoggedIn()): ?>
                         <a
                             <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
-                            href="<?= Util::escape_html($config->basePath) ?>mood"
+                            href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'mood')) ?>"
                             class="change-mood">Change mood</a>
 <?php endif ?>
                     </dd>

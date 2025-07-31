@@ -30,7 +30,7 @@ class AuthController extends Controller {
                 Log::info("Successful login for {$username}");
 
                 Session::newLoginSession($user);
-                header('Location: ' . $config->basePath);
+                header('Location: ' . Util::buildRelativeUrl($config->basePath));
                 exit;
             } else {
                 Log::warning("Failed login for {$username}");
@@ -48,7 +48,7 @@ class AuthController extends Controller {
         Session::end();
 
         global $config;
-        header('Location: ' . $config->basePath);
+        header('Location: ' . Util::buildRelativeUrl($config->basePath));
         exit;
     }
 }

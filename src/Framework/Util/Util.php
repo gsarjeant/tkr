@@ -79,4 +79,28 @@ class Util {
         
         return $baseUrl . $basePath . $path;
     }
+
+    public static function buildRelativeUrl(string $basePath, string $path = ''): string {
+        // Ensure basePath starts with / for relative URLs
+        $basePath = '/' . ltrim($basePath, '/');
+        
+        // Remove trailing slash unless it's just '/'
+        if ($basePath !== '/') {
+            $basePath = rtrim($basePath, '/');
+        }
+        
+        // Add path
+        $path = ltrim($path, '/');
+        
+        if ($path === '') {
+            return $basePath;
+        }
+        
+        // If basePath is root, don't add extra slash
+        if ($basePath === '/') {
+            return '/' . $path;
+        }
+        
+        return $basePath . '/' . $path;
+    }
 }

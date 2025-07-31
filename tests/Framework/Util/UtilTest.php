@@ -26,4 +26,51 @@ final class UtilTest extends TestCase
         $this->assertSame($relativeTime, $display);
     }
 
+    public static function buildUrlProvider(): array {
+        return [
+            'basic path' => ['https://example.com', 'tkr', 'admin', 'https://example.com/tkr/admin'],
+            'baseUrl with trailing slash' => ['https://example.com/', 'tkr', 'admin', 'https://example.com/tkr/admin'],
+            'empty basePath' => ['https://example.com', '', 'admin', 'https://example.com/admin'],
+            'root basePath' => ['https://example.com', '/', 'admin', 'https://example.com/admin'],
+            'basePath no leading slash' => ['https://example.com', 'tkr', 'admin', 'https://example.com/tkr/admin'],
+            'basePath with leading slash' => ['https://example.com', '/tkr', 'admin', 'https://example.com/tkr/admin'],
+            'basePath with trailing slash' => ['https://example.com', 'tkr/', 'admin', 'https://example.com/tkr/admin'],
+            'basePath with both slashes' => ['https://example.com', '/tkr/', 'admin', 'https://example.com/tkr/admin'],
+            'complex path' => ['https://example.com', 'tkr', 'admin/css/upload', 'https://example.com/tkr/admin/css/upload'],
+            'path with leading slash' => ['https://example.com', 'tkr', '/admin', 'https://example.com/tkr/admin'],
+            'no path - empty basePath' => ['https://example.com', '', '', 'https://example.com/'],
+            'no path - root basePath' => ['https://example.com', '/', '', 'https://example.com/'],
+            'no path - tkr basePath' => ['https://example.com', 'tkr', '', 'https://example.com/tkr/'],
+        ];
+    }
+
+    #[DataProvider('buildUrlProvider')]
+    public function testBuildUrl(string $baseUrl, string $basePath, string $path, string $expected): void {
+        $result = Util::buildUrl($baseUrl, $basePath, $path);
+        $this->assertEquals($expected, $result);
+    }
+
+    public static function buildRelativeUrlProvider(): array {
+        return [
+            'empty basePath with path' => ['', 'admin', '/admin'],
+            'root basePath with path' => ['/', 'admin', '/admin'],
+            'tkr basePath with path' => ['tkr', 'admin', '/tkr/admin'],
+            'tkr with leading slash' => ['/tkr', 'admin', '/tkr/admin'],
+            'tkr with trailing slash' => ['tkr/', 'admin', '/tkr/admin'],
+            'tkr with both slashes' => ['/tkr/', 'admin', '/tkr/admin'],
+            'complex path' => ['tkr', 'admin/css/upload', '/tkr/admin/css/upload'],
+            'path with leading slash' => ['tkr', '/admin', '/tkr/admin'],
+            'no path - empty basePath' => ['', '', '/'],
+            'no path - root basePath' => ['/', '', '/'],
+            'no path - tkr basePath' => ['tkr', '', '/tkr'],
+            'no path - tkr with slashes' => ['/tkr/', '', '/tkr'],
+        ];
+    }
+
+    #[DataProvider('buildRelativeUrlProvider')]
+    public function testBuildRelativeUrl(string $basePath, string $path, string $expected): void {
+        $result = Util::buildRelativeUrl($basePath, $path);
+        $this->assertEquals($expected, $result);
+    }
+
 }

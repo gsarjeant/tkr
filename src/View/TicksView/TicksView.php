@@ -1,7 +1,16 @@
 <?php
-class HomeView {
-    public function renderTicksSection(string $siteDescription, array $ticks, int $page, int $limit){
-        global $config;
+class TicksView {
+    private $html;
+
+    public function __construct(ConfigModel $config, array $ticks, int $page){
+        $this->html = $this->render($config, $ticks, $page);
+    }
+
+    public function getHtml(): string {
+        return $this->html;
+    }
+
+    private function render(ConfigModel $config, array $ticks, int $page): string{
         ob_start();
         ?>
 
@@ -22,7 +31,7 @@ class HomeView {
                 <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
                    href="?page=<?php echo $page - 1 ?>">&laquo; Newer</a>
             <?php endif; ?>
-            <?php if (count($ticks) === $limit): ?>
+            <?php if (count($ticks) === $config->itemsPerPage): ?>
                 <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
                    href="?page=<?php echo $page + 1 ?>">Older &raquo;</a>
             <?php endif; ?>

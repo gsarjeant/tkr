@@ -1,18 +1,12 @@
 <?php
 class TickModel {
-    public function stream(int $limit, int $offset = 0): Generator {
+    public function getPage(int $limit, int $offset = 0): array {
         global $db;
 
         $stmt = $db->prepare("SELECT id, timestamp, tick FROM tick ORDER BY timestamp DESC LIMIT ? OFFSET ?");
         $stmt->execute([$limit, $offset]);
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            yield [
-                'id' => $row['id'],
-                'timestamp' => $row['timestamp'],
-                'tick' => $row['tick'],
-            ];
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function insert(string $tick, ?DateTimeImmutable $datetime = null): void {

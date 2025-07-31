@@ -6,7 +6,7 @@ class FeedController extends Controller {
     public function __construct(){
         $this->config = ConfigModel::load();
         $tickModel = new TickModel();
-        $this->ticks = iterator_to_array($tickModel->stream($this->config->itemsPerPage));
+        $this->ticks = $tickModel->getPage($this->config->itemsPerPage);
 
         Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
     }

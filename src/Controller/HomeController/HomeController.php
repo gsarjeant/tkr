@@ -10,10 +10,10 @@ class HomeController extends Controller {
         $tickModel = new TickModel();
         $limit = $config->itemsPerPage;
         $offset = ($page - 1) * $limit;
-        $ticks = iterator_to_array($tickModel->stream($limit, $offset));
+        $ticks = $tickModel->getPage($limit, $offset);
 
-        $view = new HomeView();
-        $tickList = $view->renderTicksSection($config->siteDescription, $ticks, $page, $limit);
+        $view = new TicksView($config, $ticks, $page);
+        $tickList = $view->getHtml();
 
         $vars = [
             'config'     => $config,

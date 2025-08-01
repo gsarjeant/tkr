@@ -66,6 +66,7 @@ class Router {
             }
         }
 
+        Log::warning("No route found for path '{$requestPath}'");
         return false;
     }
 

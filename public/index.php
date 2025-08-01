@@ -98,7 +98,6 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Render the requested route or throw a 404
 if (!Router::route($path, $method)){
-    Log::error("No route found for path {$path}");
     http_response_code(404);
     echo "404 - Page Not Found";
     exit;

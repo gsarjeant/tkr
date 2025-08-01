@@ -25,6 +25,8 @@
                        href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'admin/css')) ?>">css</a>
                     <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
                        href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'admin/emoji')) ?>">emoji</a>
+                    <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
+                       href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'admin/logs')) ?>">logs</a>
                 </div>
             </details>
             <a <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>

@@ -18,6 +18,10 @@
     --color-primary: gainsboro;
     --color-required: crimson;
     --color-text: black;
+    --color-log-info-bg: #f8f9fa;
+    --color-log-warning-bg: #fff8e1;
+    --color-log-error-bg: #ffebee;
+    --color-log-muted: #666;
 
     --border-width: 2px;
     --border-width-thin: 1px;
@@ -496,4 +500,54 @@ time {
         width: auto;
         min-width: auto;
     }
+}
+
+/* Log viewer styles */
+.log-monospace {
+    font-family: 'Courier New', Consolas, Monaco, 'Lucida Console', monospace;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.log-table th,
+.log-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: var(--border-width-thin) solid var(--color-border);
+}
+
+.log-table th {
+    background-color: var(--color-primary);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.log-level-badge {
+    padding: 4px 8px;
+    border-radius: var(--border-radius);
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+/* Log level row colors - subtle background tints */
+.log-debug { background-color: var(--color-bg); }
+.log-info { background-color: var(--color-log-info-bg); }
+.log-warning { background-color: var(--color-log-warning-bg); }
+.log-error { background-color: var(--color-log-error-bg); }
+
+.log-no-route {
+    color: var(--color-log-muted);
+    font-style: italic;
+}
+
+.log-info {
+    margin-top: 1rem;
+    padding: 10px 12px;
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    font-size: 0.9em;
 }

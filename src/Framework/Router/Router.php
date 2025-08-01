@@ -12,6 +12,7 @@ class Router {
         ['admin/css', 'CssController@handlePost', ['POST']],
         ['admin/emoji', 'EmojiController'],
         ['admin/emoji', 'EmojiController@handlePost', ['POST']],
+        ['admin/logs', 'LogController'],
         ['feed/rss', 'FeedController@rss'],
         ['feed/atom', 'FeedController@atom'],
         ['login', 'AuthController@showLogin'],

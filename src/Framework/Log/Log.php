@@ -12,8 +12,8 @@ class Log {
     private static $maxFiles = 5;
     private static $routeContext = '';
 
-    public static function init() {
-        self::$logFile = STORAGE_DIR . '/logs/tkr.log';
+    public static function init(?string $logFile = null) {
+        self::$logFile = $logFile ?? STORAGE_DIR . '/logs/tkr.log';
 
         // Ensure log directory exists
         // (should be handled by Prerequisites, but doesn't hurt)

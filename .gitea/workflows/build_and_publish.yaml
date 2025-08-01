@@ -15,7 +15,7 @@ jobs:
           tar \
             --transform 's,^,tkr/,' \
             --exclude='storage/db' \
-            --exclude='storage/ticks' \
+            --exclude='storage/logs' \
             --exclude='storage/upload' \
             -czvf tkr.${{ gitea.ref_name }}.tgz \
             check-prerequisites.php config public src storage templates

@@ -76,7 +76,7 @@ class Database{
             Log::debug("No pending migrations");
             return;
         }
-        Log::info("Found " . count($migrations) . "pending migrations.");
+        Log::info("Found " . count($migrations) . " pending migrations.");
         Log::info("Updating database. Current Version: " . $this->getVersion());
 
         $db = self::get();

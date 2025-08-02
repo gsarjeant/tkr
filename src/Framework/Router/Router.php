@@ -1,6 +1,8 @@
 <?php
 // Very simple router class
 class Router {
+    public function __construct(private PDO $db, private ConfigModel $config, private UserModel $user) {}
+    
     // Define the recognized routes.
     // Anything else will 404.
     private static $routeHandlers = [
@@ -28,7 +30,7 @@ class Router {
 
 
     // Main router function
-    public static function route(string $requestPath, string $requestMethod): bool {
+    public function route(string $requestPath, string $requestMethod): bool {
         foreach (self::$routeHandlers as $routeHandler) {
             $routePattern = $routeHandler[0];
             $controller = $routeHandler[1];
@@ -59,7 +61,7 @@ class Router {
 
                     Log::debug("Handling request with Controller {$controllerName} and function {$functionName}");
 
-                    $instance = new $controllerName();
+                    $instance = new $controllerName($this->db, $this->config, $this->user);
                     call_user_func_array([$instance, $functionName], $matches);
                     return true;
                 }

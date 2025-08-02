@@ -4,7 +4,8 @@ use PHPUnit\Framework\TestCase;
 class RssGeneratorTest extends TestCase
 {
     private function createMockConfig() {
-        $config = new ConfigModel();
+        $mockPdo = $this->createMock(PDO::class);
+        $config = new ConfigModel($mockPdo);
         $config->siteTitle = 'Test Site';
         $config->siteDescription = 'Test Description';
         $config->baseUrl = 'https://example.com';

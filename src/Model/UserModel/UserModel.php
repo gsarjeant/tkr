@@ -6,14 +6,21 @@ class UserModel {
     public string $website = '';
     public string $mood = '';
 
-    // load user settings from sqlite database
+    public function __construct(private PDO $db) {}
+
+    // load user settings from sqlite database (backward compatibility)
     public static function load(): self {
         global $db;
-
+        $instance = new self($db);
+        return $instance->loadFromDatabase();
+    }
+    
+    // Instance method that uses injected database
+    public function loadFromDatabase(): self {
         // There's only ever one user. I'm just leaning into that.
-        $stmt = $db->query("SELECT username, display_name, website, mood FROM user WHERE id=1");
+        $stmt = $this->db->query("SELECT username, display_name, website, mood FROM user WHERE id=1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $u = new self();
+        $u = new self($this->db);
 
         if ($row) {
             $u->username = $row['username'];
@@ -26,33 +33,29 @@ class UserModel {
     }
 
    public function save(): self {
-      global $db;
-      $userCount = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
+      $userCount = (int) $this->db->query("SELECT COUNT(*) FROM user")->fetchColumn();
 
       if ($userCount === 0){
-        $stmt = $db->prepare("INSERT INTO user (id, username, display_name, website, mood) VALUES (1, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO user (id, username, display_name, website, mood) VALUES (1, ?, ?, ?, ?)");
       } else {
-        $stmt = $db->prepare("UPDATE user SET username=?, display_name=?, website=?, mood=? WHERE id=1");
+        $stmt = $this->db->prepare("UPDATE user SET username=?, display_name=?, website=?, mood=? WHERE id=1");
       }
 
       $stmt->execute([$this->username, $this->displayName, $this->website, $this->mood]);
 
-      return self::load();
+      return $this->loadFromDatabase();
    }
 
    // Making this a separate function to avoid
    // loading the password into memory
    public function setPassword(string $password): void {
-        global $db;
-
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $db->prepare("UPDATE user SET password_hash=? WHERE id=1");
+        $stmt = $this->db->prepare("UPDATE user SET password_hash=? WHERE id=1");
         $stmt->execute([$hash]);
    }
 
    public function getByUsername($username){
-        global $db;
-        $stmt = $db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
+        $stmt = $this->db->prepare("SELECT id, username, password_hash FROM user WHERE username = ?");
         $stmt->execute([$username]);
         $record = $stmt->fetch();
 

@@ -1,27 +1,24 @@
 <?php
 class TickModel {
+    public function __construct(private PDO $db, private ConfigModel $config) {}
+    
     public function getPage(int $limit, int $offset = 0): array {
-        global $db;
-
-        $stmt = $db->prepare("SELECT id, timestamp, tick FROM tick ORDER BY timestamp DESC LIMIT ? OFFSET ?");
+        $stmt = $this->db->prepare("SELECT id, timestamp, tick FROM tick ORDER BY timestamp DESC LIMIT ? OFFSET ?");
         $stmt->execute([$limit, $offset]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function insert(string $tick, ?DateTimeImmutable $datetime = null): void {
-        global $db;
         $datetime ??= new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $timestamp = $datetime->format('Y-m-d H:i:s');
 
-        $stmt = $db->prepare("INSERT INTO tick(timestamp, tick) values (?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO tick(timestamp, tick) values (?, ?)");
         $stmt->execute([$timestamp, $tick]);
     }
 
     public function get(int $id): array {
-        global $db;
-
-        $stmt = $db->prepare("SELECT timestamp, tick FROM tick WHERE id=?");
+        $stmt = $this->db->prepare("SELECT timestamp, tick FROM tick WHERE id=?");
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,7 +26,7 @@ class TickModel {
         return [
             'tickTime' => $row['timestamp'],
             'tick' => $row['tick'],
-            'config' => ConfigModel::load(),
+            'config' => $this->config,
         ];
     }
 }

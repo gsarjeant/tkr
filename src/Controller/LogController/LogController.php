@@ -2,7 +2,8 @@
 class LogController extends Controller {
     private string $storageDir;
 
-    public function __construct(?string $storageDir = null) {
+    public function __construct(PDO $db, ConfigModel $config, UserModel $user, ?string $storageDir = null) {
+        parent::__construct($db, $config, $user);
         $this->storageDir = $storageDir ?? STORAGE_DIR;
     }
 

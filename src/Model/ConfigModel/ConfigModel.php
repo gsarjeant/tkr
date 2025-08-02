@@ -11,15 +11,23 @@ class ConfigModel {
     public bool $strictAccessibility = true;
     public ?int $logLevel = null;
 
-    // load config from sqlite database
+    public function __construct(private PDO $db) {}
+
+    // load config from sqlite database (backward compatibility)
     public static function load(): self {
+        global $db;
+        $instance = new self($db);
+        return $instance->loadFromDatabase();
+    }
+    
+    // Instance method that uses injected database
+    public function loadFromDatabase(): self {
         $init = require APP_ROOT . '/config/init.php';
-        $c = new self();
+        $c = new self($this->db);
         $c->baseUrl = ($c->baseUrl === '') ? $init['base_url'] : $c->baseUrl;
         $c->basePath = ($c->basePath === '') ? $init['base_path'] : $c->basePath;
 
-        global $db;
-        $stmt = $db->query("SELECT site_title,
+        $stmt = $this->db->query("SELECT site_title,
                                    site_description,
                                    base_url,
                                    base_path,
@@ -58,11 +66,10 @@ class ConfigModel {
     }
 
     public function save(): self {
-        global $db;
-        $settingsCount = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
+        $settingsCount = (int) $this->db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
         if ($settingsCount === 0){
-            $stmt = $db->prepare("INSERT INTO settings (
+            $stmt = $this->db->prepare("INSERT INTO settings (
                 id,
                 site_title,
                 site_description,
@@ -75,7 +82,7 @@ class ConfigModel {
                 )
                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)");
         } else {
-            $stmt = $db->prepare("UPDATE settings SET
+            $stmt = $this->db->prepare("UPDATE settings SET
                 site_title=?,
                 site_description=?,
                 base_url=?,
@@ -97,6 +104,6 @@ class ConfigModel {
                         $this->logLevel
                     ]);
 
-        return self::load();
+        return $this->loadFromDatabase();
     }
 }

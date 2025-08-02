@@ -4,7 +4,8 @@ use PHPUnit\Framework\TestCase;
 class FeedGeneratorTest extends TestCase
 {
     private function createMockConfig() {
-        $config = new ConfigModel();
+        $mockPdo = $this->createMock(PDO::class);
+        $config = new ConfigModel($mockPdo);
         $config->siteTitle = 'Test Site';
         $config->siteDescription = 'Test Description';
         $config->baseUrl = 'https://example.com';
@@ -65,7 +66,8 @@ class FeedGeneratorTest extends TestCase
     }
 
     public function testUrlMethodsHandleSubdomainConfiguration() {
-        $config = new ConfigModel();
+        $mockPdo = $this->createMock(PDO::class);
+        $config = new ConfigModel($mockPdo);
         $config->siteTitle = 'Test Site';
         $config->baseUrl = 'https://tkr.example.com';
         $config->basePath = '/';
@@ -77,7 +79,8 @@ class FeedGeneratorTest extends TestCase
     }
 
     public function testUrlMethodsHandleEmptyBasePath() {
-        $config = new ConfigModel();
+        $mockPdo = $this->createMock(PDO::class);
+        $config = new ConfigModel($mockPdo);
         $config->siteTitle = 'Test Site';
         $config->baseUrl = 'https://example.com';
         $config->basePath = '';
@@ -100,7 +103,8 @@ class FeedGeneratorTest extends TestCase
         ];
 
         foreach ($testCases as [$basePath, $expectedSiteUrl, $expectedTickUrl]) {
-            $config = new ConfigModel();
+            $mockPdo = $this->createMock(PDO::class);
+            $config = new ConfigModel($mockPdo);
             $config->siteTitle = 'Test Site';
             $config->baseUrl = 'https://example.com';
             $config->basePath = $basePath;

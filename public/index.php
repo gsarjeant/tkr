@@ -52,8 +52,10 @@ $db = Database::get();
 global $config;
 global $user;
 
-$config = ConfigModel::load();
-$user = UserModel::load();
+$config = new ConfigModel($db);
+$config = $config->loadFromDatabase();
+$user = new UserModel($db);
+$user = $user->loadFromDatabase();
 
 // Start a session and generate a CSRF Token
 // if there isn't already an active session
@@ -97,7 +99,8 @@ if ($method === 'POST' && $path != 'setup') {
 header('Content-Type: text/html; charset=utf-8');
 
 // Render the requested route or throw a 404
-if (!Router::route($path, $method)){
+$router = new Router($db, $config, $user);
+if (!$router->route($path, $method)){
     http_response_code(404);
     echo "404 - Page Not Found";
     exit;

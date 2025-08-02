@@ -1,12 +1,12 @@
 <?php
 class FeedController extends Controller {
-    private $config;
     private $ticks;
 
-    public function __construct(){
-        $this->config = ConfigModel::load();
-        $tickModel = new TickModel();
-        $this->ticks = $tickModel->getPage($this->config->itemsPerPage);
+    public function __construct(PDO $db, ConfigModel $config, UserModel $user){
+        parent::__construct($db, $config, $user);
+        
+        $tickModel = new TickModel($db, $config);
+        $this->ticks = $tickModel->getPage($config->itemsPerPage);
 
         Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
     }

@@ -1,0 +1,367 @@
+<?php
+require_once dirname(dirname(dirname(__DIR__))) . "/config/bootstrap.php";
+use PHPUnit\Framework\TestCase;
+
+class AdminControllerTest extends TestCase
+{
+    private PDO $mockPdo;
+    private ConfigModel $config;
+    private UserModel $user;
+    private string $tempLogDir;
+
+    protected function setUp(): void
+    {
+        // Set up temporary logging
+        $this->tempLogDir = sys_get_temp_dir() . '/tkr_test_logs_' . uniqid();
+        mkdir($this->tempLogDir . '/logs', 0777, true);
+        Log::init($this->tempLogDir . '/logs/tkr.log');
+        
+        // Set up global config for logging level (DEBUG = 1)
+        global $config;
+        $config = new stdClass();
+        $config->logLevel = 1; // Allow DEBUG level logs
+
+        // Create mock PDO (needed for base constructor)
+        $this->mockPdo = $this->createMock(PDO::class);
+        
+        // Create real config and user objects with mocked PDO
+        $this->config = new ConfigModel($this->mockPdo);
+        $this->config->siteTitle = 'Test Site';
+        $this->config->siteDescription = 'Test Description';
+        $this->config->baseUrl = 'https://example.com';
+        $this->config->basePath = '/tkr';
+        $this->config->itemsPerPage = 10;
+        
+        $this->user = new UserModel($this->mockPdo);
+        $this->user->username = 'testuser';
+        $this->user->displayName = 'Test User';
+        $this->user->website = 'https://example.com';
+    }
+
+    protected function tearDown(): void
+    {
+        // Clean up temp directory
+        if (is_dir($this->tempLogDir)) {
+            $this->deleteDirectory($this->tempLogDir);
+        }
+    }
+
+    private function deleteDirectory(string $dir): void
+    {
+        if (!is_dir($dir)) return;
+        
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            $path = $dir . '/' . $file;
+            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
+        }
+        rmdir($dir);
+    }
+
+    public function testGetAdminDataRegularMode(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $data = $controller->getAdminData(false);
+        
+        // Should return proper structure
+        $this->assertArrayHasKey('config', $data);
+        $this->assertArrayHasKey('user', $data);
+        $this->assertArrayHasKey('isSetup', $data);
+        
+        // Should be the injected instances
+        $this->assertSame($this->config, $data['config']);
+        $this->assertSame($this->user, $data['user']);
+        $this->assertFalse($data['isSetup']);
+    }
+
+    public function testGetAdminDataSetupMode(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $data = $controller->getAdminData(true);
+        
+        // Should return proper structure
+        $this->assertArrayHasKey('config', $data);
+        $this->assertArrayHasKey('user', $data);
+        $this->assertArrayHasKey('isSetup', $data);
+        
+        // Should be the injected instances
+        $this->assertSame($this->config, $data['config']);
+        $this->assertSame($this->user, $data['user']);
+        $this->assertTrue($data['isSetup']);
+    }
+
+    public function testProcessSettingsSaveWithEmptyData(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $result = $controller->processSettingsSave([], false);
+        
+        $this->assertFalse($result['success']);
+        $this->assertContains('No data provided', $result['errors']);
+    }
+
+    public function testProcessSettingsSaveValidationErrors(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        
+        // Test data with multiple validation errors
+        $postData = [
+            'username' => '',  // Missing username
+            'display_name' => '',  // Missing display name
+            'website' => 'invalid-url',  // Invalid URL
+            'site_title' => '',  // Missing site title
+            'base_url' => '',  // Missing base URL
+            'base_path' => 'invalid',  // Invalid base path
+            'items_per_page' => 100,  // Too high
+            'password' => 'test123',
+            'confirm_password' => 'different'  // Passwords don't match
+        ];
+        
+        $result = $controller->processSettingsSave($postData, false);
+        
+        $this->assertFalse($result['success']);
+        $this->assertNotEmpty($result['errors']);
+        
+        // Should have multiple validation errors
+        $this->assertGreaterThan(5, count($result['errors']));
+    }
+
+    public function testProcessSettingsSaveValidData(): void
+    {
+        // Mock PDO to simulate successful database operations
+        $mockStatement = $this->createMock(PDOStatement::class);
+        $mockStatement->method('execute')->willReturn(true);
+        $mockStatement->method('fetchColumn')->willReturn(1); // Existing record count
+        $mockStatement->method('fetch')->willReturnOnConsecutiveCalls(
+            [
+                'site_title' => 'Updated Site',
+                'site_description' => 'Updated Description',
+                'base_url' => 'https://updated.com',
+                'base_path' => '/updated',
+                'items_per_page' => 15,
+                'css_id' => null,
+                'strict_accessibility' => true,
+                'log_level' => 2
+            ],
+            [
+                'username' => 'newuser',
+                'display_name' => 'New User',
+                'website' => 'https://example.com',
+                'mood' => ''
+            ]
+        );
+
+        $this->mockPdo->method('prepare')->willReturn($mockStatement);
+        $this->mockPdo->method('query')->willReturn($mockStatement);
+
+        // Create models with mocked PDO
+        $config = new ConfigModel($this->mockPdo);
+        $user = new UserModel($this->mockPdo);
+        
+        $controller = new AdminController($this->mockPdo, $config, $user);
+        
+        $postData = [
+            'username' => 'newuser',
+            'display_name' => 'New User',
+            'website' => 'https://example.com',
+            'site_title' => 'Updated Site',
+            'site_description' => 'Updated Description',
+            'base_url' => 'https://updated.com',
+            'base_path' => '/updated',
+            'items_per_page' => 15,
+            'strict_accessibility' => 'on',
+            'log_level' => 2
+        ];
+        
+        $result = $controller->processSettingsSave($postData, false);
+        
+        $this->assertTrue($result['success']);
+        $this->assertEmpty($result['errors']);
+    }
+
+    public function testProcessSettingsSaveWithPassword(): void
+    {
+        // Mock PDO for successful save operations
+        $mockStatement = $this->createMock(PDOStatement::class);
+        $mockStatement->method('execute')->willReturn(true);
+        $mockStatement->method('fetchColumn')->willReturn(1);
+        $mockStatement->method('fetch')->willReturnOnConsecutiveCalls(
+            [
+                'site_title' => 'Test Site',
+                'site_description' => 'Test Description',
+                'base_url' => 'https://example.com',
+                'base_path' => '/tkr',
+                'items_per_page' => 10,
+                'css_id' => null,
+                'strict_accessibility' => true,
+                'log_level' => 2
+            ],
+            [
+                'username' => 'testuser',
+                'display_name' => 'Test User',
+                'website' => '',
+                'mood' => ''
+            ]
+        );
+
+        // Verify password hash is called
+        $this->mockPdo->expects($this->atLeastOnce())
+                     ->method('prepare')
+                     ->willReturn($mockStatement);
+        
+        $this->mockPdo->method('query')->willReturn($mockStatement);
+
+        // Create models with mocked PDO
+        $config = new ConfigModel($this->mockPdo);
+        $user = new UserModel($this->mockPdo);
+        
+        $controller = new AdminController($this->mockPdo, $config, $user);
+        
+        $postData = [
+            'username' => 'testuser',
+            'display_name' => 'Test User',
+            'site_title' => 'Test Site',
+            'site_description' => 'Test Description',
+            'base_url' => 'https://example.com',
+            'base_path' => '/tkr',
+            'items_per_page' => 10,
+            'password' => 'newpassword',
+            'confirm_password' => 'newpassword'
+        ];
+        
+        $result = $controller->processSettingsSave($postData, false);
+        
+        $this->assertTrue($result['success']);
+    }
+
+    public function testProcessSettingsSaveDatabaseError(): void
+    {
+        // Mock PDO to throw exception on save
+        $this->mockPdo->method('query')
+                     ->willThrowException(new PDOException("Database error"));
+
+        $config = new ConfigModel($this->mockPdo);
+        $user = new UserModel($this->mockPdo);
+        
+        $controller = new AdminController($this->mockPdo, $config, $user);
+        
+        $postData = [
+            'username' => 'testuser',
+            'display_name' => 'Test User',
+            'site_title' => 'Test Site',
+            'site_description' => 'Test Description',
+            'base_url' => 'https://example.com',
+            'base_path' => '/tkr',
+            'items_per_page' => 10
+        ];
+        
+        $result = $controller->processSettingsSave($postData, false);
+        
+        $this->assertFalse($result['success']);
+        $this->assertContains('Failed to save settings', $result['errors']);
+    }
+
+    public function testLoggingOnAdminPageLoad(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller->getAdminData(false);
+        
+        // Check that logs were written
+        $logFile = $this->tempLogDir . '/logs/tkr.log';
+        $this->assertFileExists($logFile);
+        
+        $logContent = file_get_contents($logFile);
+        $this->assertStringContainsString('Loading admin page', $logContent);
+    }
+
+    public function testLoggingOnSetupPageLoad(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller->getAdminData(true);
+        
+        // Check that logs were written
+        $logFile = $this->tempLogDir . '/logs/tkr.log';
+        $this->assertFileExists($logFile);
+        
+        $logContent = file_get_contents($logFile);
+        $this->assertStringContainsString('Loading admin page (setup mode)', $logContent);
+    }
+
+    public function testLoggingOnValidationErrors(): void
+    {
+        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        
+        $postData = [
+            'username' => '',  // Will cause validation error
+            'display_name' => 'Test User',
+            'site_title' => 'Test Site',
+            'base_url' => 'https://example.com',
+            'base_path' => '/tkr',
+            'items_per_page' => 10
+        ];
+        
+        $controller->processSettingsSave($postData, false);
+        
+        // Check that logs were written
+        $logFile = $this->tempLogDir . '/logs/tkr.log';
+        $this->assertFileExists($logFile);
+        
+        $logContent = file_get_contents($logFile);
+        $this->assertStringContainsString('Settings validation failed', $logContent);
+        $this->assertStringContainsString('Validation error: Username is required', $logContent);
+    }
+
+    public function testLoggingOnSuccessfulSave(): void
+    {
+        // Mock successful database operations
+        $mockStatement = $this->createMock(PDOStatement::class);
+        $mockStatement->method('execute')->willReturn(true);
+        $mockStatement->method('fetchColumn')->willReturn(1);
+        $mockStatement->method('fetch')->willReturnOnConsecutiveCalls(
+            [
+                'site_title' => 'Test Site',
+                'site_description' => 'Test Description',
+                'base_url' => 'https://example.com',
+                'base_path' => '/tkr',
+                'items_per_page' => 10,
+                'css_id' => null,
+                'strict_accessibility' => true,
+                'log_level' => 2
+            ],
+            [
+                'username' => 'testuser',
+                'display_name' => 'Test User',
+                'website' => '',
+                'mood' => ''
+            ]
+        );
+
+        $this->mockPdo->method('prepare')->willReturn($mockStatement);
+        $this->mockPdo->method('query')->willReturn($mockStatement);
+
+        $config = new ConfigModel($this->mockPdo);
+        $user = new UserModel($this->mockPdo);
+        
+        $controller = new AdminController($this->mockPdo, $config, $user);
+        
+        $postData = [
+            'username' => 'testuser',
+            'display_name' => 'Test User',
+            'site_title' => 'Test Site',
+            'site_description' => 'Test Description',
+            'base_url' => 'https://example.com',
+            'base_path' => '/tkr',
+            'items_per_page' => 10
+        ];
+        
+        $controller->processSettingsSave($postData, false);
+        
+        // Check that logs were written
+        $logFile = $this->tempLogDir . '/logs/tkr.log';
+        $this->assertFileExists($logFile);
+        
+        $logContent = file_get_contents($logFile);
+        $this->assertStringContainsString('Processing settings for user: testuser', $logContent);
+        $this->assertStringContainsString('Site settings updated', $logContent);
+        $this->assertStringContainsString('User profile updated', $logContent);
+    }
+}

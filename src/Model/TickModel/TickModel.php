@@ -22,7 +22,11 @@ class TickModel {
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // TODO: Test for existence of row and handle absence.
+        // Handle case where tick doesn't exist
+        if ($row === false || empty($row) || !isset($row['timestamp']) || !isset($row['tick'])) {
+            return [];
+        }
+
         return [
             'tickTime' => $row['timestamp'],
             'tick' => $row['tick'],

@@ -15,13 +15,8 @@ class AdminControllerTest extends TestCase
         $this->tempLogDir = sys_get_temp_dir() . '/tkr_test_logs_' . uniqid();
         mkdir($this->tempLogDir . '/logs', 0777, true);
         Log::init($this->tempLogDir . '/logs/tkr.log');
-        
-        // Set up global config for logging level (DEBUG = 1)
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1; // Allow DEBUG level logs
 
-        // Create mock PDO (needed for base constructor)
+        // Create mock PDO
         $this->mockPdo = $this->createMock(PDO::class);
         
         // Create real config and user objects with mocked PDO
@@ -36,6 +31,17 @@ class AdminControllerTest extends TestCase
         $this->user->username = 'testuser';
         $this->user->displayName = 'Test User';
         $this->user->website = 'https://example.com';
+        
+        // Set up global $app for simplified dependency access
+        global $app;
+        $app = [
+            'db' => $this->mockPdo,
+            'config' => $this->config,
+            'user' => $this->user,
+        ];
+        
+        // Set log level on config for Log class
+        $this->config->logLevel = 1; // Allow DEBUG level logs
     }
 
     protected function tearDown(): void
@@ -60,7 +66,7 @@ class AdminControllerTest extends TestCase
 
     public function testGetAdminDataRegularMode(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         $data = $controller->getAdminData(false);
         
         // Should return proper structure
@@ -76,7 +82,7 @@ class AdminControllerTest extends TestCase
 
     public function testGetAdminDataSetupMode(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         $data = $controller->getAdminData(true);
         
         // Should return proper structure
@@ -92,8 +98,8 @@ class AdminControllerTest extends TestCase
 
     public function testProcessSettingsSaveWithEmptyData(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
-        $result = $controller->processSettingsSave([], false);
+        $controller = new AdminController();
+        $result = $controller->saveSettings([], false);
         
         $this->assertFalse($result['success']);
         $this->assertContains('No data provided', $result['errors']);
@@ -101,7 +107,7 @@ class AdminControllerTest extends TestCase
 
     public function testProcessSettingsSaveValidationErrors(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         
         // Test data with multiple validation errors
         $postData = [
@@ -116,7 +122,7 @@ class AdminControllerTest extends TestCase
             'confirm_password' => 'different'  // Passwords don't match
         ];
         
-        $result = $controller->processSettingsSave($postData, false);
+        $result = $controller->saveSettings($postData, false);
         
         $this->assertFalse($result['success']);
         $this->assertNotEmpty($result['errors']);
@@ -157,7 +163,12 @@ class AdminControllerTest extends TestCase
         $config = new ConfigModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
         
-        $controller = new AdminController($this->mockPdo, $config, $user);
+        // Update global $app with test models
+        global $app;
+        $app['config'] = $config;
+        $app['user'] = $user;
+        
+        $controller = new AdminController();
         
         $postData = [
             'username' => 'newuser',
@@ -172,7 +183,7 @@ class AdminControllerTest extends TestCase
             'log_level' => 2
         ];
         
-        $result = $controller->processSettingsSave($postData, false);
+        $result = $controller->saveSettings($postData, false);
         
         $this->assertTrue($result['success']);
         $this->assertEmpty($result['errors']);
@@ -214,7 +225,12 @@ class AdminControllerTest extends TestCase
         $config = new ConfigModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
         
-        $controller = new AdminController($this->mockPdo, $config, $user);
+        // Update global $app with test models
+        global $app;
+        $app['config'] = $config;
+        $app['user'] = $user;
+        
+        $controller = new AdminController();
         
         $postData = [
             'username' => 'testuser',
@@ -228,7 +244,7 @@ class AdminControllerTest extends TestCase
             'confirm_password' => 'newpassword'
         ];
         
-        $result = $controller->processSettingsSave($postData, false);
+        $result = $controller->saveSettings($postData, false);
         
         $this->assertTrue($result['success']);
     }
@@ -242,7 +258,12 @@ class AdminControllerTest extends TestCase
         $config = new ConfigModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
         
-        $controller = new AdminController($this->mockPdo, $config, $user);
+        // Update global $app with test models
+        global $app;
+        $app['config'] = $config;
+        $app['user'] = $user;
+        
+        $controller = new AdminController();
         
         $postData = [
             'username' => 'testuser',
@@ -254,7 +275,7 @@ class AdminControllerTest extends TestCase
             'items_per_page' => 10
         ];
         
-        $result = $controller->processSettingsSave($postData, false);
+        $result = $controller->saveSettings($postData, false);
         
         $this->assertFalse($result['success']);
         $this->assertContains('Failed to save settings', $result['errors']);
@@ -262,7 +283,7 @@ class AdminControllerTest extends TestCase
 
     public function testLoggingOnAdminPageLoad(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         $controller->getAdminData(false);
         
         // Check that logs were written
@@ -275,7 +296,7 @@ class AdminControllerTest extends TestCase
 
     public function testLoggingOnSetupPageLoad(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         $controller->getAdminData(true);
         
         // Check that logs were written
@@ -288,7 +309,7 @@ class AdminControllerTest extends TestCase
 
     public function testLoggingOnValidationErrors(): void
     {
-        $controller = new AdminController($this->mockPdo, $this->config, $this->user);
+        $controller = new AdminController();
         
         $postData = [
             'username' => '',  // Will cause validation error
@@ -299,7 +320,7 @@ class AdminControllerTest extends TestCase
             'items_per_page' => 10
         ];
         
-        $controller->processSettingsSave($postData, false);
+        $controller->saveSettings($postData, false);
         
         // Check that logs were written
         $logFile = $this->tempLogDir . '/logs/tkr.log';
@@ -341,7 +362,12 @@ class AdminControllerTest extends TestCase
         $config = new ConfigModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
         
-        $controller = new AdminController($this->mockPdo, $config, $user);
+        // Update global $app with test models
+        global $app;
+        $app['config'] = $config;
+        $app['user'] = $user;
+        
+        $controller = new AdminController();
         
         $postData = [
             'username' => 'testuser',
@@ -353,7 +379,7 @@ class AdminControllerTest extends TestCase
             'items_per_page' => 10
         ];
         
-        $controller->processSettingsSave($postData, false);
+        $controller->saveSettings($postData, false);
         
         // Check that logs were written
         $logFile = $this->tempLogDir . '/logs/tkr.log';

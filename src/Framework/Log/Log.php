@@ -44,8 +44,8 @@ class Log {
     }
 
     private static function write($level, $message) {
-        global $config;
-        $logLevel = $config->logLevel ?? self::LEVELS['INFO'];
+        global $app;
+        $logLevel = $app['config']->logLevel ?? self::LEVELS['INFO'];
 
         // Only log messages if they're at or above the configured log level.
         if (self::LEVELS[$level] < $logLevel){

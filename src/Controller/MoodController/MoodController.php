@@ -1,14 +1,14 @@
 <?php
     class MoodController extends Controller {
         public function index(){
-            global $config;
-            global $user;
+            global $app;
+            
             $view = new MoodView();
 
-            $moodPicker = $view->render_mood_picker(self::getEmojisWithLabels(), $user->mood);
+            $moodPicker = $view->render_mood_picker(self::getEmojisWithLabels(), $app['user']->mood);
 
             $vars = [
-                'config' => $config,
+                'config' => $app['config'],
                 'moodPicker' => $moodPicker,
             ];
 
@@ -16,11 +16,9 @@
         }
 
         public function handlePost(){
+            global $app;
+            
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Get the data we need
-                global $config;
-                global $user;
-
                 switch ($_POST['action']){
                 case 'set':
                     $mood = $_POST['mood'];
@@ -31,11 +29,11 @@
                 }
 
                 // set or clear the mood
-                $user->mood = $mood;
-                $user = $user->save();
+                $app['user']->mood = $mood;
+                $app['user'] = $app['user']->save();
 
                 // go back to the index and show the updated mood
-                header('Location: ' . Util::buildRelativeUrl($config->basePath));
+                header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
                 exit;
             }
         }

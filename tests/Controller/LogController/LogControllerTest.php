@@ -19,12 +19,20 @@ class LogControllerTest extends TestCase
         $this->originalGet = $_GET;
         $_GET = [];
 
-        // Mock global config
-        global $config;
+        // Set up global $app for simplified dependency access
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->baseUrl = 'https://example.com';
-        $config->basePath = '/tkr/';
+        $mockConfig = new ConfigModel($mockPdo);
+        $mockConfig->baseUrl = 'https://example.com';
+        $mockConfig->basePath = '/tkr/';
+        
+        $mockUser = new UserModel($mockPdo);
+        
+        global $app;
+        $app = [
+            'db' => $mockPdo,
+            'config' => $mockConfig,
+            'user' => $mockUser,
+        ];
     }
 
     protected function tearDown(): void
@@ -51,10 +59,8 @@ class LogControllerTest extends TestCase
 
     public function testGetLogDataWithNoLogFiles(): void
     {
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
         
         // Should return empty log entries but valid structure
@@ -85,10 +91,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
         
         // Should parse all valid entries and ignore invalid ones
@@ -129,10 +133,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('ERROR');
         
         // Should only include ERROR entries
@@ -152,10 +154,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('', 'GET /admin');
         
         // Should only include GET /admin entries
@@ -175,10 +175,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('ERROR', 'GET /admin');
         
         // Should only include entries matching both filters
@@ -201,10 +199,8 @@ class LogControllerTest extends TestCase
         $rotatedLog2 = '[2025-01-31 12:00:00] WARNING: 127.0.0.1 - Rotated log entry 2';
         file_put_contents($this->testLogFile . '.2', $rotatedLog2);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
         
         // Should read from all log files, newest first
@@ -226,10 +222,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
         
         // Should extract unique routes, sorted
@@ -248,10 +242,8 @@ class LogControllerTest extends TestCase
 
         file_put_contents($this->testLogFile, $logContent);
 
-        $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
-        $mockUser = new UserModel($mockPdo);
-        $controller = new LogController($mockPdo, $mockConfig, $mockUser, $this->tempLogDir);
+        // Uses global $app set up in setUp()
+        $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
         
         // Should only include valid entries, ignore invalid ones

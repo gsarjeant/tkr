@@ -2,16 +2,16 @@
 class LogController extends Controller {
     private string $storageDir;
 
-    public function __construct(PDO $db, ConfigModel $config, UserModel $user, ?string $storageDir = null) {
-        parent::__construct($db, $config, $user);
+    public function __construct(?string $storageDir = null) {
         $this->storageDir = $storageDir ?? STORAGE_DIR;
     }
 
     public function index() {
+        global $app;
+        
         // Ensure user is logged in
         if (!Session::isLoggedIn()) {
-            global $config;
-            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
             exit;
         }
 
@@ -26,7 +26,7 @@ class LogController extends Controller {
     }
 
     public function getLogData(string $levelFilter = '', string $routeFilter = ''): array {
-        global $config;
+        global $app;
 
         $limit = 300; // Show last 300 log entries
 
@@ -38,7 +38,7 @@ class LogController extends Controller {
         $availableLevels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'];
 
         return [
-            'config' => $config,
+            'config' => $app['config'],
             'logEntries' => $logEntries,
             'availableRoutes' => $availableRoutes,
             'availableLevels' => $availableLevels,

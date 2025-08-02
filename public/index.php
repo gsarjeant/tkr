@@ -41,21 +41,14 @@ if (!(preg_match('/setup$/', $path))) {
     }
 }
 
-// Get a database connection
-// TODO: Change from static function.
-global $db;
+// Initialize application context with all dependencies
+global $app;
 $db = Database::get();
-
-// Initialize core entities
-// Defining these as globals isn't great practice,
-// but this is a small, single-user app and this data will rarely change.
-global $config;
-global $user;
-
-$config = new ConfigModel($db);
-$config = $config->loadFromDatabase();
-$user = new UserModel($db);
-$user = $user->loadFromDatabase();
+$app = [
+    'db' => $db,
+    'config' => (new ConfigModel($db))->loadFromDatabase(),
+    'user' => (new UserModel($db))->loadFromDatabase(),
+];
 
 // Start a session and generate a CSRF Token
 // if there isn't already an active session
@@ -63,8 +56,8 @@ Session::start();
 Session::generateCsrfToken();
 
 // Remove the base path from the URL
-if (strpos($path, $config->basePath) === 0) {
-    $path = substr($path, strlen($config->basePath));
+if (strpos($path, $app['config']->basePath) === 0) {
+    $path = substr($path, strlen($app['config']->basePath));
 }
 
 // strip the trailing slash from the resulting route
@@ -99,7 +92,7 @@ if ($method === 'POST' && $path != 'setup') {
 header('Content-Type: text/html; charset=utf-8');
 
 // Render the requested route or throw a 404
-$router = new Router($db, $config, $user);
+$router = new Router();
 if (!$router->route($path, $method)){
     http_response_code(404);
     echo "404 - Page Not Found";

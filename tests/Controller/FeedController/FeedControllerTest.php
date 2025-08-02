@@ -16,11 +16,6 @@ class FeedControllerTest extends TestCase
         mkdir($this->tempLogDir . '/logs', 0777, true);
         Log::init($this->tempLogDir . '/logs/tkr.log');
         
-        // Set up global config for logging level (DEBUG = 1)
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1; // Allow DEBUG level logs
-
         // Create mock PDO and PDOStatement
         $this->mockStatement = $this->createMock(PDOStatement::class);
         $this->mockPdo = $this->createMock(PDO::class);
@@ -36,6 +31,17 @@ class FeedControllerTest extends TestCase
         // Mock user
         $this->mockUser = new UserModel($this->mockPdo);
         $this->mockUser->displayName = 'Test User';
+        
+        // Set up global $app for simplified dependency access
+        global $app;
+        $app = [
+            'db' => $this->mockPdo,
+            'config' => $this->mockConfig,
+            'user' => $this->mockUser,
+        ];
+        
+        // Set log level on config for Log class
+        $this->mockConfig->logLevel = 1; // Allow DEBUG level logs
     }
 
     protected function tearDown(): void
@@ -77,7 +83,7 @@ class FeedControllerTest extends TestCase
     {
         $this->setupMockDatabase([]);
         
-        $controller = new FeedController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new FeedController();
         
         // Verify it was created successfully
         $this->assertInstanceOf(FeedController::class, $controller);
@@ -99,7 +105,7 @@ class FeedControllerTest extends TestCase
         
         $this->setupMockDatabase($testTicks);
         
-        $controller = new FeedController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new FeedController();
         
         // Verify it was created successfully
         $this->assertInstanceOf(FeedController::class, $controller);
@@ -127,7 +133,7 @@ class FeedControllerTest extends TestCase
                            ->method('execute')
                            ->with([10, 0]); // itemsPerPage=10, page 1 = offset 0
         
-        new FeedController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        new FeedController();
     }
 
     public function testRssMethodLogsCorrectly(): void
@@ -138,7 +144,7 @@ class FeedControllerTest extends TestCase
         
         $this->setupMockDatabase($testTicks);
         
-        $controller = new FeedController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new FeedController();
         
         // Capture output to prevent headers/content from affecting test
         ob_start();
@@ -160,7 +166,7 @@ class FeedControllerTest extends TestCase
         
         $this->setupMockDatabase($testTicks);
         
-        $controller = new FeedController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new FeedController();
         
         // Capture output to prevent headers/content from affecting test
         ob_start();

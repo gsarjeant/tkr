@@ -13,22 +13,26 @@ class AdminController extends Controller {
     }
     
     public function getAdminData(bool $isSetup): array {
+        global $app;
+        
         Log::debug("Loading admin page" . ($isSetup ? " (setup mode)" : ""));
         
         return [
-            'user' => $this->user,
-            'config' => $this->config,
+            'user' => $app['user'],
+            'config' => $app['config'],
             'isSetup' => $isSetup,
         ];
     }
 
     public function handleSave(){
+        global $app;
+        
         if (!Session::isLoggedIn()){
-            header('Location: ' . Util::buildRelativeUrl($this->config->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
             exit;
         }
 
-        $result = $this->processSettingsSave($_POST, false);
+        $result = $this->saveSettings($_POST, false);
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
@@ -36,12 +40,14 @@ class AdminController extends Controller {
     public function handleSetup(){
         // for setup, we don't care if they're logged in
         // (because they can't be until setup is complete)
-        $result = $this->processSettingsSave($_POST, true);
+        $result = $this->saveSettings($_POST, true);
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
 
-    public function processSettingsSave(array $postData, bool $isSetup): array {
+    public function saveSettings(array $postData, bool $isSetup): array {
+        global $app;
+        
         $result = ['success' => false, 'errors' => []];
         
         Log::debug("Processing settings save" . ($isSetup ? " (setup mode)" : ""));
@@ -122,30 +128,30 @@ class AdminController extends Controller {
         if (empty($errors)) {
             try {
                 // Update site settings
-                $this->config->siteTitle = $siteTitle;
-                $this->config->siteDescription = $siteDescription;
-                $this->config->baseUrl = $baseUrl;
-                $this->config->basePath = $basePath;
-                $this->config->itemsPerPage = $itemsPerPage;
-                $this->config->strictAccessibility = $strictAccessibility;
-                $this->config->logLevel = $logLevel;
+                $app['config']->siteTitle = $siteTitle;
+                $app['config']->siteDescription = $siteDescription;
+                $app['config']->baseUrl = $baseUrl;
+                $app['config']->basePath = $basePath;
+                $app['config']->itemsPerPage = $itemsPerPage;
+                $app['config']->strictAccessibility = $strictAccessibility;
+                $app['config']->logLevel = $logLevel;
 
                 // Save site settings and reload config from database
-                $this->config = $this->config->save();
+                $app['config'] = $app['config']->save();
                 Log::info("Site settings updated");
 
                 // Update user profile
-                $this->user->username = $username;
-                $this->user->displayName = $displayName;
-                $this->user->website = $website;
+                $app['user']->username = $username;
+                $app['user']->displayName = $displayName;
+                $app['user']->website = $website;
 
                 // Save user profile and reload user from database
-                $this->user = $this->user->save();
+                $app['user'] = $app['user']->save();
                 Log::info("User profile updated");
 
                 // Update the password if one was sent
                 if($password){
-                    $this->user->setPassword($password);
+                    $app['user']->setPassword($password);
                     Log::info("User password updated");
                 }
 

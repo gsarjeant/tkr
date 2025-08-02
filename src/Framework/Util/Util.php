@@ -25,12 +25,12 @@ class Util {
         return preg_replace_callback(
             '~(https?://[^\s<>"\'()]+)~i',
             function($matches) use ($link_attrs) {
-                global $config;
+                global $app;
                 $escaped_url = rtrim($matches[1], '.,!?;:)]}>');
                 $clean_url = html_entity_decode($escaped_url, ENT_QUOTES, 'UTF-8');
-                $tabIndex = $config->strictAccessibility ? ' tabindex="0" ' : ' ';
+                $tabIndex = $app['config']->strictAccessibility ? ' tabindex="0"' : '';
 
-                return '<a' . $tabIndex . 'href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
+                return '<a' . $tabIndex . ' href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
             },
             $text
         );
@@ -66,41 +66,41 @@ class Util {
     public static function buildUrl(string $baseUrl, string $basePath, string $path = ''): string {
         // Normalize baseUrl (remove trailing slash)
         $baseUrl = rtrim($baseUrl, '/');
-        
+
         // Normalize basePath (ensure leading slash, remove trailing slash unless it's just '/')
         if ($basePath === '' || $basePath === '/') {
             $basePath = '/';
         } else {
             $basePath = '/' . trim($basePath, '/') . '/';
         }
-        
+
         // Normalize path (remove leading slash if present)
         $path = ltrim($path, '/');
-        
+
         return $baseUrl . $basePath . $path;
     }
 
     public static function buildRelativeUrl(string $basePath, string $path = ''): string {
         // Ensure basePath starts with / for relative URLs
         $basePath = '/' . ltrim($basePath, '/');
-        
+
         // Remove trailing slash unless it's just '/'
         if ($basePath !== '/') {
             $basePath = rtrim($basePath, '/');
         }
-        
+
         // Add path
         $path = ltrim($path, '/');
-        
+
         if ($path === '') {
             return $basePath;
         }
-        
+
         // If basePath is root, don't add extra slash
         if ($basePath === '/') {
             return '/' . $path;
         }
-        
+
         return $basePath . '/' . $path;
     }
 }

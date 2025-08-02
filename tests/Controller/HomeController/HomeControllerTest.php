@@ -16,11 +16,6 @@ class HomeControllerTest extends TestCase
         mkdir($this->tempLogDir . '/logs', 0777, true);
         Log::init($this->tempLogDir . '/logs/tkr.log');
         
-        // Set up global config for logging level (DEBUG = 1)
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1; // Allow DEBUG level logs
-
         // Create mock PDO and PDOStatement
         $this->mockStatement = $this->createMock(PDOStatement::class);
         $this->mockPdo = $this->createMock(PDO::class);
@@ -34,6 +29,17 @@ class HomeControllerTest extends TestCase
         $this->mockUser = new UserModel($this->mockPdo);
         $this->mockUser->displayName = 'Test User';
         $this->mockUser->mood = '😊';
+        
+        // Set up global $app for simplified dependency access
+        global $app;
+        $app = [
+            'db' => $this->mockPdo,
+            'config' => $this->mockConfig,
+            'user' => $this->mockUser,
+        ];
+        
+        // Set log level on config for Log class
+        $this->mockConfig->logLevel = 1; // Allow DEBUG level logs
     }
 
     protected function tearDown(): void
@@ -91,7 +97,7 @@ class HomeControllerTest extends TestCase
     {
         $this->setupMockDatabase([]); // Empty array = no ticks
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $data = $controller->getHomeData(1);
         
         // Should return proper structure
@@ -118,7 +124,7 @@ class HomeControllerTest extends TestCase
         
         $this->setupMockDatabase($testTicks);
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $data = $controller->getHomeData(1);
         
         // Should return proper structure
@@ -147,7 +153,7 @@ class HomeControllerTest extends TestCase
                            ->method('execute')
                            ->with([10, 10]); // itemsPerPage=10, page 2 = offset 10
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $controller->getHomeData(2); // Page 2
     }
 
@@ -171,7 +177,7 @@ class HomeControllerTest extends TestCase
                                    && $params[1] === 'This is a test tick';
                            }));
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => 'This is a test tick'];
         
         $result = $controller->processTick($postData);
@@ -185,7 +191,7 @@ class HomeControllerTest extends TestCase
         // PDO shouldn't be called at all for empty content
         $this->mockPdo->expects($this->never())->method('prepare');
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => '   '];  // Just whitespace
         
         $result = $controller->processTick($postData);
@@ -199,7 +205,7 @@ class HomeControllerTest extends TestCase
         // PDO shouldn't be called at all for missing field
         $this->mockPdo->expects($this->never())->method('prepare');
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = [];  // No new_tick field
         
         $result = $controller->processTick($postData);
@@ -219,7 +225,7 @@ class HomeControllerTest extends TestCase
                                return $params[1] === 'This has whitespace'; // Should be trimmed
                            }));
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => '  This has whitespace  '];
         
         $result = $controller->processTick($postData);
@@ -231,7 +237,7 @@ class HomeControllerTest extends TestCase
     {
         $this->setupMockDatabaseForInsert(false); // Will throw exception
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => 'This will fail'];
         
         $result = $controller->processTick($postData);
@@ -247,7 +253,7 @@ class HomeControllerTest extends TestCase
         ];
         $this->setupMockDatabase($testTicks);
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $controller->getHomeData(1);
         
         // Check that logs were written
@@ -263,7 +269,7 @@ class HomeControllerTest extends TestCase
     {
         $this->setupMockDatabaseForInsert(true);
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => 'Test tick for logging'];
         
         $controller->processTick($postData);
@@ -278,7 +284,7 @@ class HomeControllerTest extends TestCase
 
     public function testLoggingOnEmptyTick(): void
     {
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => ''];
         
         $controller->processTick($postData);
@@ -297,7 +303,7 @@ class HomeControllerTest extends TestCase
     {
         $this->setupMockDatabaseForInsert(false);
         
-        $controller = new HomeController($this->mockPdo, $this->mockConfig, $this->mockUser);
+        $controller = new HomeController();
         $postData = ['new_tick' => 'This will fail'];
         
         $controller->processTick($postData);

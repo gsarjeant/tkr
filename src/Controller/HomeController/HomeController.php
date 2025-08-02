@@ -9,21 +9,23 @@ class HomeController extends Controller {
     }
     
     public function getHomeData(int $page): array {
+        global $app;
+        
         Log::debug("Loading home page $page");
 
-        $tickModel = new TickModel($this->db, $this->config);
-        $limit = $this->config->itemsPerPage;
+        $tickModel = new TickModel($app['db'], $app['config']);
+        $limit = $app['config']->itemsPerPage;
         $offset = ($page - 1) * $limit;
         $ticks = $tickModel->getPage($limit, $offset);
 
-        $view = new TicksView($this->config, $ticks, $page);
+        $view = new TicksView($app['config'], $ticks, $page);
         $tickList = $view->getHtml();
 
         Log::info("Home page loaded with " . count($ticks) . " ticks");
 
         return [
-            'config'     => $this->config,
-            'user'       => $this->user,
+            'config'     => $app['config'],
+            'user'       => $app['user'],
             'tickList'   => $tickList,
         ];
     }
@@ -31,14 +33,18 @@ class HomeController extends Controller {
     // POST handler
     // Saves the tick and reloads the homepage
     public function handleTick(){
+        global $app;
+        
         $result = $this->processTick($_POST);
         
         // redirect to the index (will show the latest tick if one was sent)
-        header('Location: ' . Util::buildRelativeUrl($this->config->basePath));
+        header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
         exit;
     }
     
     public function processTick(array $postData): array {
+        global $app;
+        
         $result = ['success' => false, 'message' => ''];
         
         if (!isset($postData['new_tick'])) {
@@ -55,7 +61,7 @@ class HomeController extends Controller {
         }
         
         try {
-            $tickModel = new TickModel($this->db, $this->config);
+            $tickModel = new TickModel($app['db'], $app['config']);
             $tickModel->insert($tickContent);
             Log::info("New tick created: " . substr($tickContent, 0, 50) . (strlen($tickContent) > 50 ? '...' : ''));
             $result['success'] = true;

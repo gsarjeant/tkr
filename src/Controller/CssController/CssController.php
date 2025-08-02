@@ -2,13 +2,13 @@
 
 class CssController extends Controller {
     public function index() {
-        global $config;
-        global $user;
+        global $app;
+        
         $customCss = CssModel::load();
 
         $vars = [
-            'user' => $user,
-            'config' => $config,
+            'user' => $app['user'],
+            'config' => $app['config'],
             'customCss' => $customCss,
         ];
 
@@ -49,8 +49,6 @@ class CssController extends Controller {
     }
 
     public function handlePost() {
-        global $config;
-
         switch ($_POST['action']) {
         case 'upload':
             $this->handleUpload();
@@ -69,7 +67,7 @@ class CssController extends Controller {
     }
 
     public function handleDelete(): void{
-        global $config;
+        global $app;
 
         // Don't try to delete the default theme.
         if (!$_POST['selectCssFile']){
@@ -113,26 +111,26 @@ class CssController extends Controller {
         }
 
         // Set the theme back to default
-        $config->cssId = null;
-        $config = $config->save();
+        $app['config']->cssId = null;
+        $app['config'] = $app['config']->save();
 
         // Set flash message
         Session::setFlashMessage('success', 'Theme ' . $cssFilename . ' deleted.');
     }
 
     private function handleSetTheme() {
-        global $config;
+        global $app;
 
         if ($_POST['selectCssFile']){
             // Set custom theme
-            $config->cssId = $_POST['selectCssFile'];
+            $app['config']->cssId = $_POST['selectCssFile'];
         } else {
             // Set default theme
-            $config->cssId = null;
+            $app['config']->cssId = null;
         }
 
         // Update the site theme
-        $config = $config->save();
+        $app['config'] = $app['config']->save();
 
         // Set flash message
         Session::setFlashMessage('success', 'Theme applied.');

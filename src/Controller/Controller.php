@@ -1,7 +1,5 @@
 <?php
 class Controller {
-    public function __construct(protected PDO $db, protected ConfigModel $config, protected UserModel $user) {}
-    
     // Renders the requested template inside templates/main/php
     protected function render(string $childTemplateFile, array $vars = []) {
         $templatePath = TEMPLATES_DIR . "/main.php";

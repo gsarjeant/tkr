@@ -2,11 +2,12 @@
     class EmojiController extends Controller {
         // Shows the custom emoji management page
         public function index(){
-            global $config;
+            global $app;
+            
             $emojiList = EmojiModel::loadAll();
 
             $vars = [
-                'config' => $config,
+                'config' => $app['config'],
                 'emojiList' => $emojiList,
             ];
 
@@ -14,7 +15,7 @@
         }
 
         public function handlePost(): void {
-            global $config;
+            global $app;
 
             switch ($_POST['action']) {
             case 'add':
@@ -29,7 +30,7 @@
                 break;
             }
 
-            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'admin/emoji'));
+            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'admin/emoji'));
             exit;
         }
 

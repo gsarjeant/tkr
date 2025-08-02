@@ -43,10 +43,11 @@ class LogTest extends TestCase
     {
         Log::setRouteContext('GET /admin');
         
-        // Create a mock config for log level
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1; // DEBUG level
+        // Create a mock app config for log level
+        global $app;
+        $app = [
+            'config' => (object)['logLevel' => 1] // DEBUG level
+        ];
         
         Log::debug('Test message');
         
@@ -61,9 +62,10 @@ class LogTest extends TestCase
     {
         Log::setRouteContext('');
         
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1;
+        global $app;
+        $app = [
+            'config' => (object)['logLevel' => 1]
+        ];
         
         Log::info('Test without route');
         
@@ -78,9 +80,10 @@ class LogTest extends TestCase
 
     public function testLogLevelFiltering(): void
     {
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 3; // WARNING level
+        global $app;
+        $app = [
+            'config' => (object)['logLevel' => 3] // WARNING level
+        ];
         
         Log::debug('Debug message');   // Should be filtered out
         Log::info('Info message');     // Should be filtered out  
@@ -99,9 +102,10 @@ class LogTest extends TestCase
     {
         Log::setRouteContext('POST /admin');
         
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1;
+        global $app;
+        $app = [
+            'config' => (object)['logLevel' => 1]
+        ];
         
         Log::error('Test error message');
         
@@ -129,9 +133,10 @@ class LogTest extends TestCase
 
     public function testLogRotation(): void
     {
-        global $config;
-        $config = new stdClass();
-        $config->logLevel = 1;
+        global $app;
+        $app = [
+            'config' => (object)['logLevel' => 1]
+        ];
         
         // Create a log file with exactly 1000 lines (the rotation threshold)
         $logLines = str_repeat("[2025-01-31 12:00:00] INFO: 127.0.0.1 - Test line\n", 1000);
@@ -154,9 +159,11 @@ class LogTest extends TestCase
 
     public function testDefaultLogLevelWhenConfigMissing(): void
     {
-        // Clear global config
-        global $config;
-        $config = null;
+        // Set up config without logLevel property (simulates missing config value)
+        global $app;
+        $app = [
+            'config' => (object)[] // Empty config object, no logLevel property
+        ];
         
         // Should not throw errors and should default to INFO level
         Log::debug('Debug message');  // Should be filtered out (default INFO level = 2)

@@ -1,8 +1,6 @@
 <?php
 // Very simple router class
 class Router {
-    public function __construct(private PDO $db, private ConfigModel $config, private UserModel $user) {}
-    
     // Define the recognized routes.
     // Anything else will 404.
     private static $routeHandlers = [
@@ -61,7 +59,7 @@ class Router {
 
                     Log::debug("Handling request with Controller {$controllerName} and function {$functionName}");
 
-                    $instance = new $controllerName($this->db, $this->config, $this->user);
+                    $instance = new $controllerName();
                     call_user_func_array([$instance, $functionName], $matches);
                     return true;
                 }

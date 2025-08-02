@@ -73,4 +73,134 @@ final class UtilTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    // Test data for escape_html function
+    public static function escapeHtmlProvider(): array {
+        return [
+            'basic HTML' => ['<script>alert("xss")</script>', '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'],
+            'quotes' => ['He said "Hello" & she said \'Hi\'', 'He said &quot;Hello&quot; &amp; she said &#039;Hi&#039;'],
+            'empty string' => ['', ''],
+            'normal text' => ['Hello World', 'Hello World'],
+            'ampersand' => ['Tom & Jerry', 'Tom &amp; Jerry'],
+            'unicode' => ['🚀 emoji & text', '🚀 emoji &amp; text'],
+        ];
+    }
+
+    #[DataProvider('escapeHtmlProvider')]
+    public function testEscapeHtml(string $input, string $expected): void {
+        $result = Util::escape_html($input);
+        $this->assertEquals($expected, $result);
+    }
+
+    // Test data for escape_xml function
+    public static function escapeXmlProvider(): array {
+        return [
+            'basic XML' => ['<tag attr="value">content</tag>', '&lt;tag attr=&quot;value&quot;&gt;content&lt;/tag&gt;'],
+            'quotes and ampersand' => ['Title & "Subtitle"', 'Title &amp; &quot;Subtitle&quot;'],
+            'empty string' => ['', ''],
+            'normal text' => ['Hello World', 'Hello World'],
+            'unicode' => ['🎵 music & notes', '🎵 music &amp; notes'],
+        ];
+    }
+
+    #[DataProvider('escapeXmlProvider')]
+    public function testEscapeXml(string $input, string $expected): void {
+        $result = Util::escape_xml($input);
+        $this->assertEquals($expected, $result);
+    }
+
+    // Test data for linkify function
+    public static function linkifyProvider(): array {
+        return [
+            'simple URL' => [
+                'Check out https://example.com for more info',
+                'Check out <a href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a> for more info',
+                false // not strict accessibility
+            ],
+            'URL with path' => [
+                'Visit https://example.com/path/to/page',
+                'Visit <a href="https://example.com/path/to/page" target="_blank" rel="noopener noreferrer">https://example.com/path/to/page</a>',
+                false
+            ],
+            'multiple URLs' => [
+                'See https://example.com and https://other.com',
+                'See <a href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a> and <a href="https://other.com" target="_blank" rel="noopener noreferrer">https://other.com</a>',
+                false
+            ],
+            'URL with punctuation' => [
+                'Check https://example.com.',
+                'Check <a href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a>',
+                false
+            ],
+            'no URL' => [
+                'Just some regular text',
+                'Just some regular text',
+                false
+            ],
+            'strict accessibility mode' => [
+                'Visit https://example.com now',
+                'Visit <a tabindex="0" href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a> now',
+                true // strict accessibility
+            ],
+        ];
+    }
+
+    #[DataProvider('linkifyProvider')]
+    public function testLinkify(string $input, string $expected, bool $strictAccessibility): void {
+        // Set up global $app with config
+        global $app;
+        $app = [
+            'config' => (object)['strictAccessibility' => $strictAccessibility]
+        ];
+
+        $result = Util::linkify($input);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testLinkifyNoNewWindow(): void {
+        // Test linkify without new window
+        global $app;
+        $app = [
+            'config' => (object)['strictAccessibility' => false]
+        ];
+
+        $input = 'Visit https://example.com';
+        $expected = 'Visit <a href="https://example.com">https://example.com</a>';
+        
+        $result = Util::linkify($input, false); // no new window
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testGetClientIp(): void {
+        // Test basic case with REMOTE_ADDR
+        $_SERVER['REMOTE_ADDR'] = '192.168.1.100';
+        unset($_SERVER['HTTP_CLIENT_IP'], $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['HTTP_X_REAL_IP']);
+        
+        $result = Util::getClientIp();
+        $this->assertEquals('192.168.1.100', $result);
+    }
+
+    public function testGetClientIpWithForwardedHeaders(): void {
+        // Test precedence: HTTP_CLIENT_IP > HTTP_X_FORWARDED_FOR > HTTP_X_REAL_IP > REMOTE_ADDR
+        $_SERVER['HTTP_CLIENT_IP'] = '10.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.2';
+        $_SERVER['HTTP_X_REAL_IP'] = '10.0.0.3';
+        $_SERVER['REMOTE_ADDR'] = '10.0.0.4';
+        
+        $result = Util::getClientIp();
+        $this->assertEquals('10.0.0.1', $result); // Should use HTTP_CLIENT_IP
+    }
+
+    public function testGetClientIpUnknown(): void {
+        // Test when no IP is available
+        unset($_SERVER['HTTP_CLIENT_IP'], $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['HTTP_X_REAL_IP'], $_SERVER['REMOTE_ADDR']);
+        
+        $result = Util::getClientIp();
+        $this->assertEquals('unknown', $result);
+    }
+
+    protected function tearDown(): void {
+        // Clean up $_SERVER after IP tests
+        unset($_SERVER['HTTP_CLIENT_IP'], $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['HTTP_X_REAL_IP'], $_SERVER['REMOTE_ADDR']);
+    }
+
 }

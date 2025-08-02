@@ -1,11 +1,12 @@
 <?php
 class AuthController extends Controller {
     function showLogin(?string $error = null){
-        global $config;
+        global $app;
+        
         $csrf_token = Session::getCsrfToken();
 
         $vars = [
-            'config' => $config,
+            'config' => $app['config'],
             'csrf_token' => $csrf_token,
             'error' => $error,
         ];
@@ -14,7 +15,7 @@ class AuthController extends Controller {
     }
 
     function handleLogin(){
-        global $config;
+        global $app;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? '';
@@ -22,7 +23,7 @@ class AuthController extends Controller {
 
             Log::debug("Login attempt for user {$username}");
 
-            $userModel = new UserModel();
+            $userModel = new UserModel($app['db']);
             $user = $userModel->getByUsername($username);
 
             //if ($user && password_verify($password, $user['password_hash'])) {
@@ -30,7 +31,7 @@ class AuthController extends Controller {
                 Log::info("Successful login for {$username}");
 
                 Session::newLoginSession($user);
-                header('Location: ' . Util::buildRelativeUrl($config->basePath));
+                header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
                 exit;
             } else {
                 Log::warning("Failed login for {$username}");
@@ -44,11 +45,12 @@ class AuthController extends Controller {
     }
 
     function handleLogout(){
+        global $app;
+        
         Log::info("Logout from user " . $_SESSION['username']);
         Session::end();
 
-        global $config;
-        header('Location: ' . Util::buildRelativeUrl($config->basePath));
+        header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
         exit;
     }
 }

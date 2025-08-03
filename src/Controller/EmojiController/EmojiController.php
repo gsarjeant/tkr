@@ -3,8 +3,9 @@
         // Shows the custom emoji management page
         public function index(){
             global $app;
-            
-            $emojiList = EmojiModel::loadAll();
+
+            $emojiModel = new EmojiModel($app['db']);
+            $emojiList = $emojiModel->getAll();
 
             $vars = [
                 'config' => $app['config'],
@@ -34,14 +35,14 @@
             exit;
         }
 
-        public function handleAdd(string $emoji, ?string $description=null): void {
+        private function isValidEmoji(string $emoji){
             // Validate 1 visible character in the emoji
             if (extension_loaded('mbstring')) {
                 // TODO - log a warning if mbstring isn't loaded
                 $charCount = mb_strlen($emoji, 'UTF-8');
                 if ($charCount !== 1) {
                     // TODO - handle error
-                    return;
+                    return false;
                 }
             }
 
@@ -50,25 +51,40 @@
 
             if (!preg_match($emojiPattern, $emoji)) {
                 // TODO - handle error
-                return;
+                return false;
             }
 
             // emojis should have more bytes than characters
             $byteCount = strlen($emoji);
             if ($byteCount <= 1) {
                 // TODO - handle error
+                return false;
+            }
+
+            return true;
+        }
+
+        public function handleAdd(string $emoji, ?string $description=null): void {
+            global $app;
+
+            if (!$this->isValidEmoji($emoji)){
+                // TODO - handle
                 return;
             }
 
             // It looks like an emoji. Let's add it.
-            EmojiModel::add($emoji, $description);
+            $emojiModel = new EmojiModel($app['db']);
+            $emojiList = $emojiModel->add($emoji, $description);
         }
 
         public function handleDelete(): void {
+            global $app;
+
             $ids = $_POST['delete_emoji_ids'];
 
             if (!empty($ids)) {
-                EmojiModel::delete($ids);
+                $emojiModel = new EmojiModel($app['db']);
+                $emojiModel->delete($ids);
             }
         }
     }

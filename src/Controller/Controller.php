@@ -13,6 +13,16 @@ class Controller {
             throw new RuntimeException("Template not found: $childTemplatePath");
         }
 
+        // Add custom CSS filename if needed
+        global $app;
+        if ($app['config']->cssId) {
+            $cssModel = new CssModel($app['db']);
+            $cssFile = $cssModel->getById($app['config']->cssId);
+            $vars['customCssFilename'] = $cssFile['filename'] ?? null;
+        } else {
+            $vars['customCssFilename'] = null;
+        }
+
         // always check for flash messages and add them if they exist
         if (Session::hasFlashMessages()){
             $flashMessages = Session::getFlashMessages();

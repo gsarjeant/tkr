@@ -8,15 +8,7 @@ class UserModel {
 
     public function __construct(private PDO $db) {}
 
-    // load user settings from sqlite database (backward compatibility)
-    public static function load(): self {
-        global $db;
-        $instance = new self($db);
-        return $instance->loadFromDatabase();
-    }
-    
-    // Instance method that uses injected database
-    public function loadFromDatabase(): self {
+    public function get(): self {
         // There's only ever one user. I'm just leaning into that.
         $stmt = $this->db->query("SELECT username, display_name, website, mood FROM user WHERE id=1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -43,7 +35,7 @@ class UserModel {
 
       $stmt->execute([$this->username, $this->displayName, $this->website, $this->mood]);
 
-      return $this->loadFromDatabase();
+      return $this->get();
    }
 
    // Making this a separate function to avoid

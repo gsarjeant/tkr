@@ -3,8 +3,8 @@
 class CssController extends Controller {
     public function index() {
         global $app;
-        
-        $customCss = CssModel::load();
+        $cssModel = new CssModel($app['db']);
+        $customCss = $cssModel->getAll();
 
         $vars = [
             'user' => $app['user'],
@@ -16,7 +16,8 @@ class CssController extends Controller {
     }
 
     public function serveCustomCss(string $baseFilename){
-        $cssModel = new CssModel();
+        global $app;
+        $cssModel = new CssModel($app['db']);
         $filename = "$baseFilename.css";
 
         $cssRow = $cssModel->getByFilename($filename);
@@ -77,7 +78,7 @@ class CssController extends Controller {
 
         // Get the data for the selected CSS file
         $cssId = $_POST['selectCssFile'];
-        $cssModel = new CssModel();
+        $cssModel = new CssModel($app['db']);
         $cssRow = $cssModel->getById($cssId);
 
         // exit if the requested file isn't in the database
@@ -182,7 +183,8 @@ class CssController extends Controller {
             }
 
             // Add upload to database
-            $cssModel = new CssModel();
+            global $app;
+            $cssModel = new CssModel($app['db']);
             $cssModel->save($safeFilename, $description);
 
             // Set success flash message

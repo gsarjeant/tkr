@@ -13,15 +13,8 @@ class ConfigModel {
 
     public function __construct(private PDO $db) {}
 
-    // load config from sqlite database (backward compatibility)
-    public static function load(): self {
-        global $db;
-        $instance = new self($db);
-        return $instance->loadFromDatabase();
-    }
-    
     // Instance method that uses injected database
-    public function loadFromDatabase(): self {
+    public function get(): self {
         $init = require APP_ROOT . '/config/init.php';
         $c = new self($this->db);
         $c->baseUrl = ($c->baseUrl === '') ? $init['base_url'] : $c->baseUrl;
@@ -51,18 +44,6 @@ class ConfigModel {
         }
 
         return $c;
-    }
-
-    public function customCssFilename() {
-        if (empty($this->cssId)) {
-            return null;
-        }
-
-        // Fetch filename from css table using cssId
-        $cssModel = new CssModel();
-        $cssRecord = $cssModel->getById($this->cssId);
-
-        return $cssRecord ? $cssRecord['filename'] : null;
     }
 
     public function save(): self {
@@ -104,6 +85,6 @@ class ConfigModel {
                         $this->logLevel
                     ]);
 
-        return $this->loadFromDatabase();
+        return $this->get();
     }
 }

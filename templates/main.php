@@ -2,6 +2,7 @@
 <?php /** @var ConfigModel $config */ ?>
 <?php /** @var UserModel $user */ ?>
 <?php /** @var string $childTemplateFile */ ?>
+<?php /** @var string $customCssFilename */ ?>
 <?php /** @var srting $flashSection */ ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +14,7 @@
               href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'css/default.css')) ?>">
 <?php if (!empty($config->cssId)): ?>
         <link rel="stylesheet"
-              href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'css/custom/' . $config->customCssFilename())) ?>">
+              href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'css/custom/' . $customCssFilename)) ?>">
 <?php endif; ?>
         <link rel="alternate"
               type="application/rss+xml"

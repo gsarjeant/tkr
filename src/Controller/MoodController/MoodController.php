@@ -2,7 +2,7 @@
     class MoodController extends Controller {
         public function index(){
             global $app;
-            
+
             $view = new MoodView();
 
             $moodPicker = $view->render_mood_picker(self::getEmojisWithLabels(), $app['user']->mood);
@@ -17,7 +17,7 @@
 
         public function handlePost(){
             global $app;
-            
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 switch ($_POST['action']){
                 case 'set':
@@ -39,7 +39,10 @@
         }
 
         private static function getEmojisWithLabels(): array {
-            $customEmoji = EmojiModel::loadAll();
+            global $app;
+
+            $emojiModel = new EmojiModel($app['db']);
+            $customEmoji = $emojiModel->getAll();
 
             if (!empty($customEmoji)){
                 $custom = [];

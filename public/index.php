@@ -72,8 +72,8 @@ global $app;
 
 $app = [
     'db' => $db,
-    'config' => (new ConfigModel($db))->loadFromDatabase(),
-    'user' => (new UserModel($db))->loadFromDatabase(),
+    'config' => (new ConfigModel($db))->get(),
+    'user' => (new UserModel($db))->get(),
 ];
 
 // Start a session and generate a CSRF Token

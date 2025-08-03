@@ -1,4 +1,8 @@
 <?php
+/*
+ *  Initialize fundamental configuration
+ */
+
 // Store and validate request data
 $method = $_SERVER['REQUEST_METHOD'];
 $request = $_SERVER['REQUEST_URI'];
@@ -14,7 +18,11 @@ if (preg_match('/\.php$/', $path)) {
 // Define base paths and load classes
 include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
 
-// Check prerequisites.
+/*
+ *  Validate application state before processing request
+ */
+
+// Check prerequisites
 $prerequisites = new Prerequisites();
 $results = $prerequisites->validate();
 if (count($prerequisites->getErrors()) > 0) {
@@ -22,28 +30,46 @@ if (count($prerequisites->getErrors()) > 0) {
     exit;
 }
 
-// Do any necessary database migrations
-$dbMgr = new Database();
-$dbMgr->migrate();
-
-// Make sure the initial setup is complete
-// unless we're already heading to setup
-//
-// TODO: Consider simplifying this.
-// Might not need the custom exception now that the prereq checker is more robust.
-if (!(preg_match('/setup$/', $path))) {
-    try {
-        // Make sure setup has been completed
-        $dbMgr->confirmSetup();
-    } catch (SetupException $e) {
-        $e->handle();
-        exit;
-    }
+// Connect to the database
+try {
+    // SQLite will just create this if it doesn't exist.
+    $db = new PDO("sqlite:" . DB_FILE);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    throw new SetupException(
+        "Database connection failed: " . $e->getMessage(),
+        'database_connection',
+        0,
+        $e
+    );
 }
+
+// Do any necessary database migrations
+$migrator = new Migrator($db);
+$migrator->migrate();
+
+// Make sure the initial setup is complete unless we're already heading to setup
+if (!(preg_match('/setup$/', $path))) {
+    // Make sure required tables (user, settings) are populated
+    $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
+    $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
+
+    // If either required table has no records, redirect to setup.
+    if ($user_count === 0 || $settings_count === 0){
+        $init = require APP_ROOT . '/config/init.php';
+        header('Location: ' . $init['base_path'] . 'setup');
+        exit;
+    };
+}
+
+/*
+ *  Begin processing request
+ */
 
 // Initialize application context with all dependencies
 global $app;
-$db = Database::get();
+
 $app = [
     'db' => $db,
     'config' => (new ConfigModel($db))->loadFromDatabase(),
@@ -51,7 +77,6 @@ $app = [
 ];
 
 // Start a session and generate a CSRF Token
-// if there isn't already an active session
 Session::start();
 Session::generateCsrfToken();
 
@@ -75,7 +100,7 @@ if ($method === 'POST' && $path != 'setup') {
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
             Log::info('Attempt to POST with invalid session. Redirecting to login.');
-            header('Location: ' . Util::buildRelativeUrl($config->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app->config->basePath, 'login'));
             exit;
         }
     } else {

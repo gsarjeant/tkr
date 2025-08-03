@@ -1,35 +1,11 @@
 <?php
-class Database{
-    // TODO = Make this not static
-    public static function get(): PDO {
-        try {
-            // SQLite will just create this if it doesn't exist.
-            $db = new PDO("sqlite:" . DB_FILE);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new SetupException(
-                "Database connection failed: " . $e->getMessage(),
-                'database_connection',
-                0,
-                $e
-            );
-        }
+class Migrator{
+    public function __construct(private PDO $db) {}
 
-        return $db;
-    }
-
-    public function validate(): void{
-        $this->validateTableContents();
-    }
-
-    // The database version will just be an int
-    // stored as PRAGMA user_version. It will
-    // correspond to the most recent migration file applied to the db.
+    // The database version is an int stored as PRAGMA user_version.
+    // It corresponds to the most recent migration file applied to the db.
     private function getVersion(): int {
-        $db = self::get();
-
-        return $db->query("PRAGMA user_version")->fetchColumn() ?? 0;
+        return $this->db->query("PRAGMA user_version")->fetchColumn() ?? 0;
     }
 
     private function migrationNumberFromFile(string $filename): int {
@@ -48,8 +24,7 @@ class Database{
             );
         }
 
-        $db = self::get();
-        $db->exec("PRAGMA user_version = $newVersion");
+        $this->db->exec("PRAGMA user_version = $newVersion");
     }
 
     private function getPendingMigrations(): array {
@@ -79,8 +54,7 @@ class Database{
         Log::info("Found " . count($migrations) . " pending migrations.");
         Log::info("Updating database. Current Version: " . $this->getVersion());
 
-        $db = self::get();
-        $db->beginTransaction();
+        $this->db->beginTransaction();
 
         try {
             foreach ($migrations as $version => $file) {
@@ -100,7 +74,7 @@ class Database{
                 foreach ($statements as $statement){
                     if (!empty($statement)){
                         Log::debug("Migration statement: {$statement}");
-                        $db->exec($statement);
+                        $this->db->exec($statement);
                     }
                 }
 
@@ -108,13 +82,13 @@ class Database{
             }
 
             // Update db version
-            $db->commit();
+            $this->db->commit();
             $this->setVersion($version);
 
             Log::info("Applied " . count($migrations) . " migrations.");
             Log::info("Updated database version to " . $this->getVersion());
         } catch (Exception $e) {
-            $db->rollBack();
+            $this->db->rollBack();
             throw new SetupException(
                 "Migration failed: $filename",
                 'db_migration',
@@ -122,23 +96,5 @@ class Database{
                 $e
             );
         }
-    }
-
-    // make sure tables that need to be seeded have been
-    public function confirmSetup(): void {
-        $db = self::get();
-
-        // make sure required tables (user, settings) are populated
-        $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
-        $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
-
-        // If either required table has no records, throw an exception.
-        // This will be caught and redirect to setup.
-        if ($user_count === 0 || $settings_count === 0){
-            throw new SetupException(
-                "Required tables aren't populated. Please complete setup",
-                'table_contents',
-            );
-        };
     }
 }

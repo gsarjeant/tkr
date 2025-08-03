@@ -20,6 +20,8 @@ class SetupException extends Exception {
             // We don't want to short-circuit this if there's a problem logging
         }
 
+        // TODO: This doesn't need to be a switch anymore
+        //       May not need to exist at all
         switch ($this->setupIssue){
             case 'database_connection':
             case 'db_migration':
@@ -29,19 +31,6 @@ class SetupException extends Exception {
                 echo "<h1>Configuration Error</h1>";
                 echo "<p>" . Util::escape_html($this->setupIssue) . '-' . Util::escape_html($this->getMessage()) . "</p>";
                 exit;
-            case 'table_contents':
-                // Recoverable error.
-                // Redirect to setup if we aren't already headed there.
-                // NOTE: Just read directly from init.php instead of
-                //       trying to use the config object. This is the initial
-                //       setup. It shouldn't assume any data can be loaded.
-                $init = require APP_ROOT . '/config/init.php';
-                $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-
-                if (strpos($currentPath, 'setup') === false) {
-                    header('Location: ' . $init['base_path'] . 'setup');
-                    exit;
-                }
         }
     }
 

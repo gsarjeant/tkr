@@ -5,10 +5,15 @@ class FeedController extends Controller {
     public function __construct() {
         global $app;
         
-        $tickModel = new TickModel($app['db'], $app['config']);
-        $this->ticks = $tickModel->getPage($app['config']->itemsPerPage);
-
-        Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
+        try {
+            $tickModel = new TickModel($app['db'], $app['config']);
+            $this->ticks = $tickModel->getPage($app['config']->itemsPerPage);
+            Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
+        } catch (Exception $e) {
+            Log::error("Failed to load ticks for feed: " . $e->getMessage());
+            // Provide empty feed rather than crashing - RSS readers can handle this
+            $this->ticks = [];
+        }
     }
 
     public function rss(){

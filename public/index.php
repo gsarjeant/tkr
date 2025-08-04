@@ -34,16 +34,26 @@ $db = $prerequisites->getDatabase();
 
 // Make sure the initial setup is complete unless we're already heading to setup
 if (!(preg_match('/setup$/', $path))) {
-    // Make sure required tables (user, settings) are populated
-    $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
-    $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
+    try {
+        // Make sure required tables (user, settings) are populated
+        $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
+        $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
-    // If either required table has no records, redirect to setup.
-    if ($user_count === 0 || $settings_count === 0){
-        $init = require APP_ROOT . '/config/init.php';
-        header('Location: ' . $init['base_path'] . 'setup');
+        // If either required table has no records, redirect to setup.
+        if ($user_count === 0 || $settings_count === 0){
+            $init = require APP_ROOT . '/config/init.php';
+            header('Location: ' . $init['base_path'] . 'setup');
+            exit;
+        }
+    } catch (Exception $e) {
+        // Database error during setup validation - show error page
+        error_log("Database error during setup validation: " . $e->getMessage());
+        http_response_code(500);
+        echo "<h1>Database Error</h1>";
+        echo "<p>Cannot validate setup status. The database may be corrupted or locked.</p>";
+        echo "<p>Please check your installation or contact your hosting provider.</p>";
         exit;
-    };
+    }
 }
 
 /*
@@ -83,7 +93,7 @@ if ($method === 'POST' && $path != 'setup') {
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
             Log::info('Attempt to POST with invalid session. Redirecting to login.');
-            header('Location: ' . Util::buildRelativeUrl($app->config->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
             exit;
         }
     } else {

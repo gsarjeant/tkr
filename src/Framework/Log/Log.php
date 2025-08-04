@@ -19,7 +19,12 @@ class Log {
         // (should be handled by Prerequisites, but doesn't hurt)
         $logDir = dirname(self::$logFile);
         if (!is_dir($logDir)) {
-            mkdir($logDir, 0770, true);
+            try {
+                mkdir($logDir, 0770, true);
+            } catch (Exception $e) {
+                // Fall back to error_log if we can't create log directory
+                error_log("Failed to create log directory {$logDir}: " . $e->getMessage());
+            }
         }
     }
 
@@ -61,35 +66,45 @@ class Log {
         $logEntry = "[{$timestamp}] {$level}: " . Util::getClientIp() . "{$context} - {$message}\n";
 
         // Rotate if we're at the max file size (1000 lines)
-        if (file_exists(self::$logFile)) {
-            $lineCount = count(file(self::$logFile));
-            if ($lineCount >= self::$maxLines) {
-                self::rotate();
-                Log::info("Log rotated at {$timestamp}");
+        try {
+            if (file_exists(self::$logFile)) {
+                $lineCount = count(file(self::$logFile));
+                if ($lineCount >= self::$maxLines) {
+                    self::rotate();
+                    Log::info("Log rotated at {$timestamp}");
+                }
             }
-        }
 
-        file_put_contents(self::$logFile, $logEntry, FILE_APPEND | LOCK_EX);
+            file_put_contents(self::$logFile, $logEntry, FILE_APPEND | LOCK_EX);
+        } catch (Exception $e) {
+            // Fall back to error_log if file operations fail
+            error_log("Log write failed: " . $e->getMessage() . " - Original message: " . trim($logEntry));
+        }
     }
 
     private static function rotate() {
-        // Rotate existing history files: tkr.4.log -> tkr.5.log, etc.
-        for ($i = self::$maxFiles - 1; $i >= 1; $i--) {
-            $oldFile = self::$logFile . '.' . $i;
-            $newFile = self::$logFile . '.' . ($i + 1);
+        try {
+            // Rotate existing history files: tkr.4.log -> tkr.5.log, etc.
+            for ($i = self::$maxFiles - 1; $i >= 1; $i--) {
+                $oldFile = self::$logFile . '.' . $i;
+                $newFile = self::$logFile . '.' . ($i + 1);
 
-            if (file_exists($oldFile)) {
-                if ($i == self::$maxFiles - 1) {
-                    unlink($oldFile); // Delete oldest log if we already have 5 files of history
-                } else {
-                    rename($oldFile, $newFile); // Bump the file number up by one
+                if (file_exists($oldFile)) {
+                    if ($i == self::$maxFiles - 1) {
+                        unlink($oldFile); // Delete oldest log if we already have 5 files of history
+                    } else {
+                        rename($oldFile, $newFile); // Bump the file number up by one
+                    }
                 }
             }
-        }
 
-        // Move current active log to .1
-        if (file_exists(self::$logFile)) {
-            rename(self::$logFile, self::$logFile . '.1');
+            // Move current active log to .1
+            if (file_exists(self::$logFile)) {
+                rename(self::$logFile, self::$logFile . '.1');
+            }
+        } catch (Exception $e) {
+            // Log rotation failure - not critical, just continue
+            error_log("Log rotation failed: " . $e->getMessage());
         }
     }
 }

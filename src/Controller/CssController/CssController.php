@@ -112,29 +112,35 @@ class CssController extends Controller {
         }
 
         // Set the theme back to default
-        $app['config']->cssId = null;
-        $app['config'] = $app['config']->save();
-
-        // Set flash message
-        Session::setFlashMessage('success', 'Theme ' . $cssFilename . ' deleted.');
+        try {
+            $app['config']->cssId = null;
+            $app['config'] = $app['config']->save();
+            Session::setFlashMessage('success', 'Theme ' . $cssFilename . ' deleted.');
+        } catch (Exception $e) {
+            Log::error("Failed to update config after deleting theme: " . $e->getMessage());
+            Session::setFlashMessage('error', 'Theme deleted but failed to update settings');
+        }
     }
 
     private function handleSetTheme() {
         global $app;
 
-        if ($_POST['selectCssFile']){
-            // Set custom theme
-            $app['config']->cssId = $_POST['selectCssFile'];
-        } else {
-            // Set default theme
-            $app['config']->cssId = null;
+        try {
+            if ($_POST['selectCssFile']){
+                // Set custom theme
+                $app['config']->cssId = $_POST['selectCssFile'];
+            } else {
+                // Set default theme
+                $app['config']->cssId = null;
+            }
+
+            // Update the site theme
+            $app['config'] = $app['config']->save();
+            Session::setFlashMessage('success', 'Theme applied.');
+        } catch (Exception $e) {
+            Log::error("Failed to save theme setting: " . $e->getMessage());
+            Session::setFlashMessage('error', 'Failed to apply theme');
         }
-
-        // Update the site theme
-        $app['config'] = $app['config']->save();
-
-        // Set flash message
-        Session::setFlashMessage('success', 'Theme applied.');
     }
 
     private function handleUpload() {

@@ -22,32 +22,15 @@ include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
  *  Validate application state before processing request
  */
 
-// Check prerequisites
+// Check prerequisites (includes database connection and migrations)
 $prerequisites = new Prerequisites();
-$results = $prerequisites->validate();
-if (count($prerequisites->getErrors()) > 0) {
-    $prerequisites->generateWebSummary($results);
+if (!$prerequisites->validate()) {
+    $prerequisites->generateWebSummary();
     exit;
 }
 
-// Connect to the database
-try {
-    // SQLite will just create this if it doesn't exist.
-    $db = new PDO("sqlite:" . DB_FILE);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    throw new SetupException(
-        "Database connection failed: " . $e->getMessage(),
-        'database_connection',
-        0,
-        $e
-    );
-}
-
-// Do any necessary database migrations
-$migrator = new Migrator($db);
-$migrator->migrate();
+// Get the working database connection from prerequisites
+$db = $prerequisites->getDatabase();
 
 // Make sure the initial setup is complete unless we're already heading to setup
 if (!(preg_match('/setup$/', $path))) {

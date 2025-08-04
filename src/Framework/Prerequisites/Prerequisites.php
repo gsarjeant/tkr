@@ -16,6 +16,7 @@ class Prerequisites {
     private $logFile;
     private $isCli;
     private $isWeb;
+    private $database = null;
 
     public function __construct() {
         $this->isCli = php_sapi_name() === 'cli';
@@ -377,12 +378,68 @@ class Prerequisites {
             );
         }
 
-        return $canCreateDb;
+        if (!$canCreateDb) {
+            return false;
+        }
+
+        // Test database connection
+        try {
+            $db = new PDO("sqlite:" . $dbFile);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            
+            // Test basic query to ensure database is functional
+            $db->query("SELECT 1")->fetchColumn();
+            
+            $this->addCheck(
+                'Database Connection',
+                true,
+                'Successfully connected to database'
+            );
+            
+            // Store working database connection
+            $this->database = $db;
+            
+            // Test migrations
+            return $this->checkMigrations($db);
+            
+        } catch (PDOException $e) {
+            $this->addCheck(
+                'Database Connection',
+                false,
+                'Failed to connect: ' . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+    
+    private function checkMigrations($db) {
+        try {
+            $migrator = new Migrator($db);
+            $migrator->migrate();
+            
+            $this->addCheck(
+                'Database Migrations',
+                true,
+                'All database migrations applied successfully'
+            );
+            return true;
+            
+        } catch (Exception $e) {
+            $this->addCheck(
+                'Database Migrations',
+                false,
+                'Migration failed: ' . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
     }
 
     // validate prereqs
     // runs on each request and can be run from CLI
-    public function validate() {
+    public function validate(): bool {
         $this->log("=== tkr prerequisites check started at " . date('Y-m-d H:i:s') . " ===", true);
 
         if ($this->isCli) {
@@ -406,7 +463,8 @@ class Prerequisites {
             $this->generateCliSummary($results);
         }
 
-        return $results;
+        // Return true only if no errors occurred
+        return count($this->errors) === 0;
     }
 
     /**
@@ -566,5 +624,15 @@ class Prerequisites {
      */
     public function getWarnings() {
         return $this->warnings;
+    }
+    
+    /**
+     * Get working database connection (only call after validate() returns true)
+     */
+    public function getDatabase(): PDO {
+        if ($this->database === null) {
+            throw new RuntimeException('Database not available - call validate() first');
+        }
+        return $this->database;
     }
 }

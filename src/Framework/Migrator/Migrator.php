@@ -18,9 +18,8 @@ class Migrator{
         $currentVersion = $this->getVersion();
 
         if ($newVersion <= $currentVersion){
-            throw new SetupException(
-                "New version ($newVersion) must be greater than current version ($currentVersion)",
-                'db_migration'
+            throw new Exception(
+                "New version ($newVersion) must be greater than current version ($currentVersion)"
             );
         }
 
@@ -89,9 +88,8 @@ class Migrator{
             Log::info("Updated database version to " . $this->getVersion());
         } catch (Exception $e) {
             $this->db->rollBack();
-            throw new SetupException(
-                "Migration failed: $filename",
-                'db_migration',
+            throw new Exception(
+                "Migration failed: $filename - " . $e->getMessage(),
                 0,
                 $e
             );

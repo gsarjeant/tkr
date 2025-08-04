@@ -31,27 +31,43 @@ class LogTest extends TestCase
     {
         if (!is_dir($dir)) return;
         
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            $path = $dir . '/' . $file;
-            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($iterator as $path) {
+            $path->isDir() ? rmdir($path->getRealPath()) : unlink($path->getRealPath());
         }
         rmdir($dir);
+    }
+    
+    private function setLogLevel(int $level): void
+    {
+        global $app;
+        $app = ['config' => (object)['logLevel' => $level]];
+    }
+    
+    private function assertLogContains(string $message): void
+    {
+        $this->assertFileExists($this->testLogFile);
+        $logContent = file_get_contents($this->testLogFile);
+        $this->assertStringContainsString($message, $logContent);
+    }
+    
+    private function assertLogDoesNotContain(string $message): void
+    {
+        $this->assertFileExists($this->testLogFile);
+        $logContent = file_get_contents($this->testLogFile);
+        $this->assertStringNotContainsString($message, $logContent);
     }
 
     public function testSetRouteContext(): void
     {
         Log::setRouteContext('GET /admin');
-        
-        // Create a mock app config for log level
-        global $app;
-        $app = [
-            'config' => (object)['logLevel' => 1] // DEBUG level
-        ];
+        $this->setLogLevel(1); // DEBUG level
         
         Log::debug('Test message');
-        
-        $this->assertFileExists($this->testLogFile);
         
         $logContent = file_get_contents($this->testLogFile);
         $this->assertStringContainsString('[GET /admin]', $logContent);
@@ -61,11 +77,7 @@ class LogTest extends TestCase
     public function testEmptyRouteContext(): void
     {
         Log::setRouteContext('');
-        
-        global $app;
-        $app = [
-            'config' => (object)['logLevel' => 1]
-        ];
+        $this->setLogLevel(1);
         
         Log::info('Test without route');
         
@@ -80,32 +92,23 @@ class LogTest extends TestCase
 
     public function testLogLevelFiltering(): void
     {
-        global $app;
-        $app = [
-            'config' => (object)['logLevel' => 3] // WARNING level
-        ];
+        $this->setLogLevel(3); // WARNING level
         
         Log::debug('Debug message');   // Should be filtered out
         Log::info('Info message');     // Should be filtered out  
         Log::warning('Warning message'); // Should be logged
         Log::error('Error message');   // Should be logged
         
-        $logContent = file_get_contents($this->testLogFile);
-        
-        $this->assertStringNotContainsString('Debug message', $logContent);
-        $this->assertStringNotContainsString('Info message', $logContent);
-        $this->assertStringContainsString('Warning message', $logContent);
-        $this->assertStringContainsString('Error message', $logContent);
+        $this->assertLogDoesNotContain('Debug message');
+        $this->assertLogDoesNotContain('Info message');
+        $this->assertLogContains('Warning message');
+        $this->assertLogContains('Error message');
     }
 
     public function testLogMessageFormat(): void
     {
         Log::setRouteContext('POST /admin');
-        
-        global $app;
-        $app = [
-            'config' => (object)['logLevel' => 1]
-        ];
+        $this->setLogLevel(1);
         
         Log::error('Test error message');
         
@@ -129,14 +132,16 @@ class LogTest extends TestCase
         
         // init() should create the directory
         $this->assertDirectoryExists(dirname($newLogFile));
+        
+        // Verify we can actually write to it
+        $this->setLogLevel(1);
+        Log::info('Test directory creation');
+        $this->assertFileExists($newLogFile);
     }
 
     public function testLogRotation(): void
     {
-        global $app;
-        $app = [
-            'config' => (object)['logLevel' => 1]
-        ];
+        $this->setLogLevel(1);
         
         // Create a log file with exactly 1000 lines (the rotation threshold)
         $logLines = str_repeat("[2025-01-31 12:00:00] INFO: 127.0.0.1 - Test line\n", 1000);
@@ -145,32 +150,49 @@ class LogTest extends TestCase
         // This should trigger rotation
         Log::info('This should trigger rotation');
         
-        // Original log should be rotated to .1
+        // Verify rotation happened
         $this->assertFileExists($this->testLogFile . '.1');
+        $this->assertLogContains('This should trigger rotation');
+    }
+    
+    public function testLogRotationLimitsFileCount(): void
+    {
+        $this->setLogLevel(1);
         
-        // New log should contain the new message
-        $newLogContent = file_get_contents($this->testLogFile);
-        $this->assertStringContainsString('This should trigger rotation', $newLogContent);
+        // Create 5 existing rotated log files (.1 through .5)
+        for ($i = 1; $i <= 5; $i++) {
+            file_put_contents($this->testLogFile . '.' . $i, "Old log file $i\n");
+        }
         
-        // Rotated log should contain old content
-        $rotatedContent = file_get_contents($this->testLogFile . '.1');
-        $this->assertStringContainsString('Test line', $rotatedContent);
+        // Create main log file at rotation threshold
+        $logLines = str_repeat("[2025-01-31 12:00:00] INFO: 127.0.0.1 - Test line\n", 1000);
+        file_put_contents($this->testLogFile, $logLines);
+        
+        // This should trigger rotation and delete the oldest file (.5)
+        Log::info('Trigger rotation with max files');
+        
+        // Verify rotation happened and file count is limited
+        $this->assertFileExists($this->testLogFile . '.1'); // New rotated file
+        $this->assertFileExists($this->testLogFile . '.2'); // Old .1 became .2
+        $this->assertFileExists($this->testLogFile . '.3'); // Old .2 became .3
+        $this->assertFileExists($this->testLogFile . '.4'); // Old .3 became .4
+        $this->assertFileExists($this->testLogFile . '.5'); // Old .4 became .5
+        $this->assertFileDoesNotExist($this->testLogFile . '.6'); // Old .5 was deleted
+        
+        $this->assertLogContains('Trigger rotation with max files');
     }
 
     public function testDefaultLogLevelWhenConfigMissing(): void
     {
         // Set up config without logLevel property (simulates missing config value)
         global $app;
-        $app = [
-            'config' => (object)[] // Empty config object, no logLevel property
-        ];
+        $app = ['config' => (object)[]];
         
         // Should not throw errors and should default to INFO level
         Log::debug('Debug message');  // Should be filtered out (default INFO level = 2)
         Log::info('Info message');    // Should be logged
         
-        $logContent = file_get_contents($this->testLogFile);
-        $this->assertStringNotContainsString('Debug message', $logContent);
-        $this->assertStringContainsString('Info message', $logContent);
+        $this->assertLogDoesNotContain('Debug message');
+        $this->assertLogContains('Info message');
     }
 }

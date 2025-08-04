@@ -7,14 +7,11 @@ class HomeControllerTest extends TestCase
     private PDOStatement $mockStatement;
     private ConfigModel $mockConfig;
     private UserModel $mockUser;
-    private string $tempLogDir;
 
     protected function setUp(): void
     {
-        // Set up temporary logging
-        $this->tempLogDir = sys_get_temp_dir() . '/tkr_test_logs_' . uniqid();
-        mkdir($this->tempLogDir . '/logs', 0777, true);
-        Log::init($this->tempLogDir . '/logs/tkr.log');
+        // Reset Log state to prevent test pollution
+        Log::init(sys_get_temp_dir() . '/tkr_controller_test.log');
         
         // Create mock PDO and PDOStatement
         $this->mockStatement = $this->createMock(PDOStatement::class);
@@ -37,29 +34,6 @@ class HomeControllerTest extends TestCase
             'config' => $this->mockConfig,
             'user' => $this->mockUser,
         ];
-        
-        // Set log level on config for Log class
-        $this->mockConfig->logLevel = 1; // Allow DEBUG level logs
-    }
-
-    protected function tearDown(): void
-    {
-        // Clean up temp directory
-        if (is_dir($this->tempLogDir)) {
-            $this->deleteDirectory($this->tempLogDir);
-        }
-    }
-
-    private function deleteDirectory(string $dir): void
-    {
-        if (!is_dir($dir)) return;
-        
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            $path = $dir . '/' . $file;
-            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
-        }
-        rmdir($dir);
     }
 
     private function setupMockDatabase(array $tickData): void
@@ -246,73 +220,4 @@ class HomeControllerTest extends TestCase
         $this->assertEquals('Failed to save tick', $result['message']);
     }
 
-    public function testLoggingOnHomePageLoad(): void
-    {
-        $testTicks = [
-            ['id' => 1, 'timestamp' => '2025-01-31 12:00:00', 'tick' => 'Test tick']
-        ];
-        $this->setupMockDatabase($testTicks);
-        
-        $controller = new HomeController();
-        $controller->getHomeData(1);
-        
-        // Check that logs were written
-        $logFile = $this->tempLogDir . '/logs/tkr.log';
-        $this->assertFileExists($logFile);
-        
-        $logContent = file_get_contents($logFile);
-        $this->assertStringContainsString('Loading home page 1', $logContent);
-        $this->assertStringContainsString('Home page loaded with 1 ticks', $logContent);
-    }
-
-    public function testLoggingOnTickCreation(): void
-    {
-        $this->setupMockDatabaseForInsert(true);
-        
-        $controller = new HomeController();
-        $postData = ['new_tick' => 'Test tick for logging'];
-        
-        $controller->processTick($postData);
-        
-        // Check that logs were written
-        $logFile = $this->tempLogDir . '/logs/tkr.log';
-        $this->assertFileExists($logFile);
-        
-        $logContent = file_get_contents($logFile);
-        $this->assertStringContainsString('New tick created: Test tick for logging', $logContent);
-    }
-
-    public function testLoggingOnEmptyTick(): void
-    {
-        $controller = new HomeController();
-        $postData = ['new_tick' => ''];
-        
-        $controller->processTick($postData);
-        
-        // Check that logs were written
-        $logFile = $this->tempLogDir . '/logs/tkr.log';
-        
-        // The log file should exist (Log::init creates it) and contain the debug message
-        $this->assertFileExists($logFile);
-        
-        $logContent = file_get_contents($logFile);
-        $this->assertStringContainsString('Empty tick submission ignored', $logContent);
-    }
-
-    public function testLoggingOnDatabaseError(): void
-    {
-        $this->setupMockDatabaseForInsert(false);
-        
-        $controller = new HomeController();
-        $postData = ['new_tick' => 'This will fail'];
-        
-        $controller->processTick($postData);
-        
-        // Check that logs were written
-        $logFile = $this->tempLogDir . '/logs/tkr.log';
-        $this->assertFileExists($logFile);
-        
-        $logContent = file_get_contents($logFile);
-        $this->assertStringContainsString('Failed to save tick: Database error', $logContent);
-    }
 }

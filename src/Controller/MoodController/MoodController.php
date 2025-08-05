@@ -29,8 +29,14 @@
                 }
 
                 // set or clear the mood
-                $app['user']->mood = $mood;
-                $app['user'] = $app['user']->save();
+                try {
+                    $app['user']->mood = $mood;
+                    $app['user'] = $app['user']->save();
+                    Session::setFlashMessage('success', 'Mood updated');
+                } catch (Exception $e) {
+                    Log::error("Failed to save mood: " . $e->getMessage());
+                    Session::setFlashMessage('error', 'Failed to update mood');
+                }
 
                 // go back to the index and show the updated mood
                 header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
@@ -41,15 +47,21 @@
         private static function getEmojisWithLabels(): array {
             global $app;
 
-            $emojiModel = new EmojiModel($app['db']);
-            $customEmoji = $emojiModel->getAll();
+            try {
+                $emojiModel = new EmojiModel($app['db']);
+                $customEmoji = $emojiModel->getAll();
 
-            if (!empty($customEmoji)){
-                $custom = [];
+                if (!empty($customEmoji)){
+                    $custom = [];
 
-                foreach ($customEmoji as $item){
-                    $custom[] = [$item['emoji'], $item['description']];
+                    foreach ($customEmoji as $item){
+                        $custom[] = [$item['emoji'], $item['description']];
+                    }
                 }
+            } catch (Exception $e) {
+                Log::error("Failed to load custom emoji: " . $e->getMessage());
+                // Continue without custom emoji if database fails
+                $customEmoji = [];
             }
 
             $emoji = [

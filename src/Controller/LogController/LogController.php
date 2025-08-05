@@ -30,12 +30,21 @@ class LogController extends Controller {
 
         $limit = 300; // Show last 300 log entries
 
-        // Read and parse log entries
-        $logEntries = $this->getLogEntries($limit, $levelFilter, $routeFilter);
+        try {
+            // Read and parse log entries
+            $logEntries = $this->getLogEntries($limit, $levelFilter, $routeFilter);
 
-        // Get available routes and levels for filter dropdowns
-        $availableRoutes = $this->getAvailableRoutes();
-        $availableLevels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'];
+            // Get available routes and levels for filter dropdowns
+            $availableRoutes = $this->getAvailableRoutes();
+            $availableLevels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'];
+        } catch (Exception $e) {
+            Log::error("Failed to load log data: " . $e->getMessage());
+            // Provide empty data if log reading fails
+            $logEntries = [];
+            $availableRoutes = [];
+            $availableLevels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'];
+            Session::setFlashMessage('error', 'Unable to load log files');
+        }
 
         return [
             'config' => $app['config'],
@@ -51,27 +60,42 @@ class LogController extends Controller {
         $logFile = $this->storageDir . '/logs/tkr.log';
         $entries = [];
 
-        // Read from current log file and rotated files
-        $logFiles = [$logFile];
-        for ($i = 1; $i <= 5; $i++) {
-            $rotatedFile = $logFile . '.' . $i;
-            if (file_exists($rotatedFile)) {
-                $logFiles[] = $rotatedFile;
+        try {
+            // Read from current log file and rotated files
+            $logFiles = [$logFile];
+            for ($i = 1; $i <= 5; $i++) {
+                $rotatedFile = $logFile . '.' . $i;
+                if (file_exists($rotatedFile)) {
+                    $logFiles[] = $rotatedFile;
+                }
             }
-        }
 
-        foreach ($logFiles as $file) {
-            if (file_exists($file)) {
-                $lines = file($file, FILE_IGNORE_NEW_LINES);
-                foreach (array_reverse($lines) as $line) {
-                    if (count($entries) >= $limit) break 2;
+            foreach ($logFiles as $file) {
+                if (file_exists($file)) {
+                    try {
+                        $lines = file($file, FILE_IGNORE_NEW_LINES);
+                        if ($lines === false) {
+                            Log::warning("Failed to read log file: $file");
+                            continue;
+                        }
+                        
+                        foreach (array_reverse($lines) as $line) {
+                            if (count($entries) >= $limit) break 2;
 
-                    $entry = $this->parseLogLine($line);
-                    if ($entry && $this->matchesFilters($entry, $levelFilter, $routeFilter)) {
-                        $entries[] = $entry;
+                            $entry = $this->parseLogLine($line);
+                            if ($entry && $this->matchesFilters($entry, $levelFilter, $routeFilter)) {
+                                $entries[] = $entry;
+                            }
+                        }
+                    } catch (Exception $e) {
+                        Log::warning("Error reading log file $file: " . $e->getMessage());
+                        continue;
                     }
                 }
             }
+        } catch (Exception $e) {
+            Log::error("Failed to read log entries: " . $e->getMessage());
+            // Return empty array if we can't read logs
         }
 
         return $entries;

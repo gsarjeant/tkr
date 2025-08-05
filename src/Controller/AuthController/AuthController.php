@@ -23,21 +23,34 @@ class AuthController extends Controller {
 
             Log::debug("Login attempt for user {$username}");
 
-            $userModel = new UserModel($app['db']);
-            $user = $userModel->getByUsername($username);
+            try {
+                $userModel = new UserModel($app['db']);
+                $user = $userModel->getByUsername($username);
 
-            //if ($user && password_verify($password, $user['password_hash'])) {
-            if ($user && password_verify($password, $user['password_hash'])) {
-                Log::info("Successful login for {$username}");
+                if ($user && password_verify($password, $user['password_hash'])) {
+                    Log::info("Successful login for {$username}");
 
-                Session::newLoginSession($user);
-                header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
-                exit;
-            } else {
-                Log::warning("Failed login for {$username}");
+                    try {
+                        Session::newLoginSession($user);
+                        header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
+                        exit;
+                    } catch (Exception $e) {
+                        Log::error("Failed to create login session for {$username}: " . $e->getMessage());
+                        Session::setFlashMessage('error', 'Login failed - session error');
+                        header('Location: ' . $_SERVER['PHP_SELF']);
+                        exit;
+                    }
+                } else {
+                    Log::warning("Failed login for {$username}");
 
-                // Set a flash message and reload the login page
-                Session::setFlashMessage('error', 'Invalid username or password');
+                    // Set a flash message and reload the login page
+                    Session::setFlashMessage('error', 'Invalid username or password');
+                    header('Location: ' . $_SERVER['PHP_SELF']);
+                    exit;
+                }
+            } catch (Exception $e) {
+                Log::error("Database error during login for {$username}: " . $e->getMessage());
+                Session::setFlashMessage('error', 'Login temporarily unavailable');
                 header('Location: ' . $_SERVER['PHP_SELF']);
                 exit;
             }

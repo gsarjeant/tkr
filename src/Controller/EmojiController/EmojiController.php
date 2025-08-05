@@ -4,8 +4,14 @@
         public function index(){
             global $app;
 
-            $emojiModel = new EmojiModel($app['db']);
-            $emojiList = $emojiModel->getAll();
+            try {
+                $emojiModel = new EmojiModel($app['db']);
+                $emojiList = $emojiModel->getAll();
+            } catch (Exception $e) {
+                Log::error("Failed to load emoji list: " . $e->getMessage());
+                $emojiList = [];
+                Session::setFlashMessage('error', 'Failed to load custom emoji');
+            }
 
             $vars = [
                 'config' => $app['config'],
@@ -68,13 +74,19 @@
             global $app;
 
             if (!$this->isValidEmoji($emoji)){
-                // TODO - handle
+                Session::setFlashMessage('error', 'Invalid emoji format');
                 return;
             }
 
             // It looks like an emoji. Let's add it.
-            $emojiModel = new EmojiModel($app['db']);
-            $emojiList = $emojiModel->add($emoji, $description);
+            try {
+                $emojiModel = new EmojiModel($app['db']);
+                $emojiModel->add($emoji, $description);
+                Session::setFlashMessage('success', 'Emoji added successfully');
+            } catch (Exception $e) {
+                Log::error("Failed to add emoji: " . $e->getMessage());
+                Session::setFlashMessage('error', 'Failed to add emoji');
+            }
         }
 
         public function handleDelete(): void {
@@ -83,8 +95,14 @@
             $ids = $_POST['delete_emoji_ids'];
 
             if (!empty($ids)) {
-                $emojiModel = new EmojiModel($app['db']);
-                $emojiModel->delete($ids);
+                try {
+                    $emojiModel = new EmojiModel($app['db']);
+                    $emojiModel->delete($ids);
+                    Session::setFlashMessage('success', 'Emoji deleted successfully');
+                } catch (Exception $e) {
+                    Log::error("Failed to delete emoji: " . $e->getMessage());
+                    Session::setFlashMessage('error', 'Failed to delete emoji');
+                }
             }
         }
     }

@@ -5,7 +5,6 @@
  * This class checks all system requirements for tkr and provides
  * detailed logging of any missing components or configuration issues.
  *
- * ZERO DEPENDENCIES - Uses only core PHP functions available since PHP 5.3
  */
 
 class Prerequisites {
@@ -17,6 +16,12 @@ class Prerequisites {
     private $isCli;
     private $isWeb;
     private $database = null;
+    private $storageSubdirs = [
+        'storage/db',
+        'storage/logs',
+        'storage/upload',
+        'storage/upload/css',
+    ];
 
     public function __construct() {
         $this->isCli = php_sapi_name() === 'cli';
@@ -175,7 +180,7 @@ class Prerequisites {
         return $allPresent;
     }
 
-    private function checkStoragePermissions() {
+    private function checkExistingStoragePermissions() {
         // Issue a warning if running as root in CLI context
         // Write out guidance for storage directory permissions
         // if running the CLI script as root (since it will always appear to be writable)
@@ -195,20 +200,68 @@ class Prerequisites {
             );
         }
 
-        $storageDirs = array(
-            'storage',
-            'storage/db',
-            'storage/logs',
-            'storage/upload',
-            'storage/upload/css'
+        $storageDirs = array_merge(
+            array('storage'),
+            $this->storageSubdirs
         );
 
         $allWritable = true;
         foreach ($storageDirs as $dir) {
             $path = $this->baseDir . '/' . $dir;
 
+            // Only check directories that exist - missing ones are handled in application validation
+            if (is_dir($path)) {
+                $writable = is_writable($path);
+                $permissions = substr(sprintf('%o', fileperms($path)), -4);
+
+                $this->addCheck(
+                    "Storage Permissions: {$dir}",
+                    $writable,
+                    $writable ? "Writable (permissions: {$permissions})" : "Not writable (permissions: {$permissions})",
+                    $writable ? 'info' : 'error'
+                );
+
+                if (!$writable) {
+                    $allWritable = false;
+                }
+            }
+        }
+
+        return $allWritable;
+    }
+
+    private function checkStorageDirectoriesExist() {
+        $allPresent = true;
+        foreach ($this->storageSubdirs as $dir) {
+            $path = $this->baseDir . '/' . $dir;
+            $exists = is_dir($path);
+
+            $this->addCheck(
+                "Storage Directory: {$dir}",
+                $exists,
+                $exists ? "Present" : "Missing - will be created during setup",
+                $exists ? 'info' : 'info' // Not an error - can be auto-created
+            );
+
+            if (!$exists) {
+                $allPresent = false;
+            }
+        }
+
+        return $allPresent;
+    }
+
+    private function createStorageDirectories() {
+        $storageDirs = array_merge(
+            array('storage'),
+            $this->storageSubdirs
+        );
+
+        $allCreated = true;
+        foreach ($storageDirs as $dir) {
+            $path = $this->baseDir . '/' . $dir;
+
             if (!is_dir($path)) {
-                // Try to create the directory
                 $created = @mkdir($path, 0770, true);
                 if ($created) {
                     $this->addCheck(
@@ -223,27 +276,18 @@ class Prerequisites {
                         "Could not create directory: {$dir}",
                         'error'
                     );
-                    $allWritable = false;
-                    continue;
+                    $allCreated = false;
                 }
-            }
-
-            $writable = is_writable($path);
-            $permissions = substr(sprintf('%o', fileperms($path)), -4);
-
-            $this->addCheck(
-                "Storage Permissions: {$dir}",
-                $writable,
-                $writable ? "Writable (permissions: {$permissions})" : "Not writable (permissions: {$permissions})",
-                $writable ? 'info' : 'error'
-            );
-
-            if (!$writable) {
-                $allWritable = false;
+            } else {
+                $this->addCheck(
+                    "Storage Directory: {$dir}",
+                    true,
+                    "Already exists"
+                );
             }
         }
 
-        return $allWritable;
+        return $allCreated;
     }
 
     private function checkWebServerConfig() {
@@ -283,73 +327,19 @@ class Prerequisites {
         return true;
     }
 
-    private function checkConfiguration() {
-        $configFile = $this->baseDir . '/config/init.php';
-        $configExists = file_exists($configFile);
-
-        if (!$configExists) {
-            $this->addCheck(
-                'Configuration File',
-                false,
-                'config/init.php not found',
-                'error'
-            );
-            return false;
-        }
-
-        try {
-            $config = include $configFile;
-            $hasBaseUrl = isset($config['base_url']) && !empty($config['base_url']);
-            $hasBasePath = isset($config['base_path']) && !empty($config['base_path']);
-
-            $this->addCheck(
-                'Configuration File',
-                true,
-                'config/init.php exists and is readable'
-            );
-
-            $this->addCheck(
-                'Base URL Configuration',
-                $hasBaseUrl,
-                $hasBaseUrl ? "Set to: {$config['base_url']}" : 'Not configured',
-                $hasBaseUrl ? 'info' : 'warning'
-            );
-
-            $this->addCheck(
-                'Base Path Configuration',
-                $hasBasePath,
-                $hasBasePath ? "Set to: {$config['base_path']}" : 'Not configured',
-                $hasBasePath ? 'info' : 'warning'
-            );
-
-            return $hasBaseUrl && $hasBasePath;
-
-        } catch (Exception $e) {
-            $this->addCheck(
-                'Configuration File',
-                false,
-                'Error reading config/init.php: ' . $e->getMessage(),
-                'error'
-            );
-            return false;
-        }
-    }
 
     private function checkDatabase() {
         $dbFile = $this->baseDir . '/storage/db/tkr.sqlite';
         $dbDir = dirname($dbFile);
 
         if (!is_dir($dbDir)) {
-            $created = @mkdir($dbDir, 0770, true);
-            if (!$created) {
-                $this->addCheck(
-                    'Database Directory',
-                    false,
-                    'Could not create storage/db directory',
-                    'error'
-                );
-                return false;
-            }
+            $this->addCheck(
+                'Database Directory',
+                false,
+                'Database directory does not exist',
+                'error'
+            );
+            return false;
         }
 
         $canCreateDb = is_writable($dbDir);
@@ -370,39 +360,75 @@ class Prerequisites {
                 $dbReadable && $dbWritable ? 'Exists and is accessible' : 'Exists but has permission issues',
                 $dbReadable && $dbWritable ? 'info' : 'error'
             );
+
+            if ($dbReadable && $dbWritable) {
+                // Test database connection
+                try {
+                    $db = new PDO("sqlite:" . $dbFile);
+                    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+                    // Test basic query to ensure database is functional
+                    $db->query("SELECT 1")->fetchColumn();
+
+                    $this->addCheck(
+                        'Database Connection',
+                        true,
+                        'Successfully connected to database'
+                    );
+
+                    // Store working database connection
+                    $this->database = $db;
+
+                    return true;
+
+                } catch (PDOException $e) {
+                    $this->addCheck(
+                        'Database Connection',
+                        false,
+                        'Failed to connect: ' . $e->getMessage(),
+                        'error'
+                    );
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else {
             $this->addCheck(
                 'Database File',
-                true,
-                'Will be created on first run'
+                $canCreateDb,
+                $canCreateDb ? 'Will be created during setup' : 'Cannot create - directory not writable',
+                $canCreateDb ? 'info' : 'error'
             );
+            return $canCreateDb;
         }
+    }
 
-        if (!$canCreateDb) {
-            return false;
-        }
+    private function createDatabase() {
+        $dbFile = $this->baseDir . '/storage/db/tkr.sqlite';
 
-        // Test database connection
+        // Test database connection (will create file if needed)
         try {
             $db = new PDO("sqlite:" . $dbFile);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            
+
             // Test basic query to ensure database is functional
             $db->query("SELECT 1")->fetchColumn();
-            
+
             $this->addCheck(
                 'Database Connection',
                 true,
                 'Successfully connected to database'
             );
-            
+
             // Store working database connection
             $this->database = $db;
-            
-            // Test migrations
-            return $this->checkMigrations($db);
-            
+
+            // Run migrations
+            return $this->applyMigrations($db);
+
         } catch (PDOException $e) {
             $this->addCheck(
                 'Database Connection',
@@ -413,19 +439,19 @@ class Prerequisites {
             return false;
         }
     }
-    
-    private function checkMigrations($db) {
+
+    private function applyMigrations($db) {
         try {
             $migrator = new Migrator($db);
             $migrator->migrate();
-            
+
             $this->addCheck(
                 'Database Migrations',
                 true,
                 'All database migrations applied successfully'
             );
             return true;
-            
+
         } catch (Exception $e) {
             $this->addCheck(
                 'Database Migrations',
@@ -437,27 +463,62 @@ class Prerequisites {
         }
     }
 
-    // validate prereqs
-    // runs on each request and can be run from CLI
-    public function validate(): bool {
-        $this->log("=== tkr prerequisites check started at " . date('Y-m-d H:i:s') . " ===", true);
+    // Validate system requirements that can't be fixed by the script
+    public function validateSystem(): bool {
+        $this->log("=== tkr system validation started at " . date('Y-m-d H:i:s') . " ===", true);
 
         if ($this->isCli) {
-            $this->log("\n🔍 Validating prerequisites...\n");
+            $this->log("\n🔍 Validating system requirements...\n");
         }
 
         $results = array(
             'php_version' => $this->checkPhpVersion(),
             'critical_extensions' => $this->checkRequiredExtensions(),
             'directory_structure' => $this->checkDirectoryStructure(),
-            'storage_permissions' => $this->checkStoragePermissions(),
-            'web_server' => $this->checkWebServerConfig(),
-            'configuration' => $this->checkConfiguration(),
-            'database' => $this->checkDatabase()
+            'existing_storage_permissions' => $this->checkExistingStoragePermissions(),
+            'web_server' => $this->checkWebServerConfig()
         );
 
         // Check recommended extensions too
         $this->checkRecommendedExtensions();
+
+        if ($this->isCli) {
+            $this->generateCliSummary($results);
+        }
+
+        // Return true only if no errors occurred
+        return count($this->errors) === 0;
+    }
+
+    // Validate application state - things that can be fixed
+    public function validateApplication(): bool {
+        $currentErrors = count($this->errors);
+
+        if ($this->isCli) {
+            $this->log("\n🔍 Validating application state...\n");
+        }
+
+        $results = array(
+            'storage_directories' => $this->checkStorageDirectoriesExist(),
+            'database' => $this->checkDatabase()
+        );
+
+        // Return true if no NEW errors occurred
+        return count($this->errors) === $currentErrors;
+    }
+
+    // Create missing application components
+    public function createMissing(): bool {
+        $this->log("=== tkr setup started at " . date('Y-m-d H:i:s') . " ===", true);
+
+        if ($this->isCli) {
+            $this->log("\n🚀 Creating missing components...\n");
+        }
+
+        $results = array(
+            'storage_setup' => $this->createStorageDirectories(),
+            'database_setup' => $this->createDatabase()
+        );
 
         if ($this->isCli) {
             $this->generateCliSummary($results);
@@ -625,7 +686,7 @@ class Prerequisites {
     public function getWarnings() {
         return $this->warnings;
     }
-    
+
     /**
      * Get working database connection (only call after validate() returns true)
      */

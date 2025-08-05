@@ -22,27 +22,37 @@ include_once(dirname(dirname(__FILE__)) . "/config/bootstrap.php");
  *  Validate application state before processing request
  */
 
-// Check prerequisites (includes database connection and migrations)
+// Check system requirements first
 $prerequisites = new Prerequisites();
-if (!$prerequisites->validate()) {
+if (!$prerequisites->validateSystem()) {
     $prerequisites->generateWebSummary();
     exit;
+}
+
+// Check application state and create missing components if needed
+if (!$prerequisites->validateApplication()) {
+    if (!$prerequisites->createMissing()) {
+        $prerequisites->generateWebSummary();
+        exit;
+    }
 }
 
 // Get the working database connection from prerequisites
 $db = $prerequisites->getDatabase();
 
-// Make sure the initial setup is complete unless we're already heading to setup
-if (!(preg_match('/setup$/', $path))) {
+// Check if setup is complete (user exists and URL is configured)
+if (!(preg_match('/tkr-setup$/', $path))) {
     try {
-        // Make sure required tables (user, settings) are populated
         $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
-        $settings_count = (int) $db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
-
-        // If either required table has no records, redirect to setup.
-        if ($user_count === 0 || $settings_count === 0){
-            $init = require APP_ROOT . '/config/init.php';
-            header('Location: ' . $init['base_path'] . 'setup');
+        $config = (new ConfigModel($db))->get();
+        
+        $hasUser = $user_count > 0;
+        $hasUrl = !empty($config->baseUrl) && !empty($config->basePath);
+        
+        if (!$hasUser || !$hasUrl) {
+            // Redirect to setup with auto-detected URL
+            $autodetected = Util::getAutodetectedUrl();
+            header('Location: ' . $autodetected['fullUrl'] . '/tkr-setup');
             exit;
         }
     } catch (Exception $e) {

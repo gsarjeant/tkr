@@ -20,14 +20,14 @@ jobs:
         run: |
           if [[ "${{ matrix.php }}" < "8.2" ]]; then
             echo "Testing PHP ${{ matrix.php }} - should fail"
-            if php check-prerequisites.php; then
+            if php tkr-setup.php --validate-only; then
               echo "ERROR: Should have failed with PHP ${{ matrix.php }}"
               exit 1
             fi
             echo "✓ Correctly failed with old PHP version"
           else
             echo "Testing PHP ${{ matrix.php }} - should pass"
-            php check-prerequisites.php
+            php tkr-setup.php --validate-only
             echo "✓ Correctly passed with supported PHP version"
           fi
 
@@ -66,7 +66,7 @@ jobs:
       - name: Test failure with missing extensions
         run: |
           echo "Testing with base PHP - should fail"
-          if php check-prerequisites.php; then
+          if php tkr-setup.php --validate-only; then
             echo "ERROR: Should have failed with missing extensions"
             exit 1
           fi
@@ -86,7 +86,7 @@ jobs:
       - name: Test still fails without SQLite
         run: |
           echo "Testing with PDO but no SQLite - should still fail"
-          if php check-prerequisites.php; then
+          if php tkr-setup.php --validate-only; then
             echo "ERROR: Should have failed without SQLite"
             exit 1
           fi
@@ -105,7 +105,7 @@ jobs:
       - name: Test now passes with required extensions
         run: |
           echo "Testing with all required extensions - should pass"
-          php check-prerequisites.php
+          php tkr-setup.php --validate-only
           echo "✓ All required extensions detected correctly"
 
       - name: Install recommended extensions and retest
@@ -117,7 +117,7 @@ jobs:
           else
             apt-get install -y php-mbstring php-curl
           fi
-          php check-prerequisites.php
+          php tkr-setup.php --validate-only
           echo "✓ Recommended extensions also detected"
 
   test-permission-scenarios:
@@ -142,7 +142,7 @@ jobs:
           chown root:root storage
 
           # Run as the non-root user - should fail
-          if su testuser -c "php check-prerequisites.php"; then
+          if su testuser -c "php tkr-setup.php --validate-only"; then
             echo "ERROR: Should have failed with unwritable storage"
             exit 1
           fi
@@ -157,7 +157,7 @@ jobs:
           rm -rf src templates
 
           # Should fail
-          if php check-prerequisites.php; then
+          if php tkr-setup.php --validate-only; then
             echo "ERROR: Should have failed with missing directories"
             exit 1
           fi

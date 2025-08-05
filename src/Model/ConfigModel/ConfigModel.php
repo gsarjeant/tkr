@@ -15,10 +15,7 @@ class ConfigModel {
 
     // Instance method that uses injected database
     public function get(): self {
-        $init = require APP_ROOT . '/config/init.php';
         $c = new self($this->db);
-        $c->baseUrl = ($c->baseUrl === '') ? $init['base_url'] : $c->baseUrl;
-        $c->basePath = ($c->basePath === '') ? $init['base_path'] : $c->basePath;
 
         $stmt = $this->db->query("SELECT site_title,
                                    site_description,

@@ -20,8 +20,8 @@ class Router {
         ['logout', 'AuthController@handleLogout', ['GET', 'POST']],
         ['mood', 'MoodController'],
         ['mood', 'MoodController@handlePost', ['POST']],
-        ['setup', 'AdminController@showSetup'],
-        ['setup', 'AdminController@handleSetup', ['POST']],
+        ['tkr-setup', 'AdminController@showSetup'],
+        ['tkr-setup', 'AdminController@handleSetup', ['POST']],
         ['tick/{id}', 'TickController'],
         ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
     ];

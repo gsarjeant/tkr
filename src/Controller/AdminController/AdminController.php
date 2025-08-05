@@ -9,6 +9,21 @@ class AdminController extends Controller {
 
     public function showSetup(){
         $data = $this->getAdminData(true);
+        
+        // Auto-detect URL and pre-fill if not already configured
+        if (empty($data['config']->baseUrl) || empty($data['config']->basePath)) {
+            $autodetected = Util::getAutodetectedUrl();
+            $data['autodetectedUrl'] = $autodetected;
+            
+            // Pre-fill empty values with auto-detected ones
+            if (empty($data['config']->baseUrl)) {
+                $data['config']->baseUrl = $autodetected['baseUrl'];
+            }
+            if (empty($data['config']->basePath)) {
+                $data['config']->basePath = $autodetected['basePath'];
+            }
+        }
+        
         $this->render("admin.php", $data);
     }
     

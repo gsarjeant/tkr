@@ -18,7 +18,7 @@ jobs:
             --exclude='storage/logs' \
             --exclude='storage/upload' \
             -czvf tkr.${{ gitea.ref_name }}.tgz \
-            check-prerequisites.php config public src storage templates
+            tkr-setup.php config public src storage templates
       - name: Push to Generic gitea registry
         run: |
           curl \

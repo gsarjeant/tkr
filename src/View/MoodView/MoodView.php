@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 class MoodView {
-    private function render_emoji_groups(array $emojiGroups, string $currentMood): string {
+    private function renderEmojiGroups(array $emojiGroups, string $currentMood): string {
         $selected_emoji = $currentMood;  //user->mood;
 
         ob_start();
@@ -29,12 +29,12 @@ class MoodView {
         return ob_get_clean();
     }
 
-    function render_mood_picker(array $emojiGroups, string $currentMood): string {
+    function renderMoodPicker(array $emojiGroups, string $currentMood): string {
         ob_start();
         ?>
         <form method="post" class="emoji-form">
             <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
-            <?= $this->render_emoji_groups($emojiGroups, $currentMood) ?>
+            <?= $this->renderEmojiGroups($emojiGroups, $currentMood) ?>
             <div class="button-group">
                 <button type="submit" name="action" value="set">Set the mood</button>
                 <button type="submit" name="action" value="clear" class="clear-button">Clear mood</button>

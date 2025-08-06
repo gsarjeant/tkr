@@ -7,7 +7,7 @@ declare(strict_types=1);
 
             $view = new MoodView();
 
-            $moodPicker = $view->render_mood_picker(self::getEmojisWithLabels(), $app['user']->mood);
+            $moodPicker = $view->renderMoodPicker(self::getEmojisWithLabels(), $app['user']->mood);
 
             $vars = [
                 'config' => $app['config'],

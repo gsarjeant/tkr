@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
     class EmojiController extends Controller {
         // Shows the custom emoji management page
         public function index(){

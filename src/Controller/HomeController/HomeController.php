@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class HomeController extends Controller {
     // GET handler
     // renders the homepage view.

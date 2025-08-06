@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // This is the initialization code that needs to be run before anything else.
 // - define paths
 // - set up autoloader

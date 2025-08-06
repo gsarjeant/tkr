@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class MoodView {
     private function render_emoji_groups(array $emojiGroups, string $currentMood): string {
         $selected_emoji = $currentMood;  //user->mood;

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class Log {
     const LEVELS = [
         'DEBUG' => 1,

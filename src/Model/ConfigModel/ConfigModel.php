@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class ConfigModel {
     // properties and default values
     public string $siteTitle = 'My tkr';

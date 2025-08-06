@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class Controller {
     // Renders the requested template inside templates/main/php
     protected function render(string $childTemplateFile, array $vars = []) {

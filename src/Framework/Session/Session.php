@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 class Session {
     // These can all just be static functions

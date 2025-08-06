@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class TickModel {
     public function __construct(private PDO $db, private ConfigModel $config) {}
     

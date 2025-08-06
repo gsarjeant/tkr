@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class Util {
     public static function getClientIp() {
         return $_SERVER['HTTP_CLIENT_IP'] ??

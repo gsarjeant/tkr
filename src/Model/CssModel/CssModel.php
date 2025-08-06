@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class CssModel {
     public function __construct(private PDO $db) {}
 

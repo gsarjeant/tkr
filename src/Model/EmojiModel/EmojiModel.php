@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // welp this model is overkill
 class EmojiModel{
     public function __construct(private PDO $db) {}

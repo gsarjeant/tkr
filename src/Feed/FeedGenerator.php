@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // Abstract base class for feeds.
 // Specific feeds (RSS, Atom, etc.) will inherit from this.
 // This will wrap the basic generator functionality.

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class RssGenerator extends FeedGenerator {
     public function generate(): string {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

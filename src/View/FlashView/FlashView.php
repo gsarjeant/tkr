@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class FlashView {
     public function renderFlashSection(array $flashMessages): string {
         ob_start();

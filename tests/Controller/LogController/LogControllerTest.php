@@ -23,16 +23,16 @@ class LogControllerTest extends TestCase
 
         // Set up global $app for simplified dependency access
         $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new SettingsModel($mockPdo);
-        $mockConfig->baseUrl = 'https://example.com';
-        $mockConfig->basePath = '/tkr/';
+        $mockSettings = new SettingsModel($mockPdo);
+        $mockSettings->baseUrl = 'https://example.com';
+        $mockSettings->basePath = '/tkr/';
 
         $mockUser = new UserModel($mockPdo);
 
         global $app;
         $app = [
             'db' => $mockPdo,
-            'settings' => $mockConfig,
+            'settings' => $mockSettings,
             'user' => $mockUser,
         ];
     }

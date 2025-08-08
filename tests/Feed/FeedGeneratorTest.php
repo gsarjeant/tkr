@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class FeedGeneratorTest extends TestCase
 {
-    private function createMockConfig() {
+    private function createMockSettings() {
         $mockPdo = $this->createMock(PDO::class);
         $settings = new SettingsModel($mockPdo);
         $settings->siteTitle = 'Test Site';
@@ -23,7 +23,7 @@ class FeedGeneratorTest extends TestCase
     }
 
     private function createTestGenerator($settings = null, $ticks = null) {
-        $settings = $settings ?? $this->createMockConfig();
+        $settings = $settings ?? $this->createMockSettings();
         $ticks = $ticks ?? $this->createSampleTicks();
 
         return new class($settings, $ticks) extends FeedGenerator {

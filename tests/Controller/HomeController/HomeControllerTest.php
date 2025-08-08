@@ -7,7 +7,7 @@ class HomeControllerTest extends TestCase
 {
     private PDO $mockPdo;
     private PDOStatement $mockStatement;
-    private SettingsModel $mockConfig;
+    private SettingsModel $mockSettings;
     private UserModel $mockUser;
 
     protected function setUp(): void
@@ -19,10 +19,10 @@ class HomeControllerTest extends TestCase
         $this->mockStatement = $this->createMock(PDOStatement::class);
         $this->mockPdo = $this->createMock(PDO::class);
 
-        // Mock config
-        $this->mockConfig = new SettingsModel($this->mockPdo);
-        $this->mockConfig->itemsPerPage = 10;
-        $this->mockConfig->basePath = '/tkr';
+        // Mock settings
+        $this->mockSettings = new SettingsModel($this->mockPdo);
+        $this->mockSettings->itemsPerPage = 10;
+        $this->mockSettings->basePath = '/tkr';
 
         // Mock user
         $this->mockUser = new UserModel($this->mockPdo);
@@ -33,7 +33,7 @@ class HomeControllerTest extends TestCase
         global $app;
         $app = [
             'db' => $this->mockPdo,
-            'settings' => $this->mockConfig,
+            'settings' => $this->mockSettings,
             'user' => $this->mockUser,
         ];
     }
@@ -81,8 +81,8 @@ class HomeControllerTest extends TestCase
         $this->assertArrayHasKey('user', $data);
         $this->assertArrayHasKey('tickList', $data);
 
-        // Config and user should be the injected instances
-        $this->assertSame($this->mockConfig, $data['settings']);
+        // Settings and user should be the injected instances
+        $this->assertSame($this->mockSettings, $data['settings']);
         $this->assertSame($this->mockUser, $data['user']);
 
         // Should have tick list HTML (even if empty)

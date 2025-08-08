@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class AtomGeneratorTest extends TestCase
 {
-    private function createMockConfig() {
+    private function createMockSettings() {
         $mockPdo = $this->createMock(PDO::class);
         $settings = new SettingsModel($mockPdo);
         $settings->siteTitle = 'Test Site';
@@ -23,7 +23,7 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testCanGenerateValidAtom() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
         $ticks = $this->createSampleTicks();
 
         $generator = new AtomGenerator($settings, $ticks);
@@ -53,12 +53,12 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testReturnsCorrectContentType() {
-        $generator = new AtomGenerator($this->createMockConfig(), []);
+        $generator = new AtomGenerator($this->createMockSettings(), []);
         $this->assertEquals('application/atom+xml; charset=utf-8', $generator->getContentType());
     }
 
     public function testCanHandleEmptyTickList() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
         $generator = new AtomGenerator($settings, []);
         $xml = $generator->generate();
 
@@ -85,7 +85,7 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testCanHandleSpecialCharactersAndUnicode() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
 
         // Test various challenging characters
         $ticks = [

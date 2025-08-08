@@ -7,7 +7,7 @@ class FeedControllerTest extends TestCase
 {
     private PDO $mockPdo;
     private PDOStatement $mockStatement;
-    private SettingsModel $mockConfig;
+    private SettingsModel $mockSettings;
     private UserModel $mockUser;
     private string $tempLogDir;
 
@@ -22,13 +22,13 @@ class FeedControllerTest extends TestCase
         $this->mockStatement = $this->createMock(PDOStatement::class);
         $this->mockPdo = $this->createMock(PDO::class);
 
-        // Mock config with feed-relevant properties
-        $this->mockConfig = new SettingsModel($this->mockPdo);
-        $this->mockConfig->itemsPerPage = 10;
-        $this->mockConfig->basePath = '/tkr';
-        $this->mockConfig->siteTitle = 'Test Site';
-        $this->mockConfig->siteDescription = 'Test Description';
-        $this->mockConfig->baseUrl = 'https://test.example.com';
+        // Mock settings with feed-relevant properties
+        $this->mockSettings = new SettingsModel($this->mockPdo);
+        $this->mockSettings->itemsPerPage = 10;
+        $this->mockSettings->basePath = '/tkr';
+        $this->mockSettings->siteTitle = 'Test Site';
+        $this->mockSettings->siteDescription = 'Test Description';
+        $this->mockSettings->baseUrl = 'https://test.example.com';
 
         // Mock user
         $this->mockUser = new UserModel($this->mockPdo);
@@ -38,12 +38,12 @@ class FeedControllerTest extends TestCase
         global $app;
         $app = [
             'db' => $this->mockPdo,
-            'settings' => $this->mockConfig,
+            'settings' => $this->mockSettings,
             'user' => $this->mockUser,
         ];
 
-        // Set log level on config for Log class
-        $this->mockConfig->logLevel = 1; // Allow DEBUG level logs
+        // Set log level on settings for Log class
+        $this->mockSettings->logLevel = 1; // Allow DEBUG level logs
     }
 
     protected function tearDown(): void

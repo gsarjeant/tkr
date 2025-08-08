@@ -15,7 +15,7 @@ class AdminControllerTest extends TestCase
         // Create mock PDO
         $this->mockPdo = $this->createMock(PDO::class);
 
-        // Create real config and user objects with mocked PDO
+        // Create real settings and user objects with mocked PDO
         $this->settings = new SettingsModel($this->mockPdo);
         $this->settings->siteTitle = 'Test Site';
         $this->settings->siteDescription = 'Test Description';

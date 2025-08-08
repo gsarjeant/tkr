@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class RssGeneratorTest extends TestCase
 {
-    private function createMockConfig() {
+    private function createMockSettings() {
         $mockPdo = $this->createMock(PDO::class);
         $settings = new SettingsModel($mockPdo);
         $settings->siteTitle = 'Test Site';
@@ -23,7 +23,7 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testCanGenerateValidRss() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
         $ticks = $this->createSampleTicks();
 
         $generator = new RssGenerator($settings, $ticks);
@@ -51,12 +51,12 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testReturnsCorrectContentType() {
-        $generator = new RssGenerator($this->createMockConfig(), []);
+        $generator = new RssGenerator($this->createMockSettings(), []);
         $this->assertEquals('application/rss+xml; charset=utf-8', $generator->getContentType());
     }
 
     public function testCanHandleEmptyTickList() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
         $generator = new RssGenerator($settings, []);
         $xml = $generator->generate();
 
@@ -81,7 +81,7 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testCanHandleSpecialCharactersAndUnicode() {
-        $settings = $this->createMockConfig();
+        $settings = $this->createMockSettings();
 
         // Test various challenging characters
         $ticks = [

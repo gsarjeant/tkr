@@ -148,7 +148,7 @@ final class UtilTest extends TestCase
 
     #[DataProvider('linkifyProvider')]
     public function testLinkify(string $input, string $expected, bool $strictAccessibility): void {
-        // Set up global $app with config
+        // Set up global $app with settings
         global $app;
         $app = [
             'settings' => (object)['strictAccessibility' => $strictAccessibility]

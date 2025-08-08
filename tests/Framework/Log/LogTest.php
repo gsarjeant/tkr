@@ -184,9 +184,9 @@ class LogTest extends TestCase
         $this->assertLogContains('Trigger rotation with max files');
     }
 
-    public function testDefaultLogLevelWhenConfigMissing(): void
+    public function testDefaultLogLevelWhenSettingsMissing(): void
     {
-        // Set up config without logLevel property (simulates missing config value)
+        // Set up settings without logLevel property (simulates missing settings value)
         global $app;
         $app = ['settings' => (object)[]];
 

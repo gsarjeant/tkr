@@ -30,7 +30,7 @@ class Util {
                 global $app;
                 $escaped_url = rtrim($matches[1], '.,!?;:)]}>');
                 $clean_url = html_entity_decode($escaped_url, ENT_QUOTES, 'UTF-8');
-                $tabIndex = $app['config']->strictAccessibility ? ' tabindex="0"' : '';
+                $tabIndex = $app['settings']->strictAccessibility ? ' tabindex="0"' : '';
 
                 return '<a' . $tabIndex . ' href="' . $clean_url . '"' . $link_attrs . '>' . $escaped_url . '</a>';
             },
@@ -114,29 +114,29 @@ class Util {
         // Detect base URL
         $baseUrl = ($_SERVER['HTTPS'] ?? 'off') === 'on' ? 'https://' : 'http://';
         $baseUrl .= $_SERVER['HTTP_HOST'] ?? 'localhost';
-        
+
         // Don't include standard ports in URL
         $port = $_SERVER['SERVER_PORT'] ?? null;
         if ($port && $port != 80 && $port != 443) {
             $baseUrl .= ':' . $port;
         }
-        
+
         // Detect base path from script location
         $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
         $basePath = dirname($scriptName);
-        
+
         if ($basePath === '/' || $basePath === '.' || $basePath === '') {
             $basePath = '/';
         } else {
             $basePath = '/' . trim($basePath, '/') . '/';
         }
-        
+
         // Construct full URL
         $fullUrl = $baseUrl;
         if ($basePath !== '/') {
             $fullUrl .= ltrim($basePath, '/');
         }
-        
+
         return [
             'baseUrl' => $baseUrl,
             'basePath' => $basePath,

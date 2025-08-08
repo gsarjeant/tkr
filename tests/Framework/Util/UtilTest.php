@@ -151,7 +151,7 @@ final class UtilTest extends TestCase
         // Set up global $app with config
         global $app;
         $app = [
-            'config' => (object)['strictAccessibility' => $strictAccessibility]
+            'settings' => (object)['strictAccessibility' => $strictAccessibility]
         ];
 
         $result = Util::linkify($input);
@@ -162,12 +162,12 @@ final class UtilTest extends TestCase
         // Test linkify without new window
         global $app;
         $app = [
-            'config' => (object)['strictAccessibility' => false]
+            'settings' => (object)['strictAccessibility' => false]
         ];
 
         $input = 'Visit https://example.com';
         $expected = 'Visit <a href="https://example.com">https://example.com</a>';
-        
+
         $result = Util::linkify($input, false); // no new window
         $this->assertEquals($expected, $result);
     }
@@ -176,7 +176,7 @@ final class UtilTest extends TestCase
         // Test basic case with REMOTE_ADDR
         $_SERVER['REMOTE_ADDR'] = '192.168.1.100';
         unset($_SERVER['HTTP_CLIENT_IP'], $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['HTTP_X_REAL_IP']);
-        
+
         $result = Util::getClientIp();
         $this->assertEquals('192.168.1.100', $result);
     }
@@ -187,7 +187,7 @@ final class UtilTest extends TestCase
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.2';
         $_SERVER['HTTP_X_REAL_IP'] = '10.0.0.3';
         $_SERVER['REMOTE_ADDR'] = '10.0.0.4';
-        
+
         $result = Util::getClientIp();
         $this->assertEquals('10.0.0.1', $result); // Should use HTTP_CLIENT_IP
     }
@@ -195,7 +195,7 @@ final class UtilTest extends TestCase
     public function testGetClientIpUnknown(): void {
         // Test when no IP is available
         unset($_SERVER['HTTP_CLIENT_IP'], $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['HTTP_X_REAL_IP'], $_SERVER['REMOTE_ADDR']);
-        
+
         $result = Util::getClientIp();
         $this->assertEquals('unknown', $result);
     }

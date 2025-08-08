@@ -13,7 +13,7 @@ class LogControllerTest extends TestCase
     {
         $this->tempLogDir = sys_get_temp_dir() . '/tkr_test_logs_' . uniqid();
         mkdir($this->tempLogDir, 0777, true);
-        
+
         $this->testLogFile = $this->tempLogDir . '/logs/tkr.log';
         mkdir(dirname($this->testLogFile), 0777, true);
 
@@ -23,16 +23,16 @@ class LogControllerTest extends TestCase
 
         // Set up global $app for simplified dependency access
         $mockPdo = $this->createMock(PDO::class);
-        $mockConfig = new ConfigModel($mockPdo);
+        $mockConfig = new SettingsModel($mockPdo);
         $mockConfig->baseUrl = 'https://example.com';
         $mockConfig->basePath = '/tkr/';
-        
+
         $mockUser = new UserModel($mockPdo);
-        
+
         global $app;
         $app = [
             'db' => $mockPdo,
-            'config' => $mockConfig,
+            'settings' => $mockConfig,
             'user' => $mockUser,
         ];
     }
@@ -50,7 +50,7 @@ class LogControllerTest extends TestCase
     private function deleteDirectory(string $dir): void
     {
         if (!is_dir($dir)) return;
-        
+
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             $path = $dir . '/' . $file;
@@ -64,14 +64,14 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
-        
+
         // Should return empty log entries but valid structure
         $this->assertArrayHasKey('logEntries', $data);
         $this->assertArrayHasKey('availableRoutes', $data);
         $this->assertArrayHasKey('availableLevels', $data);
         $this->assertArrayHasKey('currentLevelFilter', $data);
         $this->assertArrayHasKey('currentRouteFilter', $data);
-        
+
         $this->assertEmpty($data['logEntries']);
         $this->assertEmpty($data['availableRoutes']);
         $this->assertEquals(['DEBUG', 'INFO', 'WARNING', 'ERROR'], $data['availableLevels']);
@@ -96,15 +96,15 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
-        
+
         // Should parse all valid entries and ignore invalid ones
         $this->assertCount(5, $data['logEntries']);
-        
+
         // Verify entries are in reverse chronological order (newest first)
         $entries = $data['logEntries'];
         $this->assertEquals('Info without route', $entries[0]['message']);
         $this->assertEquals('Debug home page', $entries[4]['message']);
-        
+
         // Verify entry structure
         $firstEntry = $entries[0];
         $this->assertArrayHasKey('timestamp', $firstEntry);
@@ -112,13 +112,13 @@ class LogControllerTest extends TestCase
         $this->assertArrayHasKey('ip', $firstEntry);
         $this->assertArrayHasKey('route', $firstEntry);
         $this->assertArrayHasKey('message', $firstEntry);
-        
+
         // Test route extraction
         $adminEntry = array_filter($entries, fn($e) => $e['message'] === 'Info admin page');
         $adminEntry = array_values($adminEntry)[0];
         $this->assertEquals('GET /admin', $adminEntry['route']);
         $this->assertEquals('INFO', $adminEntry['level']);
-        
+
         // Test entry without route
         $noRouteEntry = array_filter($entries, fn($e) => $e['message'] === 'Info without route');
         $noRouteEntry = array_values($noRouteEntry)[0];
@@ -138,7 +138,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('ERROR');
-        
+
         // Should only include ERROR entries
         $this->assertCount(1, $data['logEntries']);
         $this->assertEquals('ERROR', $data['logEntries'][0]['level']);
@@ -159,7 +159,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('', 'GET /admin');
-        
+
         // Should only include GET /admin entries
         $this->assertCount(1, $data['logEntries']);
         $this->assertEquals('GET /admin', $data['logEntries'][0]['route']);
@@ -171,7 +171,7 @@ class LogControllerTest extends TestCase
     {
         $logContent = implode("\n", [
             '[2025-01-31 12:00:00] ERROR: 127.0.0.1 [GET /admin] - Admin error',
-            '[2025-01-31 12:01:00] INFO: 127.0.0.1 [GET /admin] - Admin info', 
+            '[2025-01-31 12:01:00] INFO: 127.0.0.1 [GET /admin] - Admin info',
             '[2025-01-31 12:02:00] ERROR: 127.0.0.1 [GET /] - Home error'
         ]);
 
@@ -180,7 +180,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData('ERROR', 'GET /admin');
-        
+
         // Should only include entries matching both filters
         $this->assertCount(1, $data['logEntries']);
         $this->assertEquals('ERROR', $data['logEntries'][0]['level']);
@@ -204,7 +204,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
-        
+
         // Should read from all log files, newest first
         $this->assertCount(3, $data['logEntries']);
         $this->assertEquals('Current log entry', $data['logEntries'][0]['message']);
@@ -227,7 +227,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
-        
+
         // Should extract unique routes, sorted
         $expectedRoutes = ['GET /', 'GET /admin', 'POST /admin'];
         $this->assertEquals($expectedRoutes, $data['availableRoutes']);
@@ -247,7 +247,7 @@ class LogControllerTest extends TestCase
         // Uses global $app set up in setUp()
         $controller = new LogController($this->tempLogDir);
         $data = $controller->getLogData();
-        
+
         // Should only include valid entries, ignore invalid ones
         $this->assertCount(2, $data['logEntries']);
         $this->assertEquals('Another valid entry', $data['logEntries'][0]['message']);

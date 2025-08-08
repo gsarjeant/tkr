@@ -9,7 +9,7 @@ class CssController extends Controller {
 
         $vars = [
             'user' => $app['user'],
-            'config' => $app['config'],
+            'settings' => $app['settings'],
             'customCss' => $customCss,
         ];
 
@@ -114,8 +114,8 @@ class CssController extends Controller {
 
         // Set the theme back to default
         try {
-            $app['config']->cssId = null;
-            $app['config'] = $app['config']->save();
+            $app['settings']->cssId = null;
+            $app['settings'] = $app['settings']->save();
             Session::setFlashMessage('success', 'Theme ' . $cssFilename . ' deleted.');
         } catch (Exception $e) {
             Log::error("Failed to update config after deleting theme: " . $e->getMessage());
@@ -129,14 +129,14 @@ class CssController extends Controller {
         try {
             if ($_POST['selectCssFile']){
                 // Set custom theme
-                $app['config']->cssId = $_POST['selectCssFile'];
+                $app['settings']->cssId = $_POST['selectCssFile'];
             } else {
                 // Set default theme
-                $app['config']->cssId = null;
+                $app['settings']->cssId = null;
             }
 
             // Update the site theme
-            $app['config'] = $app['config']->save();
+            $app['settings'] = $app['settings']->save();
             Session::setFlashMessage('success', 'Theme applied.');
         } catch (Exception $e) {
             Log::error("Failed to save theme setting: " . $e->getMessage());

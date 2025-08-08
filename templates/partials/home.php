@@ -1,5 +1,5 @@
 <?php /** @var bool $isLoggedIn */ ?>
-<?php /** @var ConfigModel $config */ ?>
+<?php /** @var SettingsModel $settings */ ?>
 <?php /** @var UserModel $user */ ?>
 <?php /** @var string $tickList */ ?>
         <div class="home-container">
@@ -13,8 +13,8 @@
                         </span>
 <?php if (Session::isLoggedIn()): ?>
                         <a
-                            <?php if($config->strictAccessibility): ?>tabindex="0"<?php endif; ?>
-                            href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'mood')) ?>"
+                            <?php if($settings->strictAccessibility): ?>tabindex="0"<?php endif; ?>
+                            href="<?= Util::escape_html(Util::buildRelativeUrl($settings->basePath, 'mood')) ?>"
                             class="change-mood">Change mood</a>
 <?php endif ?>
                     </dd>
@@ -48,7 +48,7 @@
 <?php endif; ?>
             </aside>
             <main id="ticks">
-                <h1 class="site-description"><?= Util::escape_html($config->siteDescription) ?></h1>
+                <h1 class="site-description"><?= Util::escape_html($settings->siteDescription) ?></h1>
                 <?php echo $tickList ?>
             </main>
         </div>

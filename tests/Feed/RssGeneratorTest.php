@@ -7,12 +7,12 @@ class RssGeneratorTest extends TestCase
 {
     private function createMockConfig() {
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->siteTitle = 'Test Site';
-        $config->siteDescription = 'Test Description';
-        $config->baseUrl = 'https://example.com';
-        $config->basePath = '/tkr/';
-        return $config;
+        $settings = new SettingsModel($mockPdo);
+        $settings->siteTitle = 'Test Site';
+        $settings->siteDescription = 'Test Description';
+        $settings->baseUrl = 'https://example.com';
+        $settings->basePath = '/tkr/';
+        return $settings;
     }
 
     private function createSampleTicks() {
@@ -23,10 +23,10 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testCanGenerateValidRss() {
-        $config = $this->createMockConfig();
+        $settings = $this->createMockConfig();
         $ticks = $this->createSampleTicks();
 
-        $generator = new RssGenerator($config, $ticks);
+        $generator = new RssGenerator($settings, $ticks);
         $xml = $generator->generate();
 
         // Test XML structure
@@ -56,8 +56,8 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testCanHandleEmptyTickList() {
-        $config = $this->createMockConfig();
-        $generator = new RssGenerator($config, []);
+        $settings = $this->createMockConfig();
+        $generator = new RssGenerator($settings, []);
         $xml = $generator->generate();
 
         // Should still be valid RSS with no items
@@ -81,7 +81,7 @@ class RssGeneratorTest extends TestCase
     }
 
     public function testCanHandleSpecialCharactersAndUnicode() {
-        $config = $this->createMockConfig();
+        $settings = $this->createMockConfig();
 
         // Test various challenging characters
         $ticks = [
@@ -107,7 +107,7 @@ class RssGeneratorTest extends TestCase
             ]
         ];
 
-        $generator = new RssGenerator($config, $ticks);
+        $generator = new RssGenerator($settings, $ticks);
         $xml = $generator->generate();
 
         // Test that emojis are preserved

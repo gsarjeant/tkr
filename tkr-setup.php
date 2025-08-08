@@ -175,11 +175,11 @@ try {
     echo "💾 Saving configuration...\n";
 
     // Create/update settings
-    $configModel = new ConfigModel($db);
-    $configModel->siteTitle = $siteTitle;
-    $configModel->baseUrl = $baseUrl;
-    $configModel->basePath = $basePath;
-    $config = $configModel->save();
+    $settingsModel = new SettingsModel($db);
+    $settingsModel->siteTitle = $siteTitle;
+    $settingsModel->baseUrl = $baseUrl;
+    $settingsModel->basePath = $basePath;
+    $settings = $settingsModel->save();
 
     // Create admin user
     $userModel = new UserModel($db);

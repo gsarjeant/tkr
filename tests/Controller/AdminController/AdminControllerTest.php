@@ -7,32 +7,32 @@ use PHPUnit\Framework\TestCase;
 class AdminControllerTest extends TestCase
 {
     private PDO $mockPdo;
-    private ConfigModel $config;
+    private SettingsModel $settings;
     private UserModel $user;
 
     protected function setUp(): void
     {
         // Create mock PDO
         $this->mockPdo = $this->createMock(PDO::class);
-        
+
         // Create real config and user objects with mocked PDO
-        $this->config = new ConfigModel($this->mockPdo);
-        $this->config->siteTitle = 'Test Site';
-        $this->config->siteDescription = 'Test Description';
-        $this->config->baseUrl = 'https://example.com';
-        $this->config->basePath = '/tkr';
-        $this->config->itemsPerPage = 10;
-        
+        $this->settings = new SettingsModel($this->mockPdo);
+        $this->settings->siteTitle = 'Test Site';
+        $this->settings->siteDescription = 'Test Description';
+        $this->settings->baseUrl = 'https://example.com';
+        $this->settings->basePath = '/tkr';
+        $this->settings->itemsPerPage = 10;
+
         $this->user = new UserModel($this->mockPdo);
         $this->user->username = 'testuser';
         $this->user->displayName = 'Test User';
         $this->user->website = 'https://example.com';
-        
+
         // Set up global $app for simplified dependency access
         global $app;
         $app = [
             'db' => $this->mockPdo,
-            'config' => $this->config,
+            'settings' => $this->settings,
             'user' => $this->user,
         ];
     }
@@ -41,14 +41,14 @@ class AdminControllerTest extends TestCase
     {
         $controller = new AdminController();
         $data = $controller->getAdminData(false);
-        
+
         // Should return proper structure
-        $this->assertArrayHasKey('config', $data);
+        $this->assertArrayHasKey('settings', $data);
         $this->assertArrayHasKey('user', $data);
         $this->assertArrayHasKey('isSetup', $data);
-        
+
         // Should be the injected instances
-        $this->assertSame($this->config, $data['config']);
+        $this->assertSame($this->settings, $data['settings']);
         $this->assertSame($this->user, $data['user']);
         $this->assertFalse($data['isSetup']);
     }
@@ -57,14 +57,14 @@ class AdminControllerTest extends TestCase
     {
         $controller = new AdminController();
         $data = $controller->getAdminData(true);
-        
+
         // Should return proper structure
-        $this->assertArrayHasKey('config', $data);
+        $this->assertArrayHasKey('settings', $data);
         $this->assertArrayHasKey('user', $data);
         $this->assertArrayHasKey('isSetup', $data);
-        
+
         // Should be the injected instances
-        $this->assertSame($this->config, $data['config']);
+        $this->assertSame($this->settings, $data['settings']);
         $this->assertSame($this->user, $data['user']);
         $this->assertTrue($data['isSetup']);
     }
@@ -73,7 +73,7 @@ class AdminControllerTest extends TestCase
     {
         $controller = new AdminController();
         $result = $controller->saveSettings([], false);
-        
+
         $this->assertFalse($result['success']);
         $this->assertContains('No data provided', $result['errors']);
     }
@@ -81,7 +81,7 @@ class AdminControllerTest extends TestCase
     public function testProcessSettingsSaveValidationErrors(): void
     {
         $controller = new AdminController();
-        
+
         // Test data with multiple validation errors
         $postData = [
             'username' => '',  // Missing username
@@ -94,12 +94,12 @@ class AdminControllerTest extends TestCase
             'password' => 'test123',
             'confirm_password' => 'different'  // Passwords don't match
         ];
-        
+
         $result = $controller->saveSettings($postData, false);
-        
+
         $this->assertFalse($result['success']);
         $this->assertNotEmpty($result['errors']);
-        
+
         // Should have multiple validation errors
         $this->assertGreaterThan(5, count($result['errors']));
     }
@@ -133,16 +133,16 @@ class AdminControllerTest extends TestCase
         $this->mockPdo->method('query')->willReturn($mockStatement);
 
         // Create models with mocked PDO
-        $config = new ConfigModel($this->mockPdo);
+        $settings = new SettingsModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
-        
+
         // Update global $app with test models
         global $app;
-        $app['config'] = $config;
+        $app['settings'] = $settings;
         $app['user'] = $user;
-        
+
         $controller = new AdminController();
-        
+
         $postData = [
             'username' => 'newuser',
             'display_name' => 'New User',
@@ -155,9 +155,9 @@ class AdminControllerTest extends TestCase
             'strict_accessibility' => 'on',
             'log_level' => 2
         ];
-        
+
         $result = $controller->saveSettings($postData, false);
-        
+
         $this->assertTrue($result['success']);
         $this->assertEmpty($result['errors']);
     }
@@ -191,20 +191,20 @@ class AdminControllerTest extends TestCase
         $this->mockPdo->expects($this->atLeastOnce())
                      ->method('prepare')
                      ->willReturn($mockStatement);
-        
+
         $this->mockPdo->method('query')->willReturn($mockStatement);
 
         // Create models with mocked PDO
-        $config = new ConfigModel($this->mockPdo);
+        $settings = new SettingsModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
-        
+
         // Update global $app with test models
         global $app;
-        $app['config'] = $config;
+        $app['settings'] = $settings;
         $app['user'] = $user;
-        
+
         $controller = new AdminController();
-        
+
         $postData = [
             'username' => 'testuser',
             'display_name' => 'Test User',
@@ -216,9 +216,9 @@ class AdminControllerTest extends TestCase
             'password' => 'newpassword',
             'confirm_password' => 'newpassword'
         ];
-        
+
         $result = $controller->saveSettings($postData, false);
-        
+
         $this->assertTrue($result['success']);
     }
 
@@ -228,16 +228,16 @@ class AdminControllerTest extends TestCase
         $this->mockPdo->method('query')
                      ->willThrowException(new PDOException("Database error"));
 
-        $config = new ConfigModel($this->mockPdo);
+        $settings = new SettingsModel($this->mockPdo);
         $user = new UserModel($this->mockPdo);
-        
+
         // Update global $app with test models
         global $app;
-        $app['config'] = $config;
+        $app['settings'] = $settings;
         $app['user'] = $user;
-        
+
         $controller = new AdminController();
-        
+
         $postData = [
             'username' => 'testuser',
             'display_name' => 'Test User',
@@ -247,9 +247,9 @@ class AdminControllerTest extends TestCase
             'base_path' => '/tkr',
             'items_per_page' => 10
         ];
-        
+
         $result = $controller->saveSettings($postData, false);
-        
+
         $this->assertFalse($result['success']);
         $this->assertContains('Failed to save settings', $result['errors']);
     }

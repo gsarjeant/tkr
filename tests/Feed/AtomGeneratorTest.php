@@ -7,12 +7,12 @@ class AtomGeneratorTest extends TestCase
 {
     private function createMockConfig() {
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->siteTitle = 'Test Site';
-        $config->siteDescription = 'Test Description';
-        $config->baseUrl = 'https://example.com';
-        $config->basePath = '/tkr/';
-        return $config;
+        $settings = new SettingsModel($mockPdo);
+        $settings->siteTitle = 'Test Site';
+        $settings->siteDescription = 'Test Description';
+        $settings->baseUrl = 'https://example.com';
+        $settings->basePath = '/tkr/';
+        return $settings;
     }
 
     private function createSampleTicks() {
@@ -23,10 +23,10 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testCanGenerateValidAtom() {
-        $config = $this->createMockConfig();
+        $settings = $this->createMockConfig();
         $ticks = $this->createSampleTicks();
 
-        $generator = new AtomGenerator($config, $ticks);
+        $generator = new AtomGenerator($settings, $ticks);
         $xml = $generator->generate();
 
         // Test XML structure
@@ -58,8 +58,8 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testCanHandleEmptyTickList() {
-        $config = $this->createMockConfig();
-        $generator = new AtomGenerator($config, []);
+        $settings = $this->createMockConfig();
+        $generator = new AtomGenerator($settings, []);
         $xml = $generator->generate();
 
         // Should still be valid Atom with no entries
@@ -85,7 +85,7 @@ class AtomGeneratorTest extends TestCase
     }
 
     public function testCanHandleSpecialCharactersAndUnicode() {
-        $config = $this->createMockConfig();
+        $settings = $this->createMockConfig();
 
         // Test various challenging characters
         $ticks = [
@@ -111,7 +111,7 @@ class AtomGeneratorTest extends TestCase
             ]
         ];
 
-        $generator = new AtomGenerator($config, $ticks);
+        $generator = new AtomGenerator($settings, $ticks);
         $xml = $generator->generate();
 
         // Test that emojis are preserved

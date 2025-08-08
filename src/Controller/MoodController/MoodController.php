@@ -10,7 +10,7 @@ declare(strict_types=1);
             $moodPicker = $view->renderMoodPicker(self::getEmojisWithLabels(), $app['user']->mood);
 
             $vars = [
-                'config' => $app['config'],
+                'settings' => $app['settings'],
                 'moodPicker' => $moodPicker,
             ];
 
@@ -41,7 +41,7 @@ declare(strict_types=1);
                 }
 
                 // go back to the index and show the updated mood
-                header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
+                header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath));
                 exit;
             }
         }

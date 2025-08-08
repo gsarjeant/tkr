@@ -1,10 +1,10 @@
-<?php /** @var ConfigModel $config */ ?>
+<?php /** @var SettingsModel $settings */ ?>
 <?php /** @var UserModel $user */ ?>
 <?php /** @var isSetup bool */ ?>
         <h1><?php if ($isSetup): ?>Setup<?php else: ?>Admin<?php endif; ?></h1>
         <main>
             <form
-                action="<?php echo Util::buildRelativeUrl($config->basePath, ($isSetup ? 'setup' : 'admin')) ?>"
+                action="<?php echo Util::buildRelativeUrl($settings->basePath, ($isSetup ? 'setup' : 'admin')) ?>"
                 method="post">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
@@ -36,43 +36,43 @@
                         <input type="text"
                             id="site_title"
                             name="site_title"
-                            value="<?= Util::escape_html($config->siteTitle) ?>"
+                            value="<?= Util::escape_html($settings->siteTitle) ?>"
                             required>
                         <label for="site_description">Description <span class=required>*</span></label>
                         <input type="text"
                             id="site_description"
                             name="site_description"
-                            value="<?= Util::escape_html($config->siteDescription) ?>">
+                            value="<?= Util::escape_html($settings->siteDescription) ?>">
                         <label for="base_url">Base URL <span class=required>*</span></label>
                         <input type="text"
                             id="base_url"
                             name="base_url"
-                            value="<?= Util::escape_html($config->baseUrl) ?>"
+                            value="<?= Util::escape_html($settings->baseUrl) ?>"
                             required>
                         <label for="base_path">Base path <span class=required>*</span></label>
                         <input type="text"
                             id="base_path"
                             name="base_path"
-                            value="<?= Util::escape_html($config->basePath) ?>"
+                            value="<?= Util::escape_html($settings->basePath) ?>"
                             required>
                         <label for="items_per_page">Ticks per page (max 50) <span class=required>*</span></label>
                         <input type="number"
                             id="items_per_page"
                             name="items_per_page"
-                            value="<?= $config->itemsPerPage ?>" min="1" max="50"
+                            value="<?= $settings->itemsPerPage ?>" min="1" max="50"
                             required>
                         <label for="strict_accessibility">Strict accessibility</label>
                         <input type="checkbox"
                                id="strict_accessibility"
                                name="strict_accessibility"
                                value="1"
-                               <?php if ($config->strictAccessibility): ?> checked <?php endif; ?>>
+                               <?php if ($settings->strictAccessibility): ?> checked <?php endif; ?>>
                         <label for="strict_accessibility">Log Level</label>
                         <select id="log_level" name="log_level">
-                            <option value="1" <?= ($config->logLevel ?? 2) == 1 ? 'selected' : '' ?>>DEBUG</option>
-                            <option value="2" <?= ($config->logLevel ?? 2) == 2 ? 'selected' : '' ?>>INFO</option>
-                            <option value="3" <?= ($config->logLevel ?? 2) == 3 ? 'selected' : '' ?>>WARNING</option>
-                            <option value="4" <?= ($config->logLevel ?? 2) == 4 ? 'selected' : '' ?>>ERROR</option>
+                            <option value="1" <?= ($settings->logLevel ?? 2) == 1 ? 'selected' : '' ?>>DEBUG</option>
+                            <option value="2" <?= ($settings->logLevel ?? 2) == 2 ? 'selected' : '' ?>>INFO</option>
+                            <option value="3" <?= ($settings->logLevel ?? 2) == 3 ? 'selected' : '' ?>>WARNING</option>
+                            <option value="4" <?= ($settings->logLevel ?? 2) == 4 ? 'selected' : '' ?>>ERROR</option>
                         </select>
                     </div>
                 </fieldset>

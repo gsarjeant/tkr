@@ -1,5 +1,5 @@
 <?php /** @var bool $isLoggedIn */ ?>
-<?php /** @var ConfigModel $config */ ?>
+<?php /** @var SettingsModel $settings */ ?>
 <?php /** @var UserModel $user */ ?>
 <?php /** @var string $childTemplateFile */ ?>
 <?php /** @var string $customCssFilename */ ?>
@@ -7,23 +7,23 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?= $config->siteTitle ?></title>
+        <title><?= $settings->siteTitle ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
-              href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'css/default.css')) ?>">
-<?php if (!empty($config->cssId)): ?>
+              href="<?= Util::escape_html(Util::buildRelativeUrl($settings->basePath, 'css/default.css')) ?>">
+<?php if (!empty($settings->cssId)): ?>
         <link rel="stylesheet"
-              href="<?= Util::escape_html(Util::buildRelativeUrl($config->basePath, 'css/custom/' . $customCssFilename)) ?>">
+              href="<?= Util::escape_html(Util::buildRelativeUrl($settings->basePath, 'css/custom/' . $customCssFilename)) ?>">
 <?php endif; ?>
         <link rel="alternate"
               type="application/rss+xml"
-              title="<?php echo Util::escape_html($config->siteTitle) ?> RSS Feed"
-              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/rss/">
+              title="<?php echo Util::escape_html($settings->siteTitle) ?> RSS Feed"
+              href="<?php echo Util::escape_html($settings->baseUrl . $settings->basePath)?>feed/rss/">
         <link rel="alternate"
               type="application/atom+xml"
-              title="<?php echo Util::escape_html($config->siteTitle) ?> Atom Feed"
-              href="<?php echo Util::escape_html($config->baseUrl . $config->basePath)?>feed/atom/">
+              title="<?php echo Util::escape_html($settings->siteTitle) ?> Atom Feed"
+              href="<?php echo Util::escape_html($settings->baseUrl . $settings->basePath)?>feed/atom/">
     </head>
     <body>
 <?php include TEMPLATES_DIR . '/partials/navbar.php'?>

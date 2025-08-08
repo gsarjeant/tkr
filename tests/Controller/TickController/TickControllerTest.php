@@ -6,29 +6,29 @@ use PHPUnit\Framework\TestCase;
 class TickControllerTest extends TestCase
 {
     private $mockPdo;
-    private $config;
+    private $settings;
     private $user;
 
     protected function setUp(): void
     {
         // Reset Log state to prevent test pollution
         Log::init(sys_get_temp_dir() . '/tkr_controller_test.log');
-        
+
         // Set up mocks
         $this->mockPdo = $this->createMock(PDO::class);
-        
-        $this->config = new ConfigModel($this->mockPdo);
-        $this->config->baseUrl = 'https://example.com';
-        $this->config->basePath = '/tkr/';
-        $this->config->itemsPerPage = 10;
-        
+
+        $this->settings = new SettingsModel($this->mockPdo);
+        $this->settings->baseUrl = 'https://example.com';
+        $this->settings->basePath = '/tkr/';
+        $this->settings->itemsPerPage = 10;
+
         $this->user = new UserModel($this->mockPdo);
 
         // Set up global $app for simplified dependency access
         global $app;
         $app = [
             'db' => $this->mockPdo,
-            'config' => $this->config,
+            'settings' => $this->settings,
             'user' => $this->user,
         ];
     }
@@ -60,10 +60,10 @@ class TickControllerTest extends TestCase
 
         // Capture output since render() outputs directly
         ob_start();
-        
+
         $controller = new TickController();
         $controller->index(123);
-        
+
         $output = ob_get_clean();
 
         // Should not be a 404 or 500 error
@@ -94,10 +94,10 @@ class TickControllerTest extends TestCase
 
         // Capture output
         ob_start();
-        
+
         $controller = new TickController();
         $controller->index(999);
-        
+
         $output = ob_get_clean();
 
         // Should return 404 error
@@ -123,10 +123,10 @@ class TickControllerTest extends TestCase
 
         // Capture output
         ob_start();
-        
+
         $controller = new TickController();
         $controller->index(456);
-        
+
         $output = ob_get_clean();
 
         // Should return 404 error for empty data
@@ -143,10 +143,10 @@ class TickControllerTest extends TestCase
 
         // Capture output
         ob_start();
-        
+
         $controller = new TickController();
         $controller->index(123);
-        
+
         $output = ob_get_clean();
 
         // Should return 500 error

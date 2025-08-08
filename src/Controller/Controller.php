@@ -17,9 +17,9 @@ class Controller {
 
         // Add custom CSS filename if needed
         global $app;
-        if ($app['config']->cssId) {
+        if ($app['settings']->cssId) {
             $cssModel = new CssModel($app['db']);
-            $cssFile = $cssModel->getById($app['config']->cssId);
+            $cssFile = $cssModel->getById($app['settings']->cssId);
             $vars['customCssFilename'] = $cssFile['filename'] ?? null;
         } else {
             $vars['customCssFilename'] = null;

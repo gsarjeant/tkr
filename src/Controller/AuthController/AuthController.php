@@ -4,11 +4,11 @@ declare(strict_types=1);
 class AuthController extends Controller {
     function showLogin(?string $error = null){
         global $app;
-        
+
         $csrf_token = Session::getCsrfToken();
 
         $vars = [
-            'config' => $app['config'],
+            'settings' => $app['settings'],
             'csrf_token' => $csrf_token,
             'error' => $error,
         ];
@@ -34,7 +34,7 @@ class AuthController extends Controller {
 
                     try {
                         Session::newLoginSession($user);
-                        header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
+                        header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath));
                         exit;
                     } catch (Exception $e) {
                         Log::error("Failed to create login session for {$username}: " . $e->getMessage());
@@ -61,11 +61,11 @@ class AuthController extends Controller {
 
     function handleLogout(){
         global $app;
-        
+
         Log::info("Logout from user " . $_SESSION['username']);
         Session::end();
 
-        header('Location: ' . Util::buildRelativeUrl($app['config']->basePath));
+        header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath));
         exit;
     }
 }

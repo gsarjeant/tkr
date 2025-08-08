@@ -1,4 +1,4 @@
-<?php /** @var ConfigModel $config */ ?>
+<?php /** @var SettingsModel $settings */ ?>
 <?php /** @var array $logEntries */ ?>
 <?php /** @var array $availableRoutes */ ?>
 <?php /** @var array $availableLevels */ ?>
@@ -8,7 +8,7 @@
         <main>
             <!-- Filters -->
             <div class="log-filters">
-                <form method="get" action="<?= Util::buildRelativeUrl($config->basePath, 'admin/logs') ?>">
+                <form method="get" action="<?= Util::buildRelativeUrl($settings->basePath, 'admin/logs') ?>">
                     <fieldset>
                         <legend>Filter Logs</legend>
                         <div class="fieldset-items">
@@ -35,7 +35,7 @@
                             </select>
 
                             <div></div><button type="submit">Filter</button>
-                            <div></div><a href="<?= Util::buildRelativeUrl($config->basePath, 'admin/logs') ?>">Clear</a>
+                            <div></div><a href="<?= Util::buildRelativeUrl($settings->basePath, 'admin/logs') ?>">Clear</a>
                         </div>
                     </fieldset>
                 </form>

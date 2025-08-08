@@ -5,11 +5,11 @@ declare(strict_types=1);
 // Specific feeds (RSS, Atom, etc.) will inherit from this.
 // This will wrap the basic generator functionality.
 abstract class FeedGenerator {
-    protected $config;
+    protected $settings;
     protected $ticks;
 
-    public function __construct(ConfigModel $config, array $ticks) {
-        $this->config = $config;
+    public function __construct(SettingsModel $settings, array $ticks) {
+        $this->settings = $settings;
         $this->ticks = $ticks;
     }
 
@@ -17,10 +17,10 @@ abstract class FeedGenerator {
     abstract public function getContentType(): string;
 
     protected function buildTickUrl(int $tickId): string {
-        return Util::buildUrl($this->config->baseUrl, $this->config->basePath, "tick/{$tickId}");
+        return Util::buildUrl($this->settings->baseUrl, $this->settings->basePath, "tick/{$tickId}");
     }
 
     protected function getSiteUrl(): string {
-        return Util::buildUrl($this->config->baseUrl, $this->config->basePath);
+        return Util::buildUrl($this->settings->baseUrl, $this->settings->basePath);
     }
 }

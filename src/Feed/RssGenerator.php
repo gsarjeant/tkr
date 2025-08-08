@@ -17,16 +17,16 @@ class RssGenerator extends FeedGenerator {
     }
 
     private function buildChannel(): string {
-        Log::debug("Building RSS channel for " . $this->config->siteTitle);
+        Log::debug("Building RSS channel for " . $this->settings->siteTitle);
         ob_start();
         ?>
 <channel>
-    <title><?php echo Util::escape_xml($this->config->siteTitle . ' RSS Feed') ?></title>
-    <link><?php echo Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath))?></link>
-    <atom:link href="<?php echo Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath, 'feed/rss'))?>"
+    <title><?php echo Util::escape_xml($this->settings->siteTitle . ' RSS Feed') ?></title>
+    <link><?php echo Util::escape_xml(Util::buildUrl($this->settings->baseUrl, $this->settings->basePath))?></link>
+    <atom:link href="<?php echo Util::escape_xml(Util::buildUrl($this->settings->baseUrl, $this->settings->basePath, 'feed/rss'))?>"
                rel="self"
                type="application/rss+xml" />
-    <description><?php echo Util::escape_xml($this->config->siteDescription) ?></description>
+    <description><?php echo Util::escape_xml($this->settings->siteDescription) ?></description>
     <language>en-us</language>
     <lastBuildDate><?php echo date(DATE_RSS); ?></lastBuildDate>
 <?php foreach ($this->ticks as $tick):

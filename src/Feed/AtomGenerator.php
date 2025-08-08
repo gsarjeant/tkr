@@ -15,10 +15,10 @@ class AtomGenerator extends FeedGenerator {
     }
 
     private function buildFeed(): string {
-        Log::debug("Building Atom feed for " . $this->config->siteTitle);
-        $feedTitle = Util::escape_xml($this->config->siteTitle . " Atom Feed");
-        $siteUrl = Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath));
-        $feedUrl = Util::escape_xml(Util::buildUrl($this->config->baseUrl, $this->config->basePath, 'feed/atom'));
+        Log::debug("Building Atom feed for " . $this->settings->siteTitle);
+        $feedTitle = Util::escape_xml($this->settings->siteTitle . " Atom Feed");
+        $siteUrl = Util::escape_xml(Util::buildUrl($this->settings->baseUrl, $this->settings->basePath));
+        $feedUrl = Util::escape_xml(Util::buildUrl($this->settings->baseUrl, $this->settings->basePath, 'feed/atom'));
         $updated = date(DATE_ATOM, strtotime($this->ticks[0]['timestamp'] ?? 'now'));
 
         ob_start();
@@ -33,7 +33,7 @@ class AtomGenerator extends FeedGenerator {
   <updated><?php echo $updated ?></updated>
   <id><?php echo $siteUrl ?></id>
   <author>
-        <name><?= Util::escape_xml($this->config->siteTitle) ?></name>
+        <name><?= Util::escape_xml($this->settings->siteTitle) ?></name>
   </author>
 <?php foreach ($this->ticks as $tick):
     // build the tick entry components

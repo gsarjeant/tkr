@@ -6,10 +6,10 @@ class FeedController extends Controller {
 
     public function __construct() {
         global $app;
-        
+
         try {
-            $tickModel = new TickModel($app['db'], $app['config']);
-            $this->ticks = $tickModel->getPage($app['config']->itemsPerPage);
+            $tickModel = new TickModel($app['db'], $app['settings']);
+            $this->ticks = $tickModel->getPage($app['settings']->itemsPerPage);
             Log::debug("Loaded " . count($this->ticks) . " ticks for feeds");
         } catch (Exception $e) {
             Log::error("Failed to load ticks for feed: " . $e->getMessage());
@@ -20,8 +20,8 @@ class FeedController extends Controller {
 
     public function rss(){
         global $app;
-        
-        $generator = new RssGenerator($app['config'], $this->ticks);
+
+        $generator = new RssGenerator($app['settings'], $this->ticks);
         Log::debug("Generating RSS feed with " . count($this->ticks) . " ticks");
 
         header('Content-Type: ' . $generator->getContentType());
@@ -30,8 +30,8 @@ class FeedController extends Controller {
 
     public function atom(){
         global $app;
-        
-        $generator = new AtomGenerator($app['config'], $this->ticks);
+
+        $generator = new AtomGenerator($app['settings'], $this->ticks);
         Log::debug("Generating Atom feed with " . count($this->ticks) . " ticks");
 
         header('Content-Type: ' . $generator->getContentType());

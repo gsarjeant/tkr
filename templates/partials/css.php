@@ -1,18 +1,18 @@
-<?php /** @var ConfigModel $config */ ?>
+<?php /** @var SettingsModel $settings */ ?>
 <?php /** @var Array $customCss */ ?>
         <h1>CSS Management</h1>
         <main>
-            <form action="<?= Util::buildRelativeUrl($config->basePath, 'admin/css') ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= Util::buildRelativeUrl($settings->basePath, 'admin/css') ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
                 <fieldset>
                     <legend>Manage</legend>
                     <div class="fieldset-items">
                         <label for="selectCssFile">Select CSS File</label>
                         <select id="selectCssFile" name="selectCssFile">
-                            <option value="" <?php if(!$config->cssId): ?>selected<?php endif; ?>>Default</option>
+                            <option value="" <?php if(!$settings->cssId): ?>selected<?php endif; ?>>Default</option>
 <?php foreach ($customCss as $cssFile): ?>
     <?php
-        if ((int) $cssFile['id'] == $config->cssId){
+        if ((int) $cssFile['id'] == $settings->cssId){
             $cssDescription = $cssFile['description'];
             $selected = "selected";
         }

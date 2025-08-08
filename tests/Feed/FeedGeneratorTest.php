@@ -7,12 +7,12 @@ class FeedGeneratorTest extends TestCase
 {
     private function createMockConfig() {
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->siteTitle = 'Test Site';
-        $config->siteDescription = 'Test Description';
-        $config->baseUrl = 'https://example.com';
-        $config->basePath = '/tkr/';
-        return $config;
+        $settings = new SettingsModel($mockPdo);
+        $settings->siteTitle = 'Test Site';
+        $settings->siteDescription = 'Test Description';
+        $settings->baseUrl = 'https://example.com';
+        $settings->basePath = '/tkr/';
+        return $settings;
     }
 
     private function createSampleTicks() {
@@ -22,11 +22,11 @@ class FeedGeneratorTest extends TestCase
         ];
     }
 
-    private function createTestGenerator($config = null, $ticks = null) {
-        $config = $config ?? $this->createMockConfig();
+    private function createTestGenerator($settings = null, $ticks = null) {
+        $settings = $settings ?? $this->createMockConfig();
         $ticks = $ticks ?? $this->createSampleTicks();
 
-        return new class($config, $ticks) extends FeedGenerator {
+        return new class($settings, $ticks) extends FeedGenerator {
             public function generate(): string {
                 return '<test>content</test>';
             }
@@ -69,12 +69,12 @@ class FeedGeneratorTest extends TestCase
 
     public function testUrlMethodsHandleSubdomainConfiguration() {
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->siteTitle = 'Test Site';
-        $config->baseUrl = 'https://tkr.example.com';
-        $config->basePath = '/';
+        $settings = new SettingsModel($mockPdo);
+        $settings->siteTitle = 'Test Site';
+        $settings->baseUrl = 'https://tkr.example.com';
+        $settings->basePath = '/';
 
-        $generator = $this->createTestGenerator($config, []);
+        $generator = $this->createTestGenerator($settings, []);
 
         $this->assertEquals('https://tkr.example.com/', $generator->testGetSiteUrl());
         $this->assertEquals('https://tkr.example.com/tick/456', $generator->testBuildTickUrl(456));
@@ -82,12 +82,12 @@ class FeedGeneratorTest extends TestCase
 
     public function testUrlMethodsHandleEmptyBasePath() {
         $mockPdo = $this->createMock(PDO::class);
-        $config = new ConfigModel($mockPdo);
-        $config->siteTitle = 'Test Site';
-        $config->baseUrl = 'https://example.com';
-        $config->basePath = '';
+        $settings = new SettingsModel($mockPdo);
+        $settings->siteTitle = 'Test Site';
+        $settings->baseUrl = 'https://example.com';
+        $settings->basePath = '';
 
-        $generator = $this->createTestGenerator($config, []);
+        $generator = $this->createTestGenerator($settings, []);
 
         $this->assertEquals('https://example.com/', $generator->testGetSiteUrl());
         $this->assertEquals('https://example.com/tick/789', $generator->testBuildTickUrl(789));
@@ -106,12 +106,12 @@ class FeedGeneratorTest extends TestCase
 
         foreach ($testCases as [$basePath, $expectedSiteUrl, $expectedTickUrl]) {
             $mockPdo = $this->createMock(PDO::class);
-            $config = new ConfigModel($mockPdo);
-            $config->siteTitle = 'Test Site';
-            $config->baseUrl = 'https://example.com';
-            $config->basePath = $basePath;
+            $settings = new SettingsModel($mockPdo);
+            $settings->siteTitle = 'Test Site';
+            $settings->baseUrl = 'https://example.com';
+            $settings->basePath = $basePath;
 
-            $generator = $this->createTestGenerator($config, []);
+            $generator = $this->createTestGenerator($settings, []);
 
             $this->assertEquals($expectedSiteUrl, $generator->testGetSiteUrl(), "Failed for basePath: '$basePath'");
             $this->assertEquals($expectedTickUrl, $generator->testBuildTickUrl(123), "Failed for basePath: '$basePath'");

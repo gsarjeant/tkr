@@ -46,11 +46,11 @@ $db = $prerequisites->getDatabase();
 if (!(preg_match('/tkr-setup$/', $path))) {
     try {
         $user_count = (int) $db->query("SELECT COUNT(*) FROM user")->fetchColumn();
-        $config = (new ConfigModel($db))->get();
-        
+        $settings = (new SettingsModel($db))->get();
+
         $hasUser = $user_count > 0;
-        $hasUrl = !empty($config->baseUrl) && !empty($config->basePath);
-        
+        $hasUrl = !empty($settings->baseUrl) && !empty($settings->basePath);
+
         if (!$hasUser || !$hasUrl) {
             // Redirect to setup with auto-detected URL
             $autodetected = Util::getAutodetectedUrl();
@@ -77,7 +77,7 @@ global $app;
 
 $app = [
     'db' => $db,
-    'config' => (new ConfigModel($db))->get(),
+    'settings' => (new SettingsModel($db))->get(),
     'user' => (new UserModel($db))->get(),
 ];
 
@@ -86,8 +86,8 @@ Session::start();
 Session::generateCsrfToken();
 
 // Remove the base path from the URL
-if (strpos($path, $app['config']->basePath) === 0) {
-    $path = substr($path, strlen($app['config']->basePath));
+if (strpos($path, $app['settings']->basePath) === 0) {
+    $path = substr($path, strlen($app['settings']->basePath));
 }
 
 // strip the trailing slash from the resulting route
@@ -105,7 +105,7 @@ if ($method === 'POST' && $path != 'setup') {
         if (!Session::isValid($_POST['csrf_token'])) {
             // Invalid session - redirect to /login
             Log::info('Attempt to POST with invalid session. Redirecting to login.');
-            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath, 'login'));
             exit;
         }
     } else {

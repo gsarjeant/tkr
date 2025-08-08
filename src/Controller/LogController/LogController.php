@@ -10,10 +10,10 @@ class LogController extends Controller {
 
     public function index() {
         global $app;
-        
+
         // Ensure user is logged in
         if (!Session::isLoggedIn()) {
-            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath, 'login'));
             exit;
         }
 
@@ -49,7 +49,7 @@ class LogController extends Controller {
         }
 
         return [
-            'config' => $app['config'],
+            'settings' => $app['settings'],
             'logEntries' => $logEntries,
             'availableRoutes' => $availableRoutes,
             'availableLevels' => $availableLevels,
@@ -80,7 +80,7 @@ class LogController extends Controller {
                             Log::warning("Failed to read log file: $file");
                             continue;
                         }
-                        
+
                         foreach (array_reverse($lines) as $line) {
                             if (count($entries) >= $limit) break 2;
 

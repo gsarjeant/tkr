@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 class TickModel {
-    public function __construct(private PDO $db, private ConfigModel $config) {}
-    
+    public function __construct(private PDO $db, private SettingsModel $settings) {}
+
     public function getPage(int $limit, int $offset = 0): array {
         $stmt = $this->db->prepare("SELECT id, timestamp, tick FROM tick ORDER BY timestamp DESC LIMIT ? OFFSET ?");
         $stmt->execute([$limit, $offset]);
@@ -32,7 +32,7 @@ class TickModel {
         return [
             'tickTime' => $row['timestamp'],
             'tick' => $row['tick'],
-            'config' => $this->config,
+            'settings' => $this->settings,
         ];
     }
 }

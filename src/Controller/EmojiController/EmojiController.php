@@ -16,7 +16,7 @@ declare(strict_types=1);
             }
 
             $vars = [
-                'config' => $app['config'],
+                'settings' => $app['settings'],
                 'emojiList' => $emojiList,
             ];
 
@@ -39,7 +39,7 @@ declare(strict_types=1);
                 break;
             }
 
-            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'admin/emoji'));
+            header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath, 'admin/emoji'));
             exit;
         }
 

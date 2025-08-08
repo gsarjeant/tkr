@@ -11,41 +11,41 @@ class AdminController extends Controller {
 
     public function showSetup(){
         $data = $this->getAdminData(true);
-        
+
         // Auto-detect URL and pre-fill if not already configured
-        if (empty($data['config']->baseUrl) || empty($data['config']->basePath)) {
+        if (empty($data['settings']->baseUrl) || empty($data['settings']->basePath)) {
             $autodetected = Util::getAutodetectedUrl();
             $data['autodetectedUrl'] = $autodetected;
-            
+
             // Pre-fill empty values with auto-detected ones
-            if (empty($data['config']->baseUrl)) {
-                $data['config']->baseUrl = $autodetected['baseUrl'];
+            if (empty($data['settings']->baseUrl)) {
+                $data['settings']->baseUrl = $autodetected['baseUrl'];
             }
-            if (empty($data['config']->basePath)) {
-                $data['config']->basePath = $autodetected['basePath'];
+            if (empty($data['settings']->basePath)) {
+                $data['settings']->basePath = $autodetected['basePath'];
             }
         }
-        
+
         $this->render("admin.php", $data);
     }
-    
+
     public function getAdminData(bool $isSetup): array {
         global $app;
-        
+
         Log::debug("Loading admin page" . ($isSetup ? " (setup mode)" : ""));
-        
+
         return [
             'user' => $app['user'],
-            'config' => $app['config'],
+            'settings' => $app['settings'],
             'isSetup' => $isSetup,
         ];
     }
 
     public function handleSave(){
         global $app;
-        
+
         if (!Session::isLoggedIn()){
-            header('Location: ' . Util::buildRelativeUrl($app['config']->basePath, 'login'));
+            header('Location: ' . Util::buildRelativeUrl($app['settings']->basePath, 'login'));
             exit;
         }
 
@@ -64,9 +64,9 @@ class AdminController extends Controller {
 
     public function saveSettings(array $postData, bool $isSetup): array {
         global $app;
-        
+
         $result = ['success' => false, 'errors' => []];
-        
+
         Log::debug("Processing settings save" . ($isSetup ? " (setup mode)" : ""));
 
         // handle form submission
@@ -95,7 +95,7 @@ class AdminController extends Controller {
         // Password
         $password        = $postData['password'] ?? '';
         $confirmPassword = $postData['confirm_password'] ?? '';
-        
+
         Log::info("Processing settings for user: $username");
 
         // Validate user profile
@@ -145,16 +145,16 @@ class AdminController extends Controller {
         if (empty($errors)) {
             try {
                 // Update site settings
-                $app['config']->siteTitle = $siteTitle;
-                $app['config']->siteDescription = $siteDescription;
-                $app['config']->baseUrl = $baseUrl;
-                $app['config']->basePath = $basePath;
-                $app['config']->itemsPerPage = $itemsPerPage;
-                $app['config']->strictAccessibility = $strictAccessibility;
-                $app['config']->logLevel = $logLevel;
+                $app['settings']->siteTitle = $siteTitle;
+                $app['settings']->siteDescription = $siteDescription;
+                $app['settings']->baseUrl = $baseUrl;
+                $app['settings']->basePath = $basePath;
+                $app['settings']->itemsPerPage = $itemsPerPage;
+                $app['settings']->strictAccessibility = $strictAccessibility;
+                $app['settings']->logLevel = $logLevel;
 
                 // Save site settings and reload config from database
-                $app['config'] = $app['config']->save();
+                $app['settings'] = $app['settings']->save();
                 Log::info("Site settings updated");
 
                 // Update user profile
@@ -174,7 +174,7 @@ class AdminController extends Controller {
 
                 Session::setFlashMessage('success', 'Settings updated');
                 $result['success'] = true;
-                
+
             } catch (Exception $e) {
                 Log::error("Failed to save settings: " . $e->getMessage());
                 Session::setFlashMessage('error', 'Failed to save settings');
@@ -186,7 +186,7 @@ class AdminController extends Controller {
             }
             $result['errors'] = $errors;
         }
-        
+
         return $result;
     }
 }

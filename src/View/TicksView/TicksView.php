@@ -23,7 +23,15 @@ class TicksView {
                     $relativeTime = Util::relative_time($tick['timestamp']);
                 ?>
                 <li class="tick" tabindex="0">
-                    🗑️ <time datetime="<?php echo $datetime->format('c') ?>"><?php echo Util::escape_html($relativeTime) ?></time>
+                    <?php if ($tick['can_delete']): ?>
+                    <form method="post"
+                          action="<?= Util::buildRelativeUrl($settings->basePath, "tick/{$tick['id']}/delete") ?>"
+                          class="delete-tick-form">
+                        <input type="hidden" name="csrf_token" value="<?= Util::escape_html($_SESSION['csrf_token']) ?>">
+                        <button type="submit" class="delete-tick-button">🗑️</button>
+                    </form>
+                    <?php endif ?>
+                    <time datetime="<?php echo $datetime->format('c') ?>"><?php echo Util::escape_html($relativeTime) ?></time>
                     <span class="tick-text"><?php echo Util::linkify(Util::escape_html($tick['tick'])) ?></span>
                 </li>
             <?php endforeach; ?>

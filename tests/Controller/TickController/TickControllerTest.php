@@ -152,5 +152,4 @@ class TickControllerTest extends TestCase
         // Should return 500 error
         $this->assertStringContainsString('500 - Internal Server Error', $output);
     }
-
 }

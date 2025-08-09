@@ -25,6 +25,7 @@ class Router {
         ['tkr-setup', 'AdminController@showSetup'],
         ['tkr-setup', 'AdminController@handleSetup', ['POST']],
         ['tick/{id}', 'TickController'],
+        ['tick/{id}/delete', 'TickController@handleDelete', ['POST']],
         ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
     ];
 

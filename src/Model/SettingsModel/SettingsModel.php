@@ -12,6 +12,8 @@ class SettingsModel {
     public ?int $cssId = null;
     public bool $strictAccessibility = true;
     public ?int $logLevel = null;
+    // not currently configurable
+    public int $tickDeleteHours = 1;
 
     public function __construct(private PDO $db) {}
 

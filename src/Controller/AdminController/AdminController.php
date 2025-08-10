@@ -50,7 +50,7 @@ class AdminController extends Controller {
         }
 
         $result = $this->saveSettings($_POST, false);
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
 
@@ -58,7 +58,7 @@ class AdminController extends Controller {
         // for setup, we don't care if they're logged in
         // (because they can't be until setup is complete)
         $result = $this->saveSettings($_POST, true);
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
 

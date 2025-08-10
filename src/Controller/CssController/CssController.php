@@ -20,32 +20,54 @@ class CssController extends Controller {
         global $app;
         $cssModel = new CssModel($app['db']);
         $filename = "$baseFilename.css";
+        Log::debug("Attempting to serve custom css: {$filename}");
 
+        // Make sure the file exists in the database
         $cssRow = $cssModel->getByFilename($filename);
-
         if (!$cssRow){
             http_response_code(404);
-            exit("CSS file not found: $filename");
+            Log::error("Custom css file not in database: {$filename}");
+            exit;
         }
 
+        // Make sure the file exists on the filesystem and is readable
         $filePath = CSS_UPLOAD_DIR . "/$filename";
-
         if (!file_exists($filePath) || !is_readable($filePath)) {
             http_response_code(404);
-            exit("CSS file not found: $filePath");
+            Log::error("Custom css file not found or not readable: $filePath");
+            exit;
         }
 
-        // This shouldn't be possible, but I'm being extra paranoid
-        // about user input
+        // Make sure the file has a .css extension
         $ext = strToLower(pathinfo($filename, PATHINFO_EXTENSION));
         if($ext != 'css'){
             http_response_code(400);
-            exit("Invalid file type requested: $ext");
+            Log::error("Invalid file type requested: $ext");
+            exit;
         }
 
+        // If we get here, serve the file
+        Log::debug("Serving custom css: {$filename}");
         header('Content-type: text/css');
         header('Cache-control: public, max-age=3600');
+        readfile($filePath);
+        exit;
+    }
 
+    public function serveDefaultCss(){
+        $filePath = PUBLIC_DIR . '/css/default.css';
+        Log::debug("Serving default css: {$filePath}");
+
+        // Make sure the default CSS file exists and is readable
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            http_response_code(404);
+            Log::error("Default CSS file not found");
+            exit;
+        }
+
+        //  Serve the file
+        header('Content-type: text/css');
+        header('Cache-control: public, max-age=3600');
         readfile($filePath);
         exit;
     }
@@ -64,7 +86,7 @@ class CssController extends Controller {
         }
 
         // redirect after handling to avoid resubmitting form
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
 
@@ -129,7 +151,7 @@ class CssController extends Controller {
         try {
             if ($_POST['selectCssFile']){
                 // Set custom theme
-                $app['settings']->cssId = $_POST['selectCssFile'];
+                $app['settings']->cssId = (int)($_POST['selectCssFile']);
             } else {
                 // Set default theme
                 $app['settings']->cssId = null;

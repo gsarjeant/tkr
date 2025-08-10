@@ -39,7 +39,7 @@ class AuthController extends Controller {
                     } catch (Exception $e) {
                         Log::error("Failed to create login session for {$username}: " . $e->getMessage());
                         Session::setFlashMessage('error', 'Login failed - session error');
-                        header('Location: ' . $_SERVER['PHP_SELF']);
+                        header('Location: ' . $_SERVER['REQUEST_URI']);
                         exit;
                     }
                 } else {
@@ -47,13 +47,13 @@ class AuthController extends Controller {
 
                     // Set a flash message and reload the login page
                     Session::setFlashMessage('error', 'Invalid username or password');
-                    header('Location: ' . $_SERVER['PHP_SELF']);
+                    header('Location: ' . $_SERVER['REQUEST_URI']);
                     exit;
                 }
             } catch (Exception $e) {
                 Log::error("Database error during login for {$username}: " . $e->getMessage());
                 Session::setFlashMessage('error', 'Login temporarily unavailable');
-                header('Location: ' . $_SERVER['PHP_SELF']);
+                header('Location: ' . $_SERVER['REQUEST_URI']);
                 exit;
             }
         }

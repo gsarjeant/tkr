@@ -7,13 +7,17 @@ declare(strict_types=1);
 
 // Define all the important paths
 define('APP_ROOT', dirname(dirname(__FILE__)));
+// Root-level directories
 define('CONFIG_DIR', APP_ROOT . '/config');
+define('PUBLIC_DIR', APP_ROOT . '/public');
 define('SRC_DIR', APP_ROOT . '/src');
 define('STORAGE_DIR', APP_ROOT . '/storage');
-define('TEMPLATES_DIR', APP_ROOT . '/templates');
-define('DATA_DIR', STORAGE_DIR . '/db');
-define('DB_FILE', DATA_DIR . '/tkr.sqlite');
+// Storage subdirectories
 define('CSS_UPLOAD_DIR', STORAGE_DIR . '/upload/css');
+define('DATA_DIR', STORAGE_DIR . '/db');
+define('TEMPLATES_DIR', APP_ROOT . '/templates');
+// Database file
+define('DB_FILE', DATA_DIR . '/tkr.sqlite');
 
 // Janky autoloader function
 // This is a bit more consistent with current frameworks

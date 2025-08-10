@@ -27,6 +27,7 @@ class Router {
         ['tick/{id}', 'TickController'],
         ['tick/{id}/delete', 'TickController@handleDelete', ['POST']],
         ['css/custom/{filename}.css', 'CssController@serveCustomCss'],
+        ['css/default.css', 'CssController@serveDefaultCss'],
     ];
 
 

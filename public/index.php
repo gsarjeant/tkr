@@ -42,6 +42,12 @@ if (!$prerequisites->validateApplication()) {
 // Get the working database connection from prerequisites
 $db = $prerequisites->getDatabase();
 
+// Apply any pending database migrations
+if (!$prerequisites->applyMigrations($db)){
+    $prerequisites->generateWebSummary();
+    exit;
+}
+
 // Check if setup is complete (user exists and URL is configured)
 if (!(preg_match('/tkr-setup$/', $path))) {
     try {

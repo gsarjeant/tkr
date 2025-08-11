@@ -22,6 +22,7 @@ class AdminControllerTest extends TestCase
         $this->settings->baseUrl = 'https://example.com';
         $this->settings->basePath = '/tkr';
         $this->settings->itemsPerPage = 10;
+        $this->settings->tickDeleteHours = 2;
 
         $this->user = new UserModel($this->mockPdo);
         $this->user->username = 'testuser';
@@ -119,7 +120,8 @@ class AdminControllerTest extends TestCase
                 'items_per_page' => 15,
                 'css_id' => null,
                 'strict_accessibility' => true,
-                'log_level' => 2
+                'log_level' => 2,
+                'tick_delete_hours' => 3
             ],
             [
                 'username' => 'newuser',
@@ -153,7 +155,8 @@ class AdminControllerTest extends TestCase
             'base_path' => '/updated',
             'items_per_page' => 15,
             'strict_accessibility' => 'on',
-            'log_level' => 2
+            'log_level' => 2,
+            'tick_delete_hours' => 3
         ];
 
         $result = $controller->saveSettings($postData, false);
@@ -177,7 +180,8 @@ class AdminControllerTest extends TestCase
                 'items_per_page' => 10,
                 'css_id' => null,
                 'strict_accessibility' => true,
-                'log_level' => 2
+                'log_level' => 2,
+                'tick_delete_hours' => 3
             ],
             [
                 'username' => 'testuser',

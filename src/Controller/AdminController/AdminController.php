@@ -91,6 +91,7 @@ class AdminController extends Controller {
         $itemsPerPage        = (int) ($postData['items_per_page'] ?? 25);
         $strictAccessibility = isset($postData['strict_accessibility']);
         $logLevel            = (int) ($postData['log_level'] ?? 0);
+        $tickDeleteHours     = (int) ($postData['tick_delete_hours'] ?? 1);
 
         // Password
         $password        = $postData['password'] ?? '';
@@ -152,6 +153,7 @@ class AdminController extends Controller {
                 $app['settings']->itemsPerPage = $itemsPerPage;
                 $app['settings']->strictAccessibility = $strictAccessibility;
                 $app['settings']->logLevel = $logLevel;
+                $app['settings']->tickDeleteHours = $tickDeleteHours;
 
                 // Save site settings and reload config from database
                 $app['settings'] = $app['settings']->save();

@@ -12,8 +12,7 @@ class SettingsModel {
     public ?int $cssId = null;
     public bool $strictAccessibility = true;
     public ?int $logLevel = null;
-    // not currently configurable
-    public int $tickDeleteHours = 1;
+    public ?int $tickDeleteHours = null;
 
     public function __construct(private PDO $db) {}
 
@@ -28,7 +27,8 @@ class SettingsModel {
                                    items_per_page,
                                    css_id,
                                    strict_accessibility,
-                                   log_level
+                                   log_level,
+                                   tick_delete_hours
                             FROM settings WHERE id=1");
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -41,7 +41,8 @@ class SettingsModel {
             $c->itemsPerPage = (int) $row['items_per_page'];
             $c->cssId = (int) $row['css_id'];
             $c->strictAccessibility = (bool) $row['strict_accessibility'];
-            $c->logLevel = $row['log_level'];
+            $c->logLevel = (int) ($row['log_level'] ?? 2);
+            $c->tickDeleteHours = (int) ($row['tick_delete_hours'] ?? 1);
         }
 
         return $c;
@@ -51,6 +52,7 @@ class SettingsModel {
         $settingsCount = (int) $this->db->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 
         if ($settingsCount === 0){
+            Log::debug('Initializing settings');
             $stmt = $this->db->prepare("INSERT INTO settings (
                 id,
                 site_title,
@@ -60,10 +62,12 @@ class SettingsModel {
                 items_per_page,
                 css_id,
                 strict_accessibility,
-                log_level
+                log_level,
+                tick_delete_hours
                 )
-                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)");
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         } else {
+            Log::debug('Updating settings');
             $stmt = $this->db->prepare("UPDATE settings SET
                 site_title=?,
                 site_description=?,
@@ -72,9 +76,20 @@ class SettingsModel {
                 items_per_page=?,
                 css_id=?,
                 strict_accessibility=?,
-                log_level=?
+                log_level=?,
+                tick_delete_hours=?
                 WHERE id=1");
         }
+
+        Log::debug("Site title: " . $this->siteTitle);
+        Log::debug("Site description: " . $this->siteDescription);
+        Log::debug("Base URL: " . $this->baseUrl);
+        Log::debug("Base path: " . $this->basePath);
+        Log::debug("Items per page: " . $this->itemsPerPage);
+        Log::debug("CSS ID: " . $this->cssId);
+        Log::debug("Strict accessibility: " . $this->strictAccessibility);
+        Log::debug("Log level: " . $this->logLevel);
+        Log::debug("Tick delete window: " . $this->tickDeleteHours);
 
         $stmt->execute([$this->siteTitle,
                         $this->siteDescription,
@@ -83,7 +98,8 @@ class SettingsModel {
                         $this->itemsPerPage,
                         $this->cssId,
                         $this->strictAccessibility,
-                        $this->logLevel
+                        $this->logLevel,
+                        $this->tickDeleteHours
                     ]);
 
         return $this->get();

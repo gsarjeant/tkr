@@ -442,7 +442,7 @@ class Prerequisites {
         }
     }
 
-    private function applyMigrations($db) {
+    public function applyMigrations($db) {
         try {
             $migrator = new Migrator($db);
             $migrator->migrate();

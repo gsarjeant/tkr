@@ -61,13 +61,18 @@
                             name="items_per_page"
                             value="<?= $settings->itemsPerPage ?>" min="1" max="50"
                             required>
+                        <label for="tick_delete_hours">Tick delete window (hours)</label>
+                        <input type="number"
+                            id="tick_delete_hours"
+                            name="tick_delete_hours"
+                            value="<?= ($settings->tickDeleteHours ?? 1) ?>" min="1">
                         <label for="strict_accessibility">Strict accessibility</label>
                         <input type="checkbox"
                                id="strict_accessibility"
                                name="strict_accessibility"
                                value="1"
                                <?php if ($settings->strictAccessibility): ?> checked <?php endif; ?>>
-                        <label for="strict_accessibility">Log Level</label>
+                        <label for="log_level">Log Level</label>
                         <select id="log_level" name="log_level">
                             <option value="1" <?= ($settings->logLevel ?? 2) == 1 ? 'selected' : '' ?>>DEBUG</option>
                             <option value="2" <?= ($settings->logLevel ?? 2) == 2 ? 'selected' : '' ?>>INFO</option>
